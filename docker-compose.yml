@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  bookingsystem-postgres:
+    container_name: bookingsystem-postgres
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - "5442:5432"
+    volumes:
+      - bookingsystem-postgres-volume:/var/lib/postgresql/data
+
+volumes:
+  bookingsystem-postgres-volume:  
+  
+  

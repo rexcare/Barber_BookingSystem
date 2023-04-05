@@ -1,0 +1,59 @@
+﻿@page
+@model LoginModel
+
+
+@{
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/LoginPage.css" asp-append-version="true"/>
+
+
+<div class="col-md-4">
+    <section>
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <label asp-for="Input.Email" class="form-label"></label>
+                
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true"/>
+
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <label asp-for="Input.Password" class="form-label"></label>
+                
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true"/>
+
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            @* <div> *@
+            @*     <div class="checkbox"> *@
+            @*         <label asp-for="Input.RememberMe" class="form-label"> *@
+            @*             <input class="form-check-input" asp-for="Input.RememberMe" /> *@
+            @*             @Html.DisplayNameFor(m => m.Input.RememberMe) *@
+            @*         </label> *@
+            @*     </div> *@
+            @* </div> *@
+            <div>
+                <button id="login-submit" type="submit">Log in</button>
+            </div>
+            <div>
+                <p>
+                    <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                </p>
+                
+                <p>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@App.Resources.WebApp.Views.Shared._Layout.GoBack</a>
+                </p>
+                
+                @* <p> *@
+                @*     <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a> *@
+                @* </p> *@
+                @* <p> *@
+                @*     <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a> *@
+                @* </p> *@
+            </div>
+        </form>
+    </section>
+</div>

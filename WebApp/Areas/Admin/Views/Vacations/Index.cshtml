@@ -1,0 +1,68 @@
+@using App.Domain.Identity
+@using Microsoft.AspNetCore.Identity
+@model IEnumerable<App.Domain.Identity.AppUser>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@inject SignInManager<AppUser> _signInManager
+@inject UserManager<AppUser> _userManager
+
+
+
+
+
+    @if (User.IsInRole("admin") || User.IsInRole("user"))
+    {
+        
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstLastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Role)
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model) {
+
+                if (item.Email != "admin@itcollege.ee")
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstLastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Role)
+                        </td>
+
+                        <td>
+                            <a style="text-decoration: none" asp-action="Create" asp-route-id="@item.Id">Manage vacation days</a>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+        
+        
+    }

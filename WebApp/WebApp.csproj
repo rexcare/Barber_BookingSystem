@@ -1,0 +1,96 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-WebApp-5784A1C5-018F-4B8D-9B42-235A05C8D6F0</UserSecretsId>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.5" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\App.DAL.EF\App.DAL.EF.csproj" />
+      <ProjectReference Include="..\Base.Extensions\Base.Extensions.csproj" />
+      <ProjectReference Include="..\Base.Resources\Base.Resources.csproj" />
+      <ProjectReference Include="..\Helpers.WebApp\Helpers.WebApp.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Helpers\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Helpers\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Helpers\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Helpers\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Meetings\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Meetings\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Meetings\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Meetings\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Meetings\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\logins\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\logins\logins.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\WorkTimes\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\WorkTimes\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\WorkTimes\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\WorkTimes\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\WorkTimes\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\WorkTimeLinks\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\WorkTimeLinks\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\WorkTimeLinks\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\WorkTimeLinks\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\WorkTimeLinks\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\CompanyInfos\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\CompanyInfos\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\CompanyInfos\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\CompanyInfos\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\CompanyInfos\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\MeetingOptions\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\MeetingOptions\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\MeetingOptions\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\MeetingOptions\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\MeetingOptions\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Areas\Admin\Views\WorkTimeLinks\Create.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\WorkTimeLinks\Delete.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\WorkTimeLinks\Details.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\WorkTimeLinks\Edit.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\WorkTimeLinks\Index.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Meetings\Create.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Meetings\Delete.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Meetings\Details.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Meetings\Edit.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Meetings\Index.cshtml" />
+    </ItemGroup>
+
+</Project>

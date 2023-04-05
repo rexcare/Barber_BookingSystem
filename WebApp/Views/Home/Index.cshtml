@@ -1,0 +1,125 @@
+﻿@using App.Domain.Identity
+@using Base.Extensions
+@using Microsoft.AspNetCore.Identity
+@using App.Domain
+@using Microsoft.AspNetCore.Razor.Language
+@using System.Linq
+
+@model IEnumerable<App.Domain.Identity.AppUser>
+@{
+    ViewData["Title"] = "Home Page";
+    CompanyInfo wtt = ViewBag.Wtt; 
+}
+
+@inject SignInManager<AppUser> _signInManager
+@inject UserManager<AppUser> _userManager
+
+
+
+@if (!User.IsInRole("admin") || !User.IsInRole("user"))
+{
+    
+}
+
+
+
+
+
+@if (User.IsInRole("admin") || User.IsInRole("user"))
+    {
+        
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+            <tr>
+                <th>
+                    Select
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstLastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Role)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WorkTimeTemplate)
+                </th>
+                
+                <th>
+                    Actions
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model) {
+                if (item.Email != "admin@itcollege.ee")
+                {
+                    <tr>
+                        <td>
+                            @* <div class="form-group form-check"> *@
+                            @*     <label class="form-check-label"> *@
+                            @*         <input class="form-check-input" asp-for="@Html.DisplayFor(modelItem => item.IsSelected)"/> *@
+                            @*     </label> *@
+                            @* </div> *@
+                            
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstLastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Role)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.WorkTimeTemplate!.Times)
+                        </td>
+                        
+
+                        <td>
+
+                            @if (User.IsInRole("user"))
+                            {
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            }
+                            @if (User.IsInRole("admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            }
+
+                            @if (User.IsInRole("admin") && item.Email != "admin@itcollege.ee")
+                            {
+                                <span>
+                                    | <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                </span>
+                                <span>
+                                    | <a asp-area="Admin" asp-controller="Vacations" asp-action="Create" asp-route-id="@item.Id">Vacations</a>
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+                
+            }
+            </tbody>
+        </table>
+        
+        
+        @if (User.IsInRole("admin"))
+        {
+            <span>
+                <a style="text-decoration: none black" asp-action="GenerateWTT">Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()</a>
+            </span>
+        }
+        
+        
+    }
