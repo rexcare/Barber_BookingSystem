@@ -34,25 +34,27 @@ public class AppointmentController : Controller
         _signInManager = signInManager;
         _roleManager = roleManager;
 
-    }
-    
-    
+    }   
     
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    public async Task<IActionResult>  Index()
+    public async Task<IActionResult> Index()
     {
+        Console.WriteLine("services");
         return _context.Services != null ? 
             View(await _context.Services.ToListAsync()) :
             Problem("Entity set 'AppDbContext.Services'  is null.");
     }
     
     
-    public IActionResult Booking()
+    public async Task<IActionResult> Booking()
     {
-        return View();
+        Console.WriteLine("booking");
+        return _context.WorkTimes != null ?
+            View(await _context.WorkTimes.ToListAsync()) :
+            Problem("Entity set 'AppDbContext.workTimes'  is null.");
     }
     
 }

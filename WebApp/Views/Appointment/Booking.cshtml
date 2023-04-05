@@ -1,1 +1,35 @@
-﻿
+﻿@model IEnumerable<App.Domain.WorkTime>
+
+@{
+    ViewData["Title"] = "Booking ";
+}
+
+<h1>Booking</h1>
+
+<a asp-area="" asp-controller="Appointment" asp-route-id="" asp-action="Index" style="text-decoration: none" type="submit" class="">\0back</a>
+
+<h1>John Doe</h1>
+<p>He a A high level barber</p>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.AppUser)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AppUserId)
+        </td>
+        <td>
+            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+        </td>
+    </tr>
+}
