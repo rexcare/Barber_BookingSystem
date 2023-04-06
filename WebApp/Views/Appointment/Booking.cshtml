@@ -4,32 +4,54 @@
     ViewData["Title"] = "Booking ";
 }
 
-<h1>Booking</h1>
+<a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
-<a asp-area="" asp-controller="Appointment" asp-route-id="" asp-action="Index" style="text-decoration: none" type="submit" class="">\0back</a>
+<div class="row">
+    <h1>John Doe</h1>
+    <p>He a A high level barber</p>
+</div>
 
-<h1>John Doe</h1>
-<p>He a A high level barber</p>
+<div class="row">
+    <div class="col col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">
+        <div mbsc-page class="demo-appointment-booking">
+            <div class="md-calendar-booking">
+                <div class="mbsc-form-group">
+                    <div class="mbsc-form-group-title">
+                        <p>select data and time</p>
+                        <p><smail>eastern European Summer Time(GMT+3)</smail></p>
+                    </div>
+                    <hr />
+                    <div id="demo-booking-datetime" class="booking-datetime"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
+        <div mbsc-page class="demo-appointment-booking">
+            <div class="md-calendar-booking">
+                <div class="mbsc-form-group">
+                    <div class="mbsc-form-group-title">
+                        <p>select data and time</p>
+                    </div>
+                    <hr />
+                    <div class="booking-datetime">
+                        <figure>
+                            <blockquote class="blockquote">
+                                <p>John Doe</p>
+                                <p>April 20, 2023 at 10:00 am</p>
+                            </blockquote>
+                            <figcaption>
+                                <p>F.R Kreutzwaidi 7, Tallinn</p>
+                                <p>Barber</p>
+                                <p>30min</p>
+                                <p>$30</p>
+                            </figcaption>
+                        </figure>
+                        <button onclick="alert('success')" class="btn btn-primary w-100">make appointment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-@foreach (var item in Model)
-{
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.AppUser)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateTime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AppUserId)
-        </td>
-        <td>
-            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-        </td>
-    </tr>
-}
