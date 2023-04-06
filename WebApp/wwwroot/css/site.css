@@ -159,10 +159,38 @@ h1 {
 ul {
   font-family: 'Nunito', sans-serif;
 }
-/*Backgrounds*/
+/*Backgrounds*/ 
 .bg-navbar {
   background: -webkit-linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
   background: -o-linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
   background: -moz-linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
   background: linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
+}
+
+.main-box {
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.md-calendar-booking .mbsc-calendar-text {
+    text-align: center;
+}
+
+.md-calendar-booking .booking-datetime .mbsc-datepicker-tab-calendar {
+    flex: 1 1 0;
+    min-width: 300px;
+}
+
+.md-calendar-booking .mbsc-timegrid-item {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.md-calendar-booking .mbsc-timegrid-container {
+    top: 30px;
+}
+
+.mbsc-form-group-title {
+    display: flex;
+    justify-content: space-between;
 }

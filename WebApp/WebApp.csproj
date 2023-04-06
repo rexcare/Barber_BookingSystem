@@ -93,4 +93,8 @@
       <UpToDateCheckInput Remove="Areas\Admin\Views\Meetings\Index.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\images\" />
+    </ItemGroup>
+
 </Project>
