@@ -8,7 +8,8 @@
 @model IEnumerable<App.Domain.Identity.AppUser>
 @{
     ViewData["Title"] = "Home Page";
-    CompanyInfo wtt = ViewBag.Wtt; 
+    CompanyInfo wtt = ViewBag.Wtt;
+    int index = 0;
 }
 
 @inject SignInManager<AppUser> _signInManager
@@ -59,33 +60,6 @@
     </div>
     <div class="row">
         <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Header</div>
-                <div class="card-body">
-                    <h5 class="card-title">Primary card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-            <div class="card text-white bg-secondary mb-3">
-                <div class="card-header">Header</div>
-                <div class="card-body">
-                    <h5 class="card-title">Secondary card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-header">Header</div>
-                <div class="card-body">
-                    <h5 class="card-title">Success card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
             <div class="card text-white bg-danger mb-3">
                 <div class="card-header">Header</div>
                 <div class="card-body">
@@ -117,15 +91,15 @@
 
 @if (User.IsInRole("admin") || User.IsInRole("user"))
     {
-        
+        <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover">
             <thead>
             <tr>
                 <th>
-                    Select
+                    No
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.FirstLastName)
+                    Name
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Email)
@@ -147,7 +121,8 @@
             </thead>
             <tbody>
             @foreach (var item in Model) {
-                if (item.Email != "admin@itcollege.ee")
+                    index++;
+                    if (item.Email != "admin@itcollege.ee")
                 {
                     <tr>
                         <td>
@@ -156,7 +131,7 @@
                             @*         <input class="form-check-input" asp-for="@Html.DisplayFor(modelItem => item.IsSelected)"/> *@
                             @*     </label> *@
                             @* </div> *@
-                            
+                            @index
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.FirstLastName)
@@ -202,7 +177,7 @@
             }
             </tbody>
         </table>
-        
+       </div> 
         
         @if (User.IsInRole("admin"))
         {

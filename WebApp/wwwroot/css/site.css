@@ -193,4 +193,38 @@ ul {
 .mbsc-form-group-title {
     display: flex;
     justify-content: space-between;
+    padding: unset !important;
+    font-size:unset !important;
+}
+
+
+
+.intl-tel-input {
+    display: table-cell;
+}
+
+.intl-tel-input .selected-flag {
+    z-index: 4;
+}
+
+.intl-tel-input .country-list {
+    z-index: 5;
+}
+
+.input-group .intl-tel-input .form-control {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 0;
+}
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+@media only screen and (max-width: 600px) {
+    .calendar-icon {
+        display: none;
+    }
 }

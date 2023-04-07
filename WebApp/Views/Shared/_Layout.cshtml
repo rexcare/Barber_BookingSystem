@@ -14,10 +14,11 @@
     <link rel="stylesheet" href="~/WebApp.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/mobiscroll.javascript.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:aliceblue">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HairFcker</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -74,10 +75,11 @@
                     
                 </ul>
                 
-                @if (User.IsInRole("admin") || User.IsInRole("user"))
+                @*@if (User.IsInRole("admin") || User.IsInRole("user"))
                 {
                     <partial name="_LoginPartial"/>
-                }
+                }*@
+                    <partial name="_LoginPartial" />
 
             </div>
         </div>

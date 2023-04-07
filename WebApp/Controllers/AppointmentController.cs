@@ -1,4 +1,5 @@
 ﻿using App.DAL.EF;
+using App.Domain;
 using App.Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -56,5 +57,12 @@ public class AppointmentController : Controller
             View(await _context.WorkTimes.ToListAsync()) :
             Problem("Entity set 'AppDbContext.workTimes'  is null.");
     }
-    
+
+    public IActionResult makeAppointment(string Id, string Address)
+    {
+        Console.WriteLine(Id);
+        return Json(Id + Address);
+    }
+
+
 }

@@ -46,4 +46,5 @@ button.accept-policy {
     white-space: nowrap;
     line-height: 60px;
     text-align-last: center;
+    background-color: aliceblue;
 }
