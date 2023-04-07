@@ -130,7 +130,6 @@ namespace WebApp.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null) 
         {
-            Console.WriteLine("register");
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             ViewData["WttId"] = new SelectList(_context.WorkTimeTemplates, "Id", "Times");
@@ -139,7 +138,6 @@ namespace WebApp.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            Console.WriteLine("registerPPPPPPPPPPPPP");
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)

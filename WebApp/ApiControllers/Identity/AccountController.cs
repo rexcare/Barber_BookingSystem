@@ -44,7 +44,6 @@ public class AccountController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<JwtResponse>> LogIn([FromBody] Login loginData)
     {
-        Console.WriteLine("hddqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhdhd");
         // verify username
         var appUser = await _userManager.FindByEmailAsync(loginData.Email);
         if (appUser == null)
