@@ -48,13 +48,23 @@ public class AppointmentController : Controller
             View(await _context.Services.ToListAsync()) :
             Problem("Entity set 'AppDbContext.Services'  is null.");
     }
-    
-    
-    public async Task<IActionResult> Booking()
+
+    public async Task<IActionResult> Booking(Guid? id)
     {
-        Console.WriteLine("booking");
+        if (id == null || _context.Services == null)
+        {
+            return NotFound();
+        }
+
+        var service = await _context.Services.FindAsync(id);
+        if (service == null)
+        {
+            return NotFound();
+        }
+        Console.WriteLine(service);
+        ViewData["service"] = service;
         return _context.WorkTimes != null ?
-            View(await _context.WorkTimes.ToListAsync()) :
+            View() :
             Problem("Entity set 'AppDbContext.workTimes'  is null.");
     }
 

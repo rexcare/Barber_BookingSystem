@@ -1,14 +1,15 @@
-﻿@model IEnumerable<App.Domain.WorkTime>
+﻿@using App.Domain
 
 @{
     ViewData["Title"] = "Booking ";
+    var Service = (Service)ViewData["service"];
 }
 
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
 <div class="row">
-    <h1>John Doe</h1>
-    <p>He a A high level barber</p>
+    <h1>@Service.Name</h1>
+    <p>@Service.Description</p>
 </div>
 
 <div class="row" style="justify-content:space-around">
@@ -82,14 +83,14 @@
             <div class="card-body text-primary">
                 <figure>
                     <blockquote class="blockquote">
-                        <p>John Doe</p>
-                        <p>April 20, 2023 at 10:00 am</p>
+                        <p>@Service.Name</p>
+                        <p id="bookTime">April 20, 2023 at 10:00 am</p>
                     </blockquote>
                     <figcaption class="blockquote-footer">
                         <p>F.R Kreutzwaidi 7, Tallinn</p>
-                        <p>Barber</p>
-                        <p>30min</p>
-                        <p>$30</p>
+                        <p>@Service.Description</p>
+                        <p>@Service.TimeSpan</p>
+                        <p>@Service.Price</p>
                     </figcaption>
                 </figure>
             </div>
@@ -120,21 +121,21 @@
                         <div class="w-100">
                             <figure>
                                 <blockquote class="blockquote">
-                                    <p>John Doe</p>
-                                    <p>April 20, 2023 at 10:00 am</p>
+                                    <p>@Service.Name</p>
+                                    <p id="bookTime">April 20, 2023 at 10:00 am</p>
                                 </blockquote>
                                 <figcaption class="blockquote-footer">
                                     <p>F.R Kreutzwaidi 7, Tallinn</p>
-                                    <p>Barber</p>
-                                    <p>30min</p>
-                                    <p>$30</p>
+                                    <p>@Service.Description</p>
+                                    <p>@Service.TimeSpan</p>
+                                    <p>@Service.Price</p>
                                 </figcaption>
                             </figure>
                             <hr />
                             <div class="w-50" style="float: right">
                                 <div class="space-between">
                                     <p>Subtotal</p>
-                                    <p>$50</p>
+                                    <p>@Service.Price</p>
                                 </div>
                                 <div class="space-between">
                                     <p>Sales Tax</p>
@@ -143,7 +144,7 @@
                                 <hr />
                                 <div class="space-between">
                                     <p>Total</p>
-                                    <p>$45</p>
+                                    <p>@Service.Price</p>
                                 </div>
                             </div>
                         </div>
