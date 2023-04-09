@@ -4,6 +4,7 @@ using App.Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace WebApp.Controllers;
 
@@ -35,8 +36,8 @@ public class AppointmentController : Controller
         _signInManager = signInManager;
         _roleManager = roleManager;
 
-    }   
-    
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -56,12 +57,11 @@ public class AppointmentController : Controller
             return NotFound();
         }
 
-        var service = await _context.Services.FindAsync(id);
+        var service = await _context.Services.FirstOrDefaultAsync(m => m.Id == id);
         if (service == null)
         {
             return NotFound();
         }
-        Console.WriteLine(service);
         ViewData["service"] = service;
         return _context.WorkTimes != null ?
             View() :
@@ -74,5 +74,29 @@ public class AppointmentController : Controller
         return Json(Id + Address);
     }
 
+    public async Task<IActionResult> CreateAppointment([Bind("CustomerId,ServiceId,AppUserId,StartTime")] Appointment Appointment)
+    {
+        if (ModelState.IsValid)
+        {
+            Appointment.Id = Guid.NewGuid();
+            _context.Add(Appointment);
+            await _context.SaveChangesAsync();
+            return Json(Appointment.Id);
+        }
+        // return RedirectToAction(nameof(Index));
+        return Json("error");
+    }
 
+    public async Task<IActionResult> CreateCustomer([Bind("FirstName,LastName,Email,Phone")] Customer customer)
+    {
+        if (ModelState.IsValid)
+        {
+            customer.Id = Guid.NewGuid();
+            _context.Add(customer);
+            await _context.SaveChangesAsync();
+            return Json(customer.Id);
+        }
+        // return RedirectToAction(nameof(Index));
+        return Json("error");
+    }
 }

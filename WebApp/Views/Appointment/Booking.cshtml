@@ -1,25 +1,33 @@
 ﻿@using App.Domain
+@using Microsoft.AspNetCore.Identity
+@using App.Domain.Identity
+@using Base.Extensions
+@inject SignInManager<AppUser> _signInManager
+@inject UserManager<AppUser> _userManager
 
 @{
     ViewData["Title"] = "Booking ";
-    var Service = (Service)ViewData["service"];
+    var Service = (Service?)ViewData["service"];
 }
 
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
-<div class="row">
-    <h1>@Service.Name</h1>
-    <p>@Service.Description</p>
-</div>
 
-<div class="row" style="justify-content:space-around">
-    <div class="col col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
+
+
+
+<div class="row" style="justify-content:space-around; margin-top: 10px;">
+    <div class="col col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12 my-3">
+        <div class="row mx-3">
+            <h1>@Service?.Name</h1>
+            <p>@Service?.Description</p>
+        </div>
         <div id="stepper1" class="bs-stepper">
             <div class="bs-stepper-header">
                 <div class="step" data-target="#test-l-1">
                     <button type="button" class="btn step-trigger">
                         <span class="bs-stepper-circle">1</span>
-                        <span class="bs-stepper-label">Time</span>
+                        <span class="bs-stepper-label">Date and Time</span>
                     </button>
                 </div>
                 <div class="line"></div>
@@ -36,7 +44,7 @@
                         <div class="md-calendar-booking">
                             <div class="mbsc-form-group">
                                 <div class="mbsc-form-group-title">
-                                    <p class="h3" style="margin: 0px 0px 0px 0px;">select data and time</p>
+                                    <p class="h3" style="margin: 0px 0px 0px 0px;"> </p>
                                     <p><small>Eastern European Summer Time(GMT+3)</small></p>
                                 </div>
                                 <hr />
@@ -50,58 +58,73 @@
                 </div>
                 <div id="test-l-2" class="content">
                     <div class="row">
-                        <div class="form-group col">
-                            <label for="exampleInputEmail1">Full Name</label>
-                            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Your Name">
-                            @*<small id="namelHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>*@
-                         </div>
-                        <div class="form-group col">
-                            <label for="exampleInputEmail1">Email address</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Email Address">
-                            @*<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>*@
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Phone Number</label>
-                            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Phone Number">
-                            @*<small id="phonelHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>*@
-                         </div>
-                    </div>
-                    
-                    <div style="display: flex; justify-content: center">
-                        <button class="btn btn-primary w-100 mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Reserve</button>
-                        <button class="btn btn-primary w-100 mx-2" onclick="stepper1.previous()">Back</button>
+                        <form  class="requires-validation" novalidate>
+                            <div class="col-md-12">
+                            <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" required>
+                                <div class="valid-feedback">Fist name field is valid!</div>
+                                <div class="invalid-feedback">First name field cannot be blank!</div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Koppel" required>
+                                <div class="valid-feedback">Last name field is valid!</div>
+                                <div class="invalid-feedback">Last name field cannot be blank!</div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <input class="form-control" type="email" id="email" name="email" placeholder="admin@example.com" required>
+                                <div class="valid-feedback">Email field is valid!</div>
+                                <div class="invalid-feedback">Email field cannot be blank!</div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <input class="form-control" type="tel" pattern="^\d{10}$" id="phone" name="phone" placeholder="3726329598" required>
+                                <div class="valid-feedback">PhoneNumber field is valid!</div>
+                                <div class="invalid-feedback">PhoneNumber field cannot be blank!</div>
+                            </div>
+
+                            <div style="display: flex; justify-content: center">
+                                <button class="btn btn-primary w-100 mx-2" id="reserveBtn" onclick="validateForm()">Reserve</button>
+                                <button class="btn btn-warning w-100 mx-2" onclick="backStep()">Back</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12 my-4">
-        <div class="card border-primary mb-3" style="min-width: 16rem; height: 100%;">
+    <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-4">
+        <div class="card border-primary mb-3" style="min-width: 16rem;">
             <div class="card-header" style="text-align: center">Service Detail</div>
             <div class="card-body text-primary">
                 <figure>
                     <blockquote class="blockquote">
-                        <p>@Service.Name</p>
+                        <p style="text-transform: capitalize;">@Service?.Name</p>
                         <p id="bookTime">April 20, 2023 at 10:00 am</p>
                     </blockquote>
                     <figcaption class="blockquote-footer">
-                        <p>F.R Kreutzwaidi 7, Tallinn</p>
-                        <p>@Service.Description</p>
-                        <p>@Service.TimeSpan</p>
-                        <p>@Service.Price</p>
+                        <p>@Service?.Description</p>
+                        <p>@Service?.TimeSpan</p>
+                        <p>$@Service?.Price</p>
                     </figcaption>
                 </figure>
+                <hr />
+                <figure>
+                    <blockquote class="blockquote">
+                        <p style="text-transform: capitalize;" id="contact_fullName"></p>
+                        <p id="contact_email"></p>
+                        <p id="contact_phone"></p>
+                    </blockquote>
+                </figure>
             </div>
-            <div class="card-footer bg-transparent border-primary" style="text-align: center">@@#@@</div>
+            @*<div class="card-footer bg-transparent border-primary" style="text-align: center">@@#@@</div>*@
         </div>
     </div>
 </div>
 
 <!-- Vertically centered scrollable modal -->
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -115,27 +138,26 @@
                 </div>
                 <div class="card border-primary mb-3" style="min-width: 16rem; height: 100%;">
                     <div class="card-body text-primary" style="display:flex">
-                        <div class="mx-2 calendar-icon">
+                        <div class="calendar-icon">
                             <a asp-action="index" class="text-secondary" style="font-size:100px; text-decoration: none;"><i class="fa fa-light fa-calendar"></i></a>
                         </div>
                         <div class="w-100">
                             <figure>
                                 <blockquote class="blockquote">
-                                    <p>@Service.Name</p>
+                                    <p style="text-transform: capitalize;">@Service?.Name</p>
                                     <p id="bookTime">April 20, 2023 at 10:00 am</p>
                                 </blockquote>
                                 <figcaption class="blockquote-footer">
-                                    <p>F.R Kreutzwaidi 7, Tallinn</p>
-                                    <p>@Service.Description</p>
-                                    <p>@Service.TimeSpan</p>
-                                    <p>@Service.Price</p>
+                                    <p>@Service?.Description</p>
+                                    <p>@Service?.TimeSpan</p>
+                                    <p>@Service?.Price</p>
                                 </figcaption>
                             </figure>
                             <hr />
                             <div class="w-50" style="float: right">
                                 <div class="space-between">
                                     <p>Subtotal</p>
-                                    <p>@Service.Price</p>
+                                    <p>$@Service?.Price</p>
                                 </div>
                                 <div class="space-between">
                                     <p>Sales Tax</p>
@@ -144,7 +166,7 @@
                                 <hr />
                                 <div class="space-between">
                                     <p>Total</p>
-                                    <p>@Service.Price</p>
+                                    <p>$@Service?.Price</p>
                                 </div>
                             </div>
                         </div>
@@ -153,13 +175,11 @@
                 </div>
               </div>
             <div class="modal-footer" style="display: flex; justify-content: center;">
-                <button type="button" class="btn btn-primary w-50">OK</button>
+                <button type="button" class="btn btn-primary w-50" onclick="Reserve()">OK</button>
             </div>
         </div>
     </div>
 </div>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 <script>
@@ -184,21 +204,108 @@
 </script>
 
 <script>
-    function make() {
+
+    function backStep() {
+        event.preventDefault();
+        event.stopPropagation();
+        stepper1.previous()
+    }
+
+    function validateForm() {
+        event.preventDefault();
+        event.stopPropagation();
+        const forms = document.querySelectorAll('.requires-validation');
+        
+        Array.from(forms)
+          .forEach(function (form) {
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              else {
+                event.preventDefault();
+                event.stopPropagation();
+                toggleModal();
+              }
+              form.classList.add('was-validated')
+          })
+    }
+    
+    function toggleModal() {
+        var myModal = new bootstrap.Modal(document.getElementById('modal'), {
+            keyboard: false
+        });
+        
+        myModal.toggle();
+    }
+    
+    function Reserve() {
         let data = {
-            Date: '',
-            StartTime: '',
-            StopTime: '',
-            AppUserId: ''
+            FirstName: document.getElementById('firstName').value,
+            LastName: document.getElementById('lastName').value,
+            Email: document.getElementById('email').value,
+            Phone: document.getElementById('phone').value,
         }
         $.ajax({
             type: 'POST',
-            url: '/Appointment/makeAppointment',
+            url: '/Appointment/CreateCustomer',
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
-            data: {
-                Id: 'qwe',
-                Address: 'asd'
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                }
+                else{
+                    let appointmentData = {
+                        CustomerId: result,
+                        ServiceId: '@Service?.Id',
+                        AppUserId: '@(User.GetUserId())',
+                        StartTime: moment(hel).format("YYYY-MM-DD HH:mm:ss"),
+                    }
+                
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Appointment/CreateAppointment',
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+                        data: appointmentData,
+                        success: function (result) {
+                            if (result == "error") {
+                                alert('Failed to reserve the Data');
+                                console.log('Failed ');
+                            }
+                            else {
+                                alert('Successfully reserve Data ');
+                                location.href="/Appointment"
+                                console.log(result);
+                            }
+                        },
+                        error: function () {
+                            alert('Failed to reserve the Data');
+                            console.log('Failed ');
+                        }
+                    })
+                }
+                
             },
+            error: function () {
+                alert('Failed to receive the Data');
+                console.log('Failed ');
+            }
+        })
+        /*
+        let appointmentData = {
+            CustomerId: 'c42b12c9-d12d-47df-8339-ee8d373aa86c',
+            ServiceId: @Service?.Id,
+            AppUserId: @(User.GetUserId()),
+            StartTime: hel,
+        }
+        console.log('data', data)
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/CreateAppointment',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: appointmentData,
             success: function (result) {
                 alert('Successfully received Data ');
                 console.log(result);
@@ -208,5 +315,8 @@
                 console.log('Failed ');
             }
         })
+        */
     }
 </script>
+
+<link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />

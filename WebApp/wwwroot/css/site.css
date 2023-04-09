@@ -39,6 +39,11 @@ label {
   margin-bottom: 10px;
 }
 
+.btn-warning {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .form-floating{
   margin-top: 10px;
 }
@@ -221,6 +226,15 @@ ul {
 .space-between {
     display: flex;
     justify-content: space-between;
+}
+
+.calendar-icon {
+    margin-right: 20px;
+    margin-left: 10px;
+}
+
+.card-body {
+    padding: 3rem 3rem;
 }
 
 @media only screen and (max-width: 600px) {
