@@ -8,12 +8,10 @@
 @{
     ViewData["Title"] = "Booking ";
     var Service = (Service?)ViewData["service"];
+    var Barbers = (IEnumerable<AppUser>?)ViewData["barber"];
 }
 
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
-
-
-
 
 
 <div class="row" style="justify-content:space-around; margin-top: 10px;">
@@ -27,19 +25,46 @@
                 <div class="step" data-target="#test-l-1">
                     <button type="button" class="btn step-trigger">
                         <span class="bs-stepper-circle">1</span>
-                        <span class="bs-stepper-label">Date and Time</span>
+                        <span class="bs-stepper-label">Barber</span>
                     </button>
                 </div>
                 <div class="line"></div>
                 <div class="step" data-target="#test-l-2">
                     <button type="button" class="btn step-trigger">
                         <span class="bs-stepper-circle">2</span>
+                        <span class="bs-stepper-label">Date and Time</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#test-l-3">
+                    <button type="button" class="btn step-trigger">
+                        <span class="bs-stepper-circle">3</span>
                         <span class="bs-stepper-label">Contact Info</span>
                     </button>
                 </div>
             </div>
             <div class="bs-stepper-content">
                 <div id="test-l-1" class="content">
+                    <div class="row">
+                        <form class="requires-validation" novalidate id="barberForm">
+                            <select class="form-select mt-3" required id="barberId" onselect="selectBarber()">
+                                <option selected disabled value="">Please select a Barber to book</option>
+                                @foreach (var item in Barbers!)
+                                {
+                                    <option value="@item.Id">@item.LastFirstName</option>
+                                }
+                            </select>
+                            <div class="valid-feedback">You selected a position!</div>
+                            <div class="invalid-feedback">Please select a position!</div>
+                        </form>
+
+                        <div style="display: flex; justify-content: center">
+                            <button class="btn btn-primary w-100 mx-2" id="reserveBtn" onclick="validateBarber()">Next</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="test-l-2" class="content">
                     <div mbsc-page class="demo-appointment-booking">
                         <div class="md-calendar-booking">
                             <div class="mbsc-form-group">
@@ -53,12 +78,14 @@
                         </div>
                     </div>
                     <div style="display: flex; justify-content: center">
-                        <button class="btn btn-primary text-center w-50 mx-2" onclick="stepper1.next()">Next</button>
+                        <button class="btn btn-primary w-100 mx-2" onclick="stepper1.next()">Next</button>
+                        <button class="btn btn-warning w-100 mx-2" onclick="backStep()">Back</button>
                     </div>
                 </div>
-                <div id="test-l-2" class="content">
+                
+                <div id="test-l-3" class="content">
                     <div class="row">
-                        <form  class="requires-validation" novalidate>
+                        <form  class="requires-validation" novalidate id="contactForm">
                             <div class="col-md-12">
                             <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" required>
                                 <div class="valid-feedback">Fist name field is valid!</div>
@@ -84,7 +111,7 @@
                             </div>
 
                             <div style="display: flex; justify-content: center">
-                                <button class="btn btn-primary w-100 mx-2" id="reserveBtn" onclick="validateForm()">Reserve</button>
+                                <button class="btn btn-primary w-100 mx-2" id="reserveBtn" onclick="validateContact()">Reserve</button>
                                 <button class="btn btn-warning w-100 mx-2" onclick="backStep()">Back</button>
                             </div>
                         </form>
@@ -122,7 +149,6 @@
     </div>
 </div>
 
-<!-- Vertically centered scrollable modal -->
 <!-- Modal -->
 <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -181,55 +207,53 @@
     </div>
 </div>
 
+<script src="~/js/moment.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+<script src="~/js/mobiscroll.javascript.min.js"></script>
 <script>
     var stepper1Node = document.querySelector('#stepper1')
     var stepper1 = new Stepper(document.querySelector('#stepper1'))
 
+    /*
     stepper1Node.addEventListener('show.bs-stepper', function (event) {
         console.warn('show.bs-stepper', event)
     })
     stepper1Node.addEventListener('shown.bs-stepper', function (event) {
         console.warn('shown.bs-stepper', event)
     })
+    */
 
-    var stepper2 = new Stepper(document.querySelector('#stepper2'), {
-        linear: false,
-        animation: true
-    })
-    var stepper3 = new Stepper(document.querySelector('#stepper3'), {
-        animation: true
-    })
-    var stepper4 = new Stepper(document.querySelector('#stepper4'))
 </script>
 
 <script>
-
+    var barberId = document.getElementById("barberId").value;
     function backStep() {
         event.preventDefault();
         event.stopPropagation();
         stepper1.previous()
     }
 
-    function validateForm() {
+    function validateBarber() {
         event.preventDefault();
         event.stopPropagation();
-        const forms = document.querySelectorAll('.requires-validation');
-        
-        Array.from(forms)
-          .forEach(function (form) {
-              if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-              }
-              else {
-                event.preventDefault();
-                event.stopPropagation();
-                toggleModal();
-              }
-              form.classList.add('was-validated')
-          })
+        const form = document.querySelector('#barberForm')
+        if (form.checkValidity()) {
+            stepper1.next();
+            mobiscollInit();
+            console.log("barberId", document.getElementById("barberId").value)
+        }
+        form.classList.add('was-validated')
     }
+
+    function validateContact() {
+        event.preventDefault();
+        event.stopPropagation();
+        const form = document.querySelector('#contactForm')
+        if (form.checkValidity()) {
+            toggleModal();
+        }
+        form.classList.add('was-validated')
+      }
     
     function toggleModal() {
         var myModal = new bootstrap.Modal(document.getElementById('modal'), {
@@ -240,6 +264,10 @@
     }
     
     function Reserve() {
+        CreateCustomer();
+    }
+
+    function CreateCustomer() {
         let data = {
             FirstName: document.getElementById('firstName').value,
             LastName: document.getElementById('lastName').value,
@@ -257,66 +285,135 @@
                     console.log('Failed ');
                 }
                 else{
-                    let appointmentData = {
-                        CustomerId: result,
-                        ServiceId: '@Service?.Id',
-                        AppUserId: '@(User.GetUserId())',
-                        StartTime: moment(hel).format("YYYY-MM-DD HH:mm:ss"),
-                    }
-                
-                    $.ajax({
-                        type: 'POST',
-                        url: '/Appointment/CreateAppointment',
-                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
-                        data: appointmentData,
-                        success: function (result) {
-                            if (result == "error") {
-                                alert('Failed to reserve the Data');
-                                console.log('Failed ');
-                            }
-                            else {
-                                alert('Successfully reserve Data ');
-                                location.href="/Appointment"
-                                console.log(result);
-                            }
-                        },
-                        error: function () {
-                            alert('Failed to reserve the Data');
-                            console.log('Failed ');
-                        }
-                    })
+                    CreateAppointment(result);
                 }
                 
             },
             error: function () {
-                alert('Failed to receive the Data');
-                console.log('Failed ');
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
             }
         })
-        /*
+    }
+
+    function CreateAppointment(result) {
         let appointmentData = {
-            CustomerId: 'c42b12c9-d12d-47df-8339-ee8d373aa86c',
-            ServiceId: @Service?.Id,
-            AppUserId: @(User.GetUserId()),
-            StartTime: hel,
+            CustomerId: result,
+            ServiceId: '@Service?.Id',
+            AppUserId: document.getElementById("barberId").value,
+            StartTime: moment(hel).format("YYYY-MM-DD HH:mm:ss"),
         }
-        console.log('data', data)
+        console.log(appointmentData)
         $.ajax({
             type: 'POST',
             url: '/Appointment/CreateAppointment',
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
             data: appointmentData,
             success: function (result) {
-                alert('Successfully received Data ');
-                console.log(result);
+                if (result == "error") {
+                    alert('Failed to reserve the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    alert('Successfully reserve Data ');
+                    location.href = "/Appointment"
+                    console.log(result);
+                }
             },
             error: function () {
-                alert('Failed to receive the Data');
-                console.log('Failed ');
+                alert('Error occures to reserve the Data');
+                console.log('Error occures ');
             }
         })
-        */
+
     }
+
+</script>
+
+<script>
+
+    function mobiscollInit(){
+        mobiscroll.setOptions({
+            locale: mobiscroll.localeEn,             // Specify language like: locale: mobiscroll.localePl or omit setting to use default
+            theme: 'windows',                            // Specify theme like: theme: 'ios' or omit setting to use default
+            themeVariant: 'light'                    // More info about themeVariant: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-themeVariant
+        });
+
+        var min = moment().format("YYYY-MM-DD")
+        var max = moment().add(3, 'M');
+
+        mobiscroll.datepicker('#demo-booking-datetime', {
+            display: 'inline',                       // Specify display mode like: display: 'bottom' or omit setting to use default
+            controls: ['calendar', 'timegrid'],      // More info about controls: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-controls
+            min: min,                                // More info about min: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-min
+            max: max,                                // More info about max: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-max
+            minTime: '9:00',
+            maxTime: '17:00',
+            stepMinute: 60,
+            width: null,                             // More info about width: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-width
+            onPageLoading: function (event, inst) {  // More info about onPageLoading: https://docs.mobiscroll.com/5-23-0/javascript/calendar#event-onPageLoading
+                getDatetimes(event.firstDay, function callback(bookings) {
+                    inst.setOptions({
+                        labels: bookings.labels,     // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-labels
+                        invalid: bookings.invalid    // More info about invalid: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-invalid
+                    });
+                    console.log("_________", bookings.labels, bookings.invalid)
+                });
+
+
+            },
+            onChange: function (event, inst) {  // More info about onChange: https://docs.mobiscroll.com/5-23-0/javascript/calendar#event-onChange
+                hel = inst.getVal();
+                document.getElementById("bookTime").innerHTML = moment(hel).format("MMMM DD, YYYY [at] hh:mm a");
+            }
+        });
+    }
+
+    function getDatetimes(day, callback) {
+        var invalid = [];
+        var labels = [];
+
+        let data = {
+            Id: document.getElementById("barberId").value,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/BookPlan',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                
+                console.log(result)
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                }
+                else{
+                    for (var i = 0; i < result.length; ++i) {
+                        console.log(moment(result[i]).local())
+                        flag = {
+                            start: moment(result[i]).local(),
+                            end: moment(result[i]).add(45, 'minutes')
+                        }
+                        invalid.push(flag);
+                        console.log(invalid)
+                    }
+                    console.log("invalid", invalid)
+                    callback({ invalid: invalid, labels:[] });
+                }
+                
+
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+
+    }
+
 </script>
 
 <link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/mobiscroll.javascript.min.css" />

@@ -1,10 +1,12 @@
 ﻿using App.DAL.EF;
 using App.Domain;
 using App.Domain.Identity;
+using Base.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
+using NuGet.Protocol;
+using System;
 
 namespace WebApp.Controllers;
 
@@ -44,7 +46,6 @@ public class AppointmentController : Controller
     /// <returns></returns>
     public async Task<IActionResult> Index()
     {
-        Console.WriteLine("services");
         return _context.Services != null ? 
             View(await _context.Services.ToListAsync()) :
             Problem("Entity set 'AppDbContext.Services'  is null.");
@@ -62,29 +63,10 @@ public class AppointmentController : Controller
         {
             return NotFound();
         }
+        var barbers = _userManager.Users.Where(x => x.Role =="user");
         ViewData["service"] = service;
-        return _context.WorkTimes != null ?
-            View() :
-            Problem("Entity set 'AppDbContext.workTimes'  is null.");
-    }
-
-    public IActionResult makeAppointment(string Id, string Address)
-    {
-        Console.WriteLine(Id);
-        return Json(Id + Address);
-    }
-
-    public async Task<IActionResult> CreateAppointment([Bind("CustomerId,ServiceId,AppUserId,StartTime")] Appointment Appointment)
-    {
-        if (ModelState.IsValid)
-        {
-            Appointment.Id = Guid.NewGuid();
-            _context.Add(Appointment);
-            await _context.SaveChangesAsync();
-            return Json(Appointment.Id);
-        }
-        // return RedirectToAction(nameof(Index));
-        return Json("error");
+        ViewData["barber"] = barbers;
+        return View();
     }
 
     public async Task<IActionResult> CreateCustomer([Bind("FirstName,LastName,Email,Phone")] Customer customer)
@@ -98,5 +80,61 @@ public class AppointmentController : Controller
         }
         // return RedirectToAction(nameof(Index));
         return Json("error");
+    }
+
+    public async Task<IActionResult> BookPlan(Guid? id)
+    {
+        if (id == null || _context.Appointments == null)
+        {
+            return NotFound();
+        }
+
+        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Select(p => p.StartTime);
+
+        return Json(await appointments.ToListAsync());
+    }
+
+    public async Task<IActionResult> BookList(Guid? id)
+    {
+        if (id == null || _context.Appointments == null)
+        {
+            return NotFound();
+        }
+
+        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(w => w.Service).Include(w => w.Customer);
+        /*foreach(var appointment in appointments)
+        {
+            appointment.Service = _context.Services.Find(appointment.ServiceId);
+            appointment.Customer = _context.Customers.Find(appointment.CustomerId);
+        }*/
+        return View(await appointments.ToListAsync());
+    }
+
+    public async Task<IActionResult> CreateAppointment([Bind("CustomerId,ServiceId,AppUserId,StartTime")] Appointment Appointment)
+    {
+        if (ModelState.IsValid)
+        {
+            Appointment.Id = Guid.NewGuid();
+            _context.Add(Appointment);
+            Console.WriteLine(Appointment.StartTime);
+            await _context.SaveChangesAsync();
+            return Json(Appointment.Id);
+        }
+        // return RedirectToAction(nameof(Index));
+        return Json("error");
+    }
+
+    public async Task<IActionResult> DeleteAppointment(Guid? id, Guid? uid)
+    {
+        var appointment = await _context.Appointments.FindAsync(id);
+        
+        if (appointment != null)
+        {
+            _context.Appointments.Remove(appointment);
+        }
+
+        await _context.SaveChangesAsync();
+        // return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(BookList), new { id = uid });
     }
 }

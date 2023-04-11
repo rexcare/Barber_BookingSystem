@@ -228,6 +228,11 @@ ul {
     justify-content: space-between;
 }
 
+.space-around {
+    display: flex;
+    justify-content: space-around;
+}
+
 .calendar-icon {
     margin-right: 20px;
     margin-left: 10px;
@@ -237,8 +242,21 @@ ul {
     padding: 3rem 3rem;
 }
 
+.barber-list {
+    width: 100%;
+}
+
 @media only screen and (max-width: 600px) {
     .calendar-icon {
         display: none;
+    }
+    .barber-list {
+        width: 100%
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .barber-list {
+        width: 100%
     }
 }

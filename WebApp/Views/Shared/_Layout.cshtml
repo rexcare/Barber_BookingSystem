@@ -1,5 +1,6 @@
 ﻿@using App.Domain.Identity
 @using Microsoft.AspNetCore.Identity
+@using Base.Extensions
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
 
@@ -12,7 +13,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/WebApp.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/mobiscroll.javascript.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
 </head>
@@ -34,8 +34,14 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@App.Resources.WebApp.Views.Shared._Layout.Privacy</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="Index">Make an Appointment</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Appointment"  asp-action="Index">Make an Appointment</a>
                     </li>
+                    @if (User.IsInRole("user"))
+                    {
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-route-id="@User.GetUserId()" asp-action="BookList">Appointments</a>
+                        </li>
+                    }
                     @if (User.IsInRole("admin"))
                     {
                         <li class="nav-item dropdown">
@@ -100,71 +106,11 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/mobiscroll.javascript.min.js"></script>
-    <script src="~/js/moment.js"></script>
 
-    <script>
-        var hel = '';
-    mobiscroll.setOptions({
-        locale: mobiscroll.localeEn,             // Specify language like: locale: mobiscroll.localePl or omit setting to use default
-        theme: 'windows',                            // Specify theme like: theme: 'ios' or omit setting to use default
-        themeVariant: 'light'                    // More info about themeVariant: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-themeVariant
-    });
-
-    var min = moment().format("YYYY-MM-DD")
-    var max = moment().add(3, 'M');
-
-    mobiscroll.datepicker('#demo-booking-datetime', {
-        display: 'inline',                       // Specify display mode like: display: 'bottom' or omit setting to use default
-        controls: ['calendar', 'timegrid'],      // More info about controls: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-controls
-        min: min,                                // More info about min: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-min
-        max: max,                                // More info about max: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-max
-        minTime: '9:00',
-        maxTime: '17:00',
-        stepMinute: 60,
-        width: null,                             // More info about width: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-width
-        onPageLoading: function (event, inst) {  // More info about onPageLoading: https://docs.mobiscroll.com/5-23-0/javascript/calendar#event-onPageLoading
-            getDatetimes(event.firstDay, function callback(bookings) {
-                inst.setOptions({
-                    labels: bookings.labels,     // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-labels
-                    invalid: bookings.invalid    // More info about invalid: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-invalid
-                });
-            });
-
-
-        },
-        onChange: function (event, inst) {  // More info about onChange: https://docs.mobiscroll.com/5-23-0/javascript/calendar#event-onChange
-                hel = inst.getVal();
-                document.getElementById("bookTime").innerHTML = moment(hel).format("MMMM DD, YYYY [at] hh:mm a");
-        }
-    });
-
-    function getDatetimes(day, callback) {
-        var invalid = [];
-        var labels = [];
-        /*
-        mobiscroll.util.http.getJson('https://trial.mobiscroll.com/getbookingtime/?year=' + day.getFullYear() + '&month=' + day.getMonth(), function (bookings) {
-            for (var i = 0; i < bookings.length; ++i) {
-                var booking = bookings[i];
-                var bDate = new Date(booking.d);
-
-                if (booking.nr > 0) {
-                    labels.push({
-                        start: bDate,
-                       // title: booking.nr + ' SPOTS',
-                        title: '',
-                        textColor: '#e1528f'
-                    });
-                    invalid = invalid.concat(booking.invalid);
-                } else {
-                    invalid.push(bDate);
-                }
-            }
-            callback({ labels: labels, invalid: invalid });
-        }, 'jsonp');
-        */
-    }
+<script>
+    var hel = '';
 </script>
 @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

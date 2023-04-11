@@ -15,7 +15,7 @@
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
 
-@if (!User.IsInRole("admin") || !User.IsInRole("user"))
+@if (!User.IsInRole("admin") && !User.IsInRole("user"))
 {
     <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
