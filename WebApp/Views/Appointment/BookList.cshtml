@@ -20,6 +20,7 @@
         <div id="demo-events-labels"></div>
     </div>
     </div>
+
 </div>
 
 
@@ -171,9 +172,9 @@
                 labels: true                    // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#opt-labels
             }
         },
+        timeFormat: 'HH:mm',
         onEventClick: function (event, inst) {  // More info about onEventClick: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#event-onEventClick
             mobiscroll.toast({ 
-                
                 message: event.event.title
             });
             toggleModal(event.event.id)
@@ -208,8 +209,8 @@
                     for(i=0;i<mainData.length;i++)
                     {
                         let item = {
-                            start: moment(mainData[i].StartTime).add(4, "hours"),
-                            end: moment(mainData[i].StartTime).add(4.75, "hours"),
+                            start: moment(mainData[i].StartTime).subtract(3, "hours"),
+                            end: moment(mainData[i].StartTime).subtract(2.25, "hours"),
                             title: mainData[i].Customer.FirstLastName,
                             color: colors[Math.floor(Math.random() * colors.length)],
                             id: mainData[i].Id,
