@@ -355,7 +355,8 @@
 
         mobiscroll.datepicker('#demo-booking-datetime', {
             display: 'inline',                       // Specify display mode like: display: 'bottom' or omit setting to use default
-            controls: ['calendar', 'timegrid'],      // More info about controls: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-controls
+            controls: ['calendar', 'timegrid'],
+            timeFormat: 'HH:mm',
             min: min,                                // More info about min: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-min
             max: max,                                // More info about max: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-max
             minTime: '8:00',
@@ -372,6 +373,7 @@
                         labels: bookings.labels,     // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-labels
                         invalid: bookings.invalid    // More info about invalid: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-invalid
                     });
+                    console.log("=============", inst.props.min)
                 });
 
 
