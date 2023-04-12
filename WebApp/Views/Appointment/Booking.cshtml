@@ -376,8 +376,6 @@
                         labels: bookings.labels,     // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-labels
                         invalid: bookings.invalid    // More info about invalid: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-invalid
                     });
-                    console.log("=============", inst.props)
-                    console.log("+++++++++", bookings.invalid)
                 });
 
 
@@ -405,7 +403,6 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
             data: data,
             success: function (result) {
-                console.log(result);
                 workTimes =result;
                 if (result == "error") {
                     alert('Failed to receive the Data');
@@ -413,15 +410,6 @@
                 }
                 else {
                     let data = result[0]
-                    /*
-                    if (moment().diff(data?.date, 'days') > 0)
-                        for(j=0;j<result.length;j++){
-                            if(moment(result[j].date).format("YYYY-MM-DD") == moment().format("YYYY-MM-DD")){
-                                data = result[j];
-                            }
-                        }
-                        */
-                    //dates = result;
                     
 
                     for (j = 0; j < result.length; j++) {
@@ -441,7 +429,7 @@
                         stop2 = parseInt(result[j]?.stopTime2?.substr(0, 2));
                         for(i=0;i<24;i++)
                         {
-                            if (!(((start - 1) < i && i < (stop + 1)) || ((start1 - 1) < i && i < (stop1 + 1)) || ((start2 - 1) < i && i < (stop2 + 1)))) {
+                            if (!(((start - 1) < i && i < (stop)) || ((start1 - 1) < i && i < (stop1)) || ((start2 - 1) < i && i < (stop2)))) {
                                 invalidDate.set({h: i, m: 0})
                                 let startTime = invalidDate;
                                 let endTime = invalidDate;
@@ -483,7 +471,6 @@
                         invalid.push(flag);
                     }
                     
-                    console.log('90909009',invalid)
                     callback({ invalid: invalid, labels: [], max: max, min:min });
                 }
 
