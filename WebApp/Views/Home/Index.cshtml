@@ -55,38 +55,34 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-    <div class="row main-box                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ">
-        <h1>Our Serviecs</h1>
-    </div>
-    <div class="row">
-        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-            <div class="card text-white bg-danger mb-3">
-                <div class="card-header">Kind service</div>
-                <div class="card-body">
-                    <h5 class="card-title">Kind service</h5>
-                    <p class="card-text">High level barbers are registered on out site and you can get kind service from them.</p>
+    <!-- Icons Grid-->
+    <section class="features-icons bg-light text-center mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                        <div class="features-icons-icon d-flex"><i class="bi-window m-auto text-primary" style="font-size:4.5rem"></i></div>
+                        <h3>Kind service</h3>
+                        <p class="lead mb-0">High level barbers are registered on out site and you can get kind service from them.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                        <div class="features-icons-icon d-flex"><i class="bi-layers m-auto text-primary" style="font-size:4.5rem"></i></div>
+                        <h3>Starke Sicherheit</h3>
+                        <p class="lead mb-0">We can ensure starke sicherheit so you can't lost your info.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="features-icons-item mx-auto mb-0 mb-lg-3">
+                        <div class="features-icons-icon d-flex"><i class="bi-terminal m-auto text-primary" style="font-size:4.5rem"></i></div>
+                        <h3>Save Time</h3>
+                        <p class="lead mb-0">You can make booking to go to barber's so you can save time.</p>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-            <div class="card text-dark bg-warning mb-3">
-                <div class="card-header">Starke Sicherheit</div>
-                <div class="card-body">
-                    <h5 class="card-title">Starke Sicherheit</h5>
-                    <p class="card-text">We can ensure starke sicherheit so you can't lost your info.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-            <div class="card text-dark bg-info mb-3">
-                <div class="card-header">Save Time</div>
-                <div class="card-body">
-                    <h5 class="card-title">Save Time</h5>
-                    <p class="card-text">You can make booking to go to barber's so you can save time.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 }
 
 @if (User.IsInRole("admin") || User.IsInRole("user"))
@@ -184,3 +180,6 @@
         
         
     }
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" type="text/css" />

@@ -13,9 +13,12 @@
 }
 
 <h1>Your Schedule</h1>
+<div class="border-primary" style="border:ridge">
+
 <div mbsc-page class="demo-event-labels">
     <div style="height:100%">
         <div id="demo-events-labels"></div>
+    </div>
     </div>
 </div>
 
@@ -106,7 +109,7 @@
                     <a 
                         class="btn btn-danger w-50" 
                         asp-action="DeleteAppointment" 
-                        asp-route-id="@item.Id" 
+                        asp-route-id="@item?.Id" 
                         asp-route-uid="@User.GetUserId()" 
                     >
                         Cancel Appointment
@@ -125,32 +128,6 @@
 <script>
     
     function viewDetail(id) {
-        console.log(model[0])
-        /*
-        let data = {
-            id: id
-        }
-        $.ajax({
-            type: 'POST',
-            url: '/Appointment/DetailAppointment',
-            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
-            data: data,
-            success: function (result) {
-                if (result == "error") {
-                    alert('Failed to reserve the Data');
-                    console.log('Failed ');
-                }
-                else {
-                    alert('Successfully reserve Data ');
-                    console.log(result);
-                }
-            },
-            error: function () {
-                alert('Error occures to reserve the Data');
-                console.log('Error occures ');
-            }
-        })
-        */
         toggleModal();
     }
 
@@ -170,7 +147,6 @@
                 }
                 else {
                     alert('Successfully reserve Data ');
-                    console.log(result);
                 }
             },
             error: function () {

@@ -9,6 +9,7 @@
     ViewData["Title"] = "Booking ";
     var Service = (Service?)ViewData["service"];
     var Barbers = (IEnumerable<AppUser>?)ViewData["barber"];
+    int counts = 0;
 }
 
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
@@ -46,17 +47,38 @@
             <div class="bs-stepper-content">
                 <div id="test-l-1" class="content">
                     <div class="row">
+                        
                         <form class="requires-validation" novalidate id="barberForm">
                             <select class="form-select mt-3" required id="barberId" onselect="selectBarber()">
                                 <option selected disabled value="">Please select a Barber to book</option>
                                 @foreach (var item in Barbers!)
                                 {
-                                    <option value="@item.Id">@item.LastFirstName</option>
+                                    @if (item?.WorkTimes?.Count != 0)
+                                    {
+                                        counts++;
+                                        <option value="@item?.Id">@item?.FirstLastName</option>
+                                    }
                                 }
                             </select>
                             <div class="valid-feedback">You selected a position!</div>
                             <div class="invalid-feedback">Please select a position!</div>
+                            <div class="text-primary">
+                                @if (counts == 0)
+                                {
+                                    <p>There is no available barber</p>
+                                }
+                                @if (counts == 1)
+                                {
+                                    <p>There is an available barber</p>
+                                }
+                                @if (counts > 1)
+                                {
+                                    <p>There are @counts available barbers</p>
+                                }
+                            </div>
                         </form>
+                        
+                        
 
                         <div style="display: flex; justify-content: center">
                             <button class="btn btn-primary w-100 mx-2" id="reserveBtn" onclick="validateBarber()">Next</button>
@@ -233,7 +255,6 @@
         if (form.checkValidity()) {
             stepper1.next();
             mobiscollInit();
-            console.log("barberId", document.getElementById("barberId").value)
         }
         form.classList.add('was-validated')
     }
@@ -296,7 +317,6 @@
             AppUserId: document.getElementById("barberId").value,
             StartTime: moment(hel).format("YYYY-MM-DD HH:mm:ss"),
         }
-        console.log(appointmentData)
         $.ajax({
             type: 'POST',
             url: '/Appointment/CreateAppointment',
@@ -310,7 +330,6 @@
                 else {
                     alert('Successfully reserve Data ');
                     location.href = "/Appointment"
-                    console.log(result);
                 }
             },
             error: function () {
@@ -326,15 +345,13 @@
 <script>
 
     function mobiscollInit() {
-        mobiscroll.setOptions({   
-            dataTimezone: 'utc+3',
-            displayTimezone: 'utc+3',
+        mobiscroll.setOptions({
             theme: 'windows',                            // Specify theme like: theme: 'ios' or omit setting to use default
             themeVariant: 'light'                    // More info about themeVariant: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-themeVariant
         });
 
         var min = moment().format("YYYY-MM-DD")
-        var max = moment().add(3, 'M');
+        var max = moment().subtract(10, 'days').format("YYYY-MM-DD")
 
         mobiscroll.datepicker('#demo-booking-datetime', {
             display: 'inline',                       // Specify display mode like: display: 'bottom' or omit setting to use default
@@ -342,17 +359,17 @@
             min: min,                                // More info about min: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-min
             max: max,                                // More info about max: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-max
             minTime: '8:00',
-            maxTime: '15:00',
+            maxTime: '17:00',
             stepMinute: 60,
             width: null,                             // More info about width: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-width
             onPageLoading: function (event, inst) {  // More info about onPageLoading: https://docs.mobiscroll.com/5-23-0/javascript/calendar#event-onPageLoading
                 getDatetimes(event.firstDay, function callback(bookings) {
                     inst.setOptions({
+                        min: bookings.min,
                         max: bookings.max,
                         labels: bookings.labels,     // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-labels
                         invalid: bookings.invalid    // More info about invalid: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-invalid
                     });
-                    console.log("_________", bookings.labels, bookings.invalid)
                 });
 
 
@@ -385,9 +402,11 @@
                 }
                 else {
                     dates = result;
-                    max = moment(result.slice(-1)[0].date)
-                    const businessDays = getBusinessDays(moment(), moment(max), result);
+                    min = moment(result[0]?.date)
+                    max = moment(result.slice(-1)[0]?.date)
+                    const businessDays = getBusinessDays(min, max, result);
                     invalid = invalid.concat(businessDays);
+                    invalid.push(moment(max).format("YYYY-MM-DD"))
                 }
             },
             error: function () {
@@ -402,22 +421,20 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
             data: data,
             success: function (result) {
-                console.log(result)
                 if (result == "error") {
                     alert('Failed to receive the Data');
                     console.log('Failed ');
                 }
                 else {
                     for (var i = 0; i < result.length; ++i) {
-                        console.log(moment(result[i]).local())
                         flag = {
-                            start: moment.utc(result[i]).add(4, 'h'),
-                            end: moment.utc(result[i]).add(4.3, 'h')
+                            start: moment(result[i]).subtract(3, 'hours'),
+                            end: moment(result[i]).subtract(3, 'hours')
                         }
                         invalid.push(flag);
                     }
                     
-                    callback({ invalid: invalid, labels: [], max: max });
+                    callback({ invalid: invalid, labels: [], max: max, min:min });
                 }
 
             },
@@ -437,7 +454,6 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
             data: data,
             success: function (result) {
-                // console.log("++++++++++", result)
                 if (result == "error") {
                     alert('Failed to receive the Data');
                     console.log('Failed ');

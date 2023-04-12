@@ -65,7 +65,7 @@ public class AppointmentController : Controller
         {
             return NotFound();
         }
-        var barbers = _userManager.Users.Where(x => x.Role =="user");
+        var barbers = _userManager.Users.Where(x => x.Role =="user").Include(w=>w.WorkTimes);
         ViewData["service"] = service;
         ViewData["barber"] = barbers;
         return View();
@@ -181,7 +181,8 @@ public class AppointmentController : Controller
         }
         var workTime = _context.WorkTimes
                 .Where(c => c.AppUserId.Equals(id))
-                .Select(p => new { p.Date, p.StartTime, p.StopTime });
+                .Select(p => new { p.Date, p.StartTime, p.StopTime })
+                .OrderBy(d=>d.Date);
         if (workTime == null)
         {
             return NotFound();

@@ -24,7 +24,7 @@
     @foreach (var item in Model)
     {
         i++;
-        <div class=" col-lg-3 col-md-4 col-sm-6">
+        <div class=" col-lg-4 col-md-6 col-sm-6">
             <div class="card @cardStyle[i%4, 1]">
                 <div class="card-statistic-3 p-4">
                     <div class="card-icon card-icon-large"><i class="fas @cardStyle[i%4, 0]"></i></div>
@@ -57,61 +57,5 @@
     }
 
 </div>
-
-
-@*    <table class="table table-bordered table-striped table-hover">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.TimeSpan)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                </th>
-
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Price)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TimeSpan)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <a 
-                               asp-area=""
-                               asp-controller="Appointment"
-                               asp-route-id="@item.Id"
-                               asp-action="Booking"
-                               style="text-decoration: none"
-                               type="submit"
-                               class="btn btn-primary"
-                            >
-                                View Detail
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-        </tbody>
-    </table>*@
 
 <link rel="stylesheet" href="~/css/card.css" asp-append-version="true" />
