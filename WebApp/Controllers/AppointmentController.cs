@@ -181,7 +181,6 @@ public class AppointmentController : Controller
         }
         var workTime = _context.WorkTimes
                 .Where(c => c.AppUserId.Equals(id))
-                .Select(p => new { p.Date, p.StartTime, p.StopTime })
                 .OrderBy(d=>d.Date);
         if (workTime == null)
         {

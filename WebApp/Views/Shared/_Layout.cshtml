@@ -32,9 +32,12 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@App.Resources.WebApp.Views.Shared._Layout.Privacy</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Appointment"  asp-action="Index">Make an Appointment</a>
-                    </li>
+                    @if (!User.IsInRole("admin") && !User.IsInRole("user"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Appointment"  asp-action="Index">Make an Appointment</a>
+                        </li>
+                    }
                     @if (User.IsInRole("user"))
                     {
                         <li class="nav-item">

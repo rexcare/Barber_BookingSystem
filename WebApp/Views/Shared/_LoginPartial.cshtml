@@ -33,17 +33,17 @@
                 </a>
 
                 <div class="dropdown-menu" aria-labelledby="navbarLangDropdown" style="right: 0; left: auto; min-width: 6rem">
-                    if (User.GetUserEmail() == "admin@itcollege.ee")
+                    @if (User.GetUserEmail() == "admin@itcollege.ee")
                     {
-                        <a class="nav-link text-dark">@(User.GetUserName())</a>
+                        <a class="nav-link text-dark"><i class="fas fa-user mx-1"></i>@(User.GetUserName())</a>
                     }
                     else
                     {
-                        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@(User.GetUserName())</a>
+                        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><i class="fas fa-user mx-1"></i>@(User.GetUserName())</a>
                     }
                      
                     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})">
-                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                        <button type="submit" class="nav-link btn btn-link text-dark"><i class="fas fa-sign-out-alt mx-1"></i>Logout</button>
                 </form>
                 </div>
             </li>

@@ -343,15 +343,19 @@
 </script>
 
 <script>
+    mobiscollInit()
+
+    var  workTimes = [];
 
     function mobiscollInit() {
         mobiscroll.setOptions({
+            local: mobiscroll.localeEn,
             theme: 'windows',                            // Specify theme like: theme: 'ios' or omit setting to use default
             themeVariant: 'light'                    // More info about themeVariant: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-themeVariant
         });
 
-        var min = moment().format("YYYY-MM-DD")
-        var max = moment().subtract(10, 'days').format("YYYY-MM-DD")
+        var min = moment().format("YYYY-MM-DD");
+        var max = moment().add(10, 'days').format("YYYY-MM-DD");
 
         mobiscroll.datepicker('#demo-booking-datetime', {
             display: 'inline',                       // Specify display mode like: display: 'bottom' or omit setting to use default
@@ -359,21 +363,22 @@
             timeFormat: 'HH:mm',
             min: min,                                // More info about min: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-min
             max: max,                                // More info about max: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-max
-            minTime: '8:00',
-            maxTime: '15:00',
+            minTime: '0:00',
+            maxTime: '23:00',
             stepMinute: 60,
             width: null,                             // More info about width: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-width
             onPageLoading: function (event, inst) {  // More info about onPageLoading: https://docs.mobiscroll.com/5-23-0/javascript/calendar#event-onPageLoading
                 getDatetimes(event.firstDay, function callback(bookings) {
                     if(moment().diff(bookings.min, 'days')>0)
-                        bookings.min = moment();
+                        bookings.min = moment().format("YYYY-MM-DD");
                     inst.setOptions({
-                        min: bookings.min,
+                        min: moment(bookings.min).subtract(3, "hours"),
                         max: bookings.max,
                         labels: bookings.labels,     // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-labels
                         invalid: bookings.invalid    // More info about invalid: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-invalid
                     });
-                    console.log("=============", inst.props.min)
+                    console.log("=============", inst.props)
+                    console.log("+++++++++", bookings.invalid)
                 });
 
 
@@ -381,6 +386,7 @@
             onChange: function (event, inst) {  // More info about onChange: https://docs.mobiscroll.com/5-23-0/javascript/calendar#event-onChange
                 hel = inst.getVal();
                 document.getElementById("bookTime").innerHTML = moment(hel).format("MMMM DD, YYYY [at] hh:mm a");
+
             }
         });
     }
@@ -400,17 +406,57 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
             data: data,
             success: function (result) {
+                console.log(result);
+                workTimes =result;
                 if (result == "error") {
                     alert('Failed to receive the Data');
                     console.log('Failed ');
                 }
                 else {
-                    dates = result;
-                    min = moment(result[0]?.date)
-                    max = moment(result.slice(-1)[0]?.date).add(1, 'days')
-                    const businessDays = getBusinessDays(min, max, result);
-                    invalid = invalid.concat(businessDays);
-                    invalid.push(moment(max).format("YYYY-MM-DD"))
+                    let data = result[0]
+                    /*
+                    if (moment().diff(data?.date, 'days') > 0)
+                        for(j=0;j<result.length;j++){
+                            if(moment(result[j].date).format("YYYY-MM-DD") == moment().format("YYYY-MM-DD")){
+                                data = result[j];
+                            }
+                        }
+                        */
+                    //dates = result;
+                    
+
+                    for (j = 0; j < result.length; j++) {
+                        min = moment(result[0]?.date);
+                        max = moment(result.slice(-1)[0]?.date).add(1, 'days');
+                        const businessDays = getBusinessDays(min, max, result);
+                        invalid = invalid.concat(businessDays);
+                        invalid.push(moment(max).format("YYYY-MM-DD"));
+
+                        let invalidDate = moment(result[j]?.date)
+                        let times = [];
+                        start = parseInt(result[j]?.startTime.substr(0, 2));
+                        stop = parseInt(result[j]?.stopTime.substr(0, 2));
+                        start1 = parseInt(result[j]?.startTime1?.substr(0, 2));
+                        stop1 = parseInt(result[j]?.stopTime1?.substr(0, 2));
+                        start2 = parseInt(result[j]?.startTime2?.substr(0, 2));
+                        stop2 = parseInt(result[j]?.stopTime2?.substr(0, 2));
+                        for(i=0;i<24;i++)
+                        {
+                            if (!(((start - 1) < i && i < (stop + 1)) || ((start1 - 1) < i && i < (stop1 + 1)) || ((start2 - 1) < i && i < (stop2 + 1)))) {
+                                invalidDate.set({h: i, m: 0})
+                                let startTime = invalidDate;
+                                let endTime = invalidDate;
+                                let flag = {
+                                    start: moment(startTime).format("YYYY-MM-DD HH:mm"),
+                                    end: moment(endTime).format("YYYY-MM-DD HH:mm")
+                                }
+                                invalid = [
+                                    ...invalid,
+                                    flag
+                                ];
+                            }
+                        }
+                    }
                 }
             },
             error: function () {
@@ -438,6 +484,7 @@
                         invalid.push(flag);
                     }
                     
+                    console.log('90909009',invalid)
                     callback({ invalid: invalid, labels: [], max: max, min:min });
                 }
 
@@ -450,31 +497,6 @@
 
     }
 
-    function getworkingTimes(data) {
-        // get working times
-        $.ajax({
-            type: 'POST',
-            url: '/Appointment/getWorkingTimes',
-            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
-            data: data,
-            success: function (result) {
-                if (result == "error") {
-                    alert('Failed to receive the Data');
-                    console.log('Failed ');
-                    return [], moment();
-                }
-                else {
-                    return result, result.slice(-1).date;
-                }
-            },
-            error: function () {
-                alert('Error occures to receive the Data');
-                console.log('Error occures ');
-                return [], moment();
-            }
-        })
-    }
-
     function getBusinessDays (startDate, endDate, excludeDays) {
         const start = new Date(startDate);
         const end = new Date(endDate);
@@ -482,7 +504,7 @@
         const dates = [];
 
         while (current <= end) {
-            if (!isContain(excludeDays, current)) {
+            if (!isContainDate(excludeDays, current)) {
                 dates.push(new Date(current));
             }
 
@@ -492,9 +514,18 @@
         return dates;
     }
 
-    function isContain(Days, date) {
+    function isContainDate(Days, date) {
         for(i=0;i<Days.length;i++){
             if (moment(Days[i].date).format("YYYY-MM-DD") == moment(date).format("YYYY-MM-DD")){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function isContainTime(Times, Time) {
+        for (i = 0; i < Times.length; i++) {
+            if (moment(Times[i]).format("HH") == moment(Time).format("HH")) {
                 return true;
             }
         }
@@ -505,3 +536,4 @@
 
 <link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/mobiscroll.javascript.min.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
