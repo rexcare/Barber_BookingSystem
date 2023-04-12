@@ -5,8 +5,10 @@ using Base.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using NuGet.Protocol;
 using System;
+using System.Text.Json;
 
 namespace WebApp.Controllers;
 
@@ -89,7 +91,9 @@ public class AppointmentController : Controller
             return NotFound();
         }
 
-        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Select(p => p.StartTime);
+        var appointments = _context.Appointments
+                .Where(c => c.AppUserId.Equals(id))
+                .Select(p => p.StartTime);
 
         return Json(await appointments.ToListAsync());
     }
@@ -108,6 +112,37 @@ public class AppointmentController : Controller
             appointment.Customer = _context.Customers.Find(appointment.CustomerId);
         }*/
         return View(await appointments.ToListAsync());
+    }
+
+    public async Task<IActionResult> readAppointmentsById(Guid? id)
+    {
+        if (id == null || _context.Appointments == null)
+        {
+            return NotFound();
+        }
+
+        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(c=>c.Customer).Include(s=>s.Service);
+        /*foreach(var appointment in appointments)
+        {
+            appointment.Service = _context.Services.Find(appointment.ServiceId);
+            appointment.Customer = _context.Customers.Find(appointment.CustomerId);
+        }*/
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            MaxDepth = 31 // Fixed
+        };
+        // string jsonString = JsonSerializer.Serialize(appointments, options);
+
+
+        var jsonString = JsonConvert.SerializeObject(appointments, Formatting.None,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        });
+
+
+        return Json(jsonString);
     }
 
     public async Task<IActionResult> CreateAppointment([Bind("CustomerId,ServiceId,AppUserId,StartTime")] Appointment Appointment)
@@ -136,5 +171,22 @@ public class AppointmentController : Controller
         await _context.SaveChangesAsync();
         // return RedirectToAction(nameof(Index));
         return RedirectToAction(nameof(BookList), new { id = uid });
+    }
+
+    public async Task<IActionResult> getWorkingTimes(Guid? id)
+    {
+        if (id == null || _context.WorkTimes == null)
+        {
+            return NotFound();
+        }
+        var workTime = _context.WorkTimes
+                .Where(c => c.AppUserId.Equals(id))
+                .Select(p => new { p.Date, p.StartTime, p.StopTime });
+        if (workTime == null)
+        {
+            return NotFound();
+        }
+
+        return Json(await workTime.ToListAsync());
     }
 }

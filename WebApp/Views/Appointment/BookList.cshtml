@@ -12,66 +12,15 @@
     var index = 0;
 }
 
-<h1>Our services</h1>
-<div class="table-responsive">
-    <table class="table table-bordered table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>
-                        No
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Customer)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.StartTime)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Service)
-                    </th>
-                    <th>
-                        Price
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    var customer = (Customer?)item.Customer;
-                    index++;
-                    <tr>
-                        <td>
-                            @index
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Customer!.FirstLastName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.StartTime)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Service!.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Service!.Price)
-                        </td>
-                        <td>
-                            <div class="form-group">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#a-@item.Id">
-                            View Detail
-                            </button>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#b-@item.Id">
-                                Cancel Appointment
-                            </button>
-                            </div>
-                        </td>
-                    </tr>
+<h1>Your Schedule</h1>
+<div mbsc-page class="demo-event-labels">
+    <div style="height:100%">
+        <div id="demo-events-labels"></div>
+    </div>
+</div>
 
-                }
-            </tbody>
-        </table>
-        </div>
+
+
 @foreach (var item in Model)
 {
     var customer = (Customer?)item.Customer;
@@ -80,13 +29,13 @@
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Confirm</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                        <h5 class="text-primary">@item.Id</h5>
-                        <p>@item.ServiceId</p>
+                        <h5 class="text-primary">Appointment</h5>
+                        
                         <div class="card border-primary mb-3" style="min-width: 16rem; height: 100%; width: 100%">
                             <div class="card-body text-primary" style="display:flex">
                                 <div class="calendar-icon">
@@ -95,20 +44,20 @@
                                 <div class="w-100">
                                     <figure>
                                         <blockquote class="blockquote">
-                                            <p style="text-transform: capitalize;">name</p>
-                                            <p id="bookTime">April 20, 2023 at 10:00 am</p>
+                                            <p style="text-transform: capitalize;">@item?.Customer?.FirstLastName</p>
+                                            <p id="bookTime">@item?.StartTime</p>
                                         </blockquote>
                                         <figcaption class="blockquote-footer">
-                                            <p>Description</p>
-                                            <p>TimeSpan</p>
-                                            <p>Price</p>
+                                            <p>@item?.Service?.Name</p>
+                                            <p>@item?.Service?.TimeSpan</p>
+                                            <p>$@item?.Service?.Price</p>
                                         </figcaption>
                                     </figure>
                                     <hr />
                                     <div class="w-50" style="float: right">
                                         <div class="space-between">
                                             <p>Subtotal</p>
-                                            <p>$Price</p>
+                                            <p>$@item?.Service?.Price</p>
                                         </div>
                                         <div class="space-between">
                                             <p>Sales Tax</p>
@@ -117,7 +66,7 @@
                                         <hr />
                                         <div class="space-between">
                                             <p>Total</p>
-                                            <p>$Price</p>
+                                            <p>$@item?.Service?.Price</p>
                                         </div>
                                     </div>
                                 </div>
@@ -129,13 +78,19 @@
                 </div>
                 <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
                     <button type="button" class="btn btn-primary w-50">OK</button>
-                    <button type="button" class="btn btn-danger w-50">Cancel appointment</button>
+                    
+                        @if (User.IsInRole("admin"))
+                    {
+                        <button type="button" class="btn btn-danger w-50">Cancel appointment</button>
+                    }
+                    
+                    
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="b-@item.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal fade" id="b-@item?.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">Confirm</h5>
@@ -163,14 +118,11 @@
     </div>
 }
 
-<script>
-    function toggleModal() {
-        var myModal = new bootstrap.Modal(document.getElementById('modal'), {
-            keyboard: false
-        });
+<script src="~/js/mobiscroll.javascript.min.js"></script>
+<script src="~/js/moment.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-        myModal.toggle();
-    }
+<script>
     
     function viewDetail(id) {
         console.log(model[0])
@@ -228,4 +180,83 @@
         })
         toggleModal();
     }
+
 </script>
+
+<script>
+    
+    readAppointmentsById()
+    
+    var inst = mobiscroll.eventcalendar('#demo-events-labels', {
+        theme: 'ios',                           // Specify theme like: theme: 'ios' or omit setting to use default
+        themeVariant: 'light',                  // More info about themeVariant: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#opt-themeVariant
+        view: {                                 // More info about view: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#opt-view
+            calendar: {
+                labels: true                    // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#opt-labels
+            }
+        },
+        onEventClick: function (event, inst) {  // More info about onEventClick: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#event-onEventClick
+            mobiscroll.toast({ 
+                
+                message: event.event.title
+            });
+            toggleModal(event.event.id)
+        }
+    });
+
+    function readAppointmentsById() {
+        let data = {
+            Id: '@User.GetUserId()',
+        }
+        // get working times
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/readAppointmentsById',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    var mainData = JSON.parse(result);
+                    var events = [];
+                    var colors = [
+                        "#198754",
+                        "#0D6EFD",
+                        "#FFC107",
+                        "#8540F5",
+                        "#4DD4AC"
+                    ];
+                    for(i=0;i<mainData.length;i++)
+                    {
+                        let item = {
+                            start: moment(mainData[i].StartTime).add(4, "hours"),
+                            end: moment(mainData[i].StartTime).add(4.75, "hours"),
+                            title: mainData[i].Customer.FirstLastName,
+                            color: colors[Math.floor(Math.random() * colors.length)],
+                            id: mainData[i].Id,
+                        }
+                        events.push(item)
+                    }
+                    inst.setEvents(events);
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+    }
+    
+    function toggleModal(id) {
+        var myModal = new bootstrap.Modal(document.getElementById('a-'+id), {
+            keyboard: false
+        });
+
+        myModal.toggle();
+    }
+
+</script>
+<link rel="stylesheet" href="~/css/mobiscroll.javascript.min.css" />
