@@ -82,12 +82,12 @@
                         <button class="btn btn-warning w-100 mx-2" onclick="backStep()">Back</button>
                     </div>
                 </div>
-                
+
                 <div id="test-l-3" class="content">
                     <div class="row">
-                        <form  class="requires-validation" novalidate id="contactForm">
+                        <form class="requires-validation" novalidate id="contactForm">
                             <div class="col-md-12">
-                            <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" required>
+                                <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" required>
                                 <div class="valid-feedback">Fist name field is valid!</div>
                                 <div class="invalid-feedback">First name field cannot be blank!</div>
                             </div>
@@ -196,10 +196,10 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
-              </div>
+            </div>
             <div class="modal-footer" style="display: flex; justify-content: center;">
                 <button type="button" class="btn btn-primary w-50" onclick="Reserve()">OK</button>
             </div>
@@ -211,21 +211,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 <script src="~/js/mobiscroll.javascript.min.js"></script>
 <script>
+
     var stepper1Node = document.querySelector('#stepper1')
     var stepper1 = new Stepper(document.querySelector('#stepper1'))
-
-    /*
-    stepper1Node.addEventListener('show.bs-stepper', function (event) {
-        console.warn('show.bs-stepper', event)
-    })
-    stepper1Node.addEventListener('shown.bs-stepper', function (event) {
-        console.warn('shown.bs-stepper', event)
-    })
-    */
 
 </script>
 
 <script>
+
     var barberId = document.getElementById("barberId").value;
     function backStep() {
         event.preventDefault();
@@ -253,16 +246,16 @@
             toggleModal();
         }
         form.classList.add('was-validated')
-      }
-    
+    }
+
     function toggleModal() {
         var myModal = new bootstrap.Modal(document.getElementById('modal'), {
             keyboard: false
         });
-        
+
         myModal.toggle();
     }
-    
+
     function Reserve() {
         CreateCustomer();
     }
@@ -284,10 +277,10 @@
                     alert('Failed to receive the Data');
                     console.log('Failed ');
                 }
-                else{
+                else {
                     CreateAppointment(result);
                 }
-                
+
             },
             error: function () {
                 alert('Error occures to receive the Data');
@@ -332,9 +325,10 @@
 
 <script>
 
-    function mobiscollInit(){
-        mobiscroll.setOptions({
-            locale: mobiscroll.localeEn,             // Specify language like: locale: mobiscroll.localePl or omit setting to use default
+    function mobiscollInit() {
+        mobiscroll.setOptions({   
+            dataTimezone: 'utc+3',
+            displayTimezone: 'utc+3',
             theme: 'windows',                            // Specify theme like: theme: 'ios' or omit setting to use default
             themeVariant: 'light'                    // More info about themeVariant: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-themeVariant
         });
@@ -347,13 +341,14 @@
             controls: ['calendar', 'timegrid'],      // More info about controls: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-controls
             min: min,                                // More info about min: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-min
             max: max,                                // More info about max: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-max
-            minTime: '9:00',
-            maxTime: '17:00',
+            minTime: '8:00',
+            maxTime: '15:00',
             stepMinute: 60,
             width: null,                             // More info about width: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-width
             onPageLoading: function (event, inst) {  // More info about onPageLoading: https://docs.mobiscroll.com/5-23-0/javascript/calendar#event-onPageLoading
                 getDatetimes(event.firstDay, function callback(bookings) {
                     inst.setOptions({
+                        max: bookings.max,
                         labels: bookings.labels,     // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-labels
                         invalid: bookings.invalid    // More info about invalid: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-invalid
                     });
@@ -372,37 +367,58 @@
     function getDatetimes(day, callback) {
         var invalid = [];
         var labels = [];
+        var max = moment();
+        var dates = [];
 
         let data = {
             Id: document.getElementById("barberId").value,
         }
-
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/getWorkingTimes',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    dates = result;
+                    max = moment(result.slice(-1)[0].date)
+                    const businessDays = getBusinessDays(moment(), moment(max), result);
+                    invalid = invalid.concat(businessDays);
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+        // get booking times
         $.ajax({
             type: 'POST',
             url: '/Appointment/BookPlan',
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
             data: data,
             success: function (result) {
-                
                 console.log(result)
                 if (result == "error") {
                     alert('Failed to receive the Data');
                     console.log('Failed ');
                 }
-                else{
+                else {
                     for (var i = 0; i < result.length; ++i) {
                         console.log(moment(result[i]).local())
                         flag = {
-                            start: moment(result[i]).local(),
-                            end: moment(result[i]).add(45, 'minutes')
+                            start: moment.utc(result[i]).add(4, 'h'),
+                            end: moment.utc(result[i]).add(4.3, 'h')
                         }
                         invalid.push(flag);
-                        console.log(invalid)
                     }
-                    console.log("invalid", invalid)
-                    callback({ invalid: invalid, labels:[] });
+                    
+                    callback({ invalid: invalid, labels: [], max: max });
                 }
-                
 
             },
             error: function () {
@@ -411,6 +427,58 @@
             }
         })
 
+    }
+
+    function getworkingTimes(data) {
+        // get working times
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/getWorkingTimes',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                // console.log("++++++++++", result)
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                    return [], moment();
+                }
+                else {
+                    return result, result.slice(-1).date;
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+                return [], moment();
+            }
+        })
+    }
+
+    function getBusinessDays (startDate, endDate, excludeDays) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const current = new Date(startDate);
+        const dates = [];
+
+        while (current <= end) {
+            if (!isContain(excludeDays, current)) {
+                dates.push(new Date(current));
+            }
+
+            current.setDate(current.getDate() + 1);
+        }
+
+        return dates;
+    }
+
+    function isContain(Days, date) {
+        for(i=0;i<Days.length;i++){
+            if (moment(Days[i].date).format("YYYY-MM-DD") == moment(date).format("YYYY-MM-DD")){
+                return true;
+            }
+        }
+        return false;
     }
 
 </script>
