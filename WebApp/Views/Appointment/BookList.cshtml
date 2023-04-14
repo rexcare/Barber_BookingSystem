@@ -122,6 +122,7 @@
             </div>
         </div>
     </div>
+
 }
 
 <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
@@ -133,10 +134,6 @@
 
 <script>
     
-    function viewDetail(id) {
-        toggleModal();
-    }
-
     function cancel(id) {
         let data = {
             id: id
@@ -162,14 +159,10 @@
         })
         toggleModal();
     }
-
-</script>
-
-<script>
     
-
     function toggleModal(id) {
-        var myModal = new bootstrap.Modal(document.getElementById('a-'+id), {
+        console.log(id)
+        var myModal = new bootstrap.Modal(document.getElementById('a-' + id), {
             keyboard: false
         });
 

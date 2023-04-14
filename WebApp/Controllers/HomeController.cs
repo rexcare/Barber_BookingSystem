@@ -115,6 +115,7 @@ public class HomeController : Controller
             return NotFound();
         }
 
+        ViewData["id"] = id;
         ViewData["appointments"] = appointments;
 
         return View("AppUser/Details",user);
