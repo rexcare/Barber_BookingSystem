@@ -16,7 +16,7 @@
 
 
 <div class="row" style="justify-content:space-around; margin-top: 10px;">
-    <div class="col col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12 my-3">
+    <div class="col col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12 my-3">
         <div class="row mx-3">
             <h1>@Service?.Name</h1>
             <p>@Service?.Description</p>
@@ -87,20 +87,19 @@
                 </div>
 
                 <div id="test-l-2" class="content">
-                    <div mbsc-page class="demo-appointment-booking">
-                        <div class="md-calendar-booking">
-                            <div class="mbsc-form-group">
-                                <div class="mbsc-form-group-title">
-                                    <p class="h3" style="margin: 0px 0px 0px 0px;"> </p>
-                                    <p><small>Eastern European Summer Time(GMT+3)</small></p>
-                                </div>
-                                <hr />
-                                <div id="demo-booking-datetime" class="booking-datetime"></div>
-                            </div>
+                    <!-- Wrapper -->
+                    <div id="wrapper">
+                        <!-- Calendar element -->
+                        <div id="events-calendar" data-month-format="month YYYY"></div>
+                        
+                        <div class="row">
+                            
+                        <!-- Events -->
+                        <div id="events"></div>
                         </div>
                     </div>
                     <div style="display: flex; justify-content: center">
-                        <button class="btn btn-primary w-100 mx-2" onclick="stepper1.next()">Next</button>
+                        <button class="btn btn-primary w-100 mx-2" onclick="hel ? stepper1.next() : alert('click date')">Next</button>
                         <button class="btn btn-warning w-100 mx-2" onclick="backStep()">Back</button>
                     </div>
                 </div>
@@ -229,9 +228,15 @@
     </div>
 </div>
 
+
 <script src="~/js/moment.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
-<script src="~/js/mobiscroll.javascript.min.js"></script>
+<link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
+<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/js/jsCalendar.js"></script>
+
 <script>
 
     var stepper1Node = document.querySelector('#stepper1')
@@ -254,7 +259,7 @@
         const form = document.querySelector('#barberForm')
         if (form.checkValidity()) {
             stepper1.next();
-            mobiscollInit();
+            generatecalendar();
         }
         form.classList.add('was-validated')
     }
@@ -346,49 +351,7 @@
 
     var  workTimes = [];
 
-    function mobiscollInit() {
-        mobiscroll.setOptions({
-            local: mobiscroll.localeEn,
-            theme: 'windows',                            // Specify theme like: theme: 'ios' or omit setting to use default
-            themeVariant: 'light'                    // More info about themeVariant: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-themeVariant
-        });
-
-        var min = moment().format("YYYY-MM-DD");
-        var max = moment().add(10, 'days').format("YYYY-MM-DD");
-
-        mobiscroll.datepicker('#demo-booking-datetime', {
-            display: 'inline',                       // Specify display mode like: display: 'bottom' or omit setting to use default
-            controls: ['calendar', 'timegrid'],
-            timeFormat: 'HH:mm',
-            min: min,                                // More info about min: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-min
-            max: max,                                // More info about max: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-max
-            minTime: '0:00',
-            maxTime: '23:00',
-            stepMinute: 60,
-            width: null,                             // More info about width: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-width
-            onPageLoading: function (event, inst) {  // More info about onPageLoading: https://docs.mobiscroll.com/5-23-0/javascript/calendar#event-onPageLoading
-                getDatetimes(event.firstDay, function callback(bookings) {
-                    if(moment().diff(bookings.min, 'days')>0)
-                        bookings.min = moment().format("YYYY-MM-DD");
-                    inst.setOptions({
-                        min: moment(bookings.min).subtract(3, "hours"),
-                        max: bookings.max,
-                        labels: bookings.labels,     // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-labels
-                        invalid: bookings.invalid    // More info about invalid: https://docs.mobiscroll.com/5-23-0/javascript/calendar#opt-invalid
-                    });
-                });
-
-
-            },
-            onChange: function (event, inst) {  // More info about onChange: https://docs.mobiscroll.com/5-23-0/javascript/calendar#event-onChange
-                hel = inst.getVal();
-                document.getElementById("bookTime").innerHTML = moment(hel).format("MMMM DD, YYYY [at] hh:mm a");
-
-            }
-        });
-    }
-
-    function getDatetimes(day, callback) {
+    function getDatetimes(day) {
         var invalid = [];
         var labels = [];
         var max = moment();
@@ -398,6 +361,8 @@
         let data = {
             Id: document.getElementById("barberId").value,
         }
+        
+        if(data.Id){
         $.ajax({
             type: 'POST',
             url: '/Appointment/getWorkingTimes',
@@ -410,41 +375,7 @@
                     console.log('Failed ');
                 }
                 else {
-                    let data = result[0]
-                    
-
-                    for (j = 0; j < result.length; j++) {
-                        min = moment(result[0]?.date);
-                        max = moment(result.slice(-1)[0]?.date).add(1, 'days');
-                        const businessDays = getBusinessDays(min, max, result);
-                        invalid = invalid.concat(businessDays);
-                        invalid.push(moment(max).format("YYYY-MM-DD"));
-
-                        let invalidDate = moment(result[j]?.date)
-                        let times = [];
-                        start = parseInt(result[j]?.startTime.substr(0, 2));
-                        stop = parseInt(result[j]?.stopTime.substr(0, 2));
-                        start1 = parseInt(result[j]?.startTime1?.substr(0, 2));
-                        stop1 = parseInt(result[j]?.stopTime1?.substr(0, 2));
-                        start2 = parseInt(result[j]?.startTime2?.substr(0, 2));
-                        stop2 = parseInt(result[j]?.stopTime2?.substr(0, 2));
-                        for(i=0;i<24;i++)
-                        {
-                            if (!(((start - 1) < i && i < (stop)) || ((start1 - 1) < i && i < (stop1)) || ((start2 - 1) < i && i < (stop2)))) {
-                                invalidDate.set({h: i, m: 0})
-                                let startTime = invalidDate;
-                                let endTime = invalidDate;
-                                let flag = {
-                                    start: moment(startTime).format("YYYY-MM-DD HH:mm"),
-                                    end: moment(endTime).format("YYYY-MM-DD HH:mm")
-                                }
-                                invalid = [
-                                    ...invalid,
-                                    flag
-                                ];
-                            }
-                        }
-                    }
+                    console.log(result)
                 }
             },
             error: function () {
@@ -453,6 +384,7 @@
             }
         })
         // get booking times
+       
         $.ajax({
             type: 'POST',
             url: '/Appointment/BookPlan',
@@ -464,15 +396,7 @@
                     console.log('Failed ');
                 }
                 else {
-                    for (var i = 0; i < result.length; ++i) {
-                        flag = {
-                            start: moment(result[i]).subtract(3, 'hours'),
-                            end: moment(result[i]).subtract(3, 'hours')
-                        }
-                        invalid.push(flag);
-                    }
-                    
-                    callback({ invalid: invalid, labels: [], max: max, min:min });
+                    console.log(result)
                 }
 
             },
@@ -481,7 +405,7 @@
                 console.log('Error occures ');
             }
         })
-
+        }
     }
 
     function getBusinessDays (startDate, endDate, excludeDays) {
@@ -521,6 +445,200 @@
 
 </script>
 
-<link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/mobiscroll.javascript.min.css" />
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    async function generatecalendar(){
+    // Get elements
+    document.getElementById("events-calendar").innerHTML="";
+    document.getElementById("events").innerHTML = "";
+    var elements = {
+        // Calendar element
+        calendar: document.getElementById("events-calendar"),
+        // Input element
+        events: document.getElementById("events")
+    }
+
+    // Create the calendar
+        elements.calendar.className = "material-theme custom-green";
+    var calendar = jsCalendar.new(elements.calendar);
+
+    //
+    let data = {
+        Id: document.getElementById("barberId").value,
+    }
+    var mindate = moment();
+    var workTimes = [];
+    var events = {
+    };
+    var times = {}
+
+    await $.ajax({
+        type: 'POST',
+        url: '/Appointment/getWorkingTimes',
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+        data: data,
+        success: function (result) {
+            workTimes = result;
+            if (result == "error") {
+                alert('Failed to receive the Data');
+                console.log('Failed ');
+            }
+            else {
+                console.log(result);
+
+                workTimes = result;
+                //set min max month
+                if (moment().diff(result[0].date, 'days') > 0)
+                   mindate = moment().format("DD/MM/YYYY");
+                else
+                    mindate = moment(result[0].date).format("DD/MM/YYYY");
+                    calendar.min(mindate);
+                calendar.max(moment(result[result.length-1].date).format("DD/MM/YYYY"));
+                calendar.set(mindate);
+
+                for (j = 0; j < result.length; j++) {
+                    let invalidDate = moment(result[j]?.date)
+                    start = parseInt(result[j]?.startTime.substr(0, 2));
+                    stop = parseInt(result[j]?.stopTime.substr(0, 2));
+                    start1 = parseInt(result[j]?.startTime1?.substr(0, 2));
+                    stop1 = parseInt(result[j]?.stopTime1?.substr(0, 2));
+                    start2 = parseInt(result[j]?.startTime2?.substr(0, 2));
+                    stop2 = parseInt(result[j]?.stopTime2?.substr(0, 2));
+                    let tmp = [];
+                    let tId = moment(result[j]?.date).format("DD/MM/YYYY")
+                    times[tId] = [];
+                    for (i = 0; i < 24; i++) {
+                        if ((((start - 1) < i && i < (stop)) || ((start1 - 1) < i && i < (stop1)) || ((start2 - 1) < i && i < (stop2)))) {
+                            times[tId] = [
+                                ...times[tId],i
+                            ]
+                        }
+                        
+                    }
+                }
+            }
+        },
+        error: function () {
+            alert('Error occures to receive the Data');
+            console.log('Error occures ');
+        }
+    })
+    // get booking times
+    await $.ajax({
+        type: 'POST',
+        url: '/Appointment/BookPlan',
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+        data: data,
+        success: function (result) {
+            if (result == "error") {
+                alert('Failed to receive the Data');
+                console.log('Failed ');
+            }
+            else {
+                for(i=0; i<result.length; i++){
+                    let tId = moment(result[i]).format("DD/MM/YYYY");
+                        let val = parseInt(moment(result[i]).subtract(3, 'hours').format("H"));
+                        for (a = 0; a < times[tId]?.length; a++) {
+                        if(val == times[tId][a])
+                            times[tId].splice(a, 1);
+                    }
+                }
+            }
+        },
+        error: function () {
+            alert('Error occures to receive the Data');
+            console.log('Error occures ');
+        }
+    })
+    console.log('cccccc',times);
+    await Object.keys(times).forEach(function (key, index) {
+        events[key] = times[key];
+    });
+
+    console.log(events)
+    //
+    // Make changes on the date elements that disbled
+    calendar.onDateRender(function (date, element, info) {
+        if (!isContainDate(workTimes, date)) {
+            element.style.color = '#CACACA'
+        }
+    });
+    //
+    // Create events elements
+    elements.title = document.createElement("div");
+    elements.title.className = "title";
+    elements.events.appendChild(elements.title);
+    elements.subtitle = document.createElement("div");
+    elements.subtitle.className = "subtitle";
+    elements.events.appendChild(elements.subtitle);
+    elements.list = document.createElement("div");
+    elements.list.className = "list";
+    elements.events.appendChild(elements.list);
+    elements.actions = document.createElement("div");
+    elements.actions.className = "action";
+    elements.events.appendChild(elements.actions);
+    elements.addButton = document.createElement("input");
+
+    // Refresh layout
+    calendar.refresh();
+
+    
+    var date_format = "DD/MM/YYYY";
+    var current = null;
+
+    var showEvents = function (date) {
+        console.log("datedate", date)
+        // getDatetimes(date)
+        // Date string
+        var id = jsCalendar.tools.dateToString(date, date_format, "en");
+        // Set date
+        current = new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, 'months').format("MM"), moment(mindate).format("DD"));
+        // Set title
+        elements.title.textContent = id;
+        // Clear old events
+        elements.list.innerHTML = "";
+        // Add events on list
+        if (events.hasOwnProperty(id) && events[id].length) {
+            // Number of events
+            elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "times are" : "time is") + " available.";
+
+            var div;
+            var close;
+            // For each event
+            for (var i = 0; i < events[id].length; i++) {
+                div = document.createElement("button");
+                    div.className = "btn btn-primary event-item";
+                if(events[id][i]<10)
+                    div.textContent = `0${events[id][i]} : 00`;
+                else
+                    div.textContent = `${events[id][i]} : 00`;
+                elements.list.appendChild(div);
+                div.addEventListener("click", (function (date, index) {
+                    return function () {
+                        let tId = moment(date).format("DD/MM/YYYY")
+                        hel = moment(date).set({ h: events[tId][index] });
+                    }
+                })(date, i), false);
+            }
+        } else {
+            elements.subtitle.textContent = "No events";
+        }
+    };
+
+    // Show current date events
+        //showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, 'months').format("MM"), moment(mindate).format("DD")));
+        showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
+
+
+            // Add events
+    calendar.onDateClick(function (event, date) {
+        // Update calendar date
+            if (isContainDate(workTimes, date)) {
+                calendar.set(date);
+
+                // Show events
+                showEvents(date);
+            }
+    });
+
+    }
+</script>

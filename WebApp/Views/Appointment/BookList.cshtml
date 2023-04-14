@@ -13,14 +13,16 @@
 }
 
 <h1>Your Schedule</h1>
-<div class="border-primary" style="border:ridge">
+<!-- Wrapper -->
+<div id="wrapper">
+    <!-- Calendar element -->
+    <div id="events-calendar" data-month-format="month YYYY"></div>
 
-    <div mbsc-page class="demo-event-labels">
-        <div style="height:100%">
-            <div id="demo-events-labels"></div>
-        </div>
+    <div class="row">
+
+        <!-- Events -->
+        <div id="events"></div>
     </div>
-
 </div>
 
 
@@ -122,9 +124,12 @@
     </div>
 }
 
-<script src="~/js/mobiscroll.javascript.min.js"></script>
+<link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
+<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
+
 <script src="~/js/moment.js"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/js/jsCalendar.js"></script>
 
 <script>
     
@@ -162,31 +167,87 @@
 
 <script>
     
-    readAppointmentsById()
-    
-    var inst = mobiscroll.eventcalendar('#demo-events-labels', {
-        theme: 'ios',                           // Specify theme like: theme: 'ios' or omit setting to use default
-        themeVariant: 'light',                  // More info about themeVariant: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#opt-themeVariant
-        view: {                                 // More info about view: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#opt-view
-            calendar: {
-                labels: true                    // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#opt-labels
-            }
-        },
-        timeFormat: 'HH:mm',
-        onEventClick: function (event, inst) {  // More info about onEventClick: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#event-onEventClick
-            mobiscroll.toast({ 
-                message: event.event.title
-            });
-            toggleModal(event.event.id)
-        }
-    });
 
-    function readAppointmentsById() {
+    function toggleModal(id) {
+        var myModal = new bootstrap.Modal(document.getElementById('a-'+id), {
+            keyboard: false
+        });
+
+        myModal.toggle();
+    }
+
+</script>
+
+<script type="text/javascript">
+    function isContainDate(Days, date) {
+        for (i = 0; i < Days.length; i++) {
+            if (moment(Days[i].date).format("YYYY-MM-DD") == moment(date).format("YYYY-MM-DD")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    generatecalendar()
+   
+    async function generatecalendar() {
+        // Get elements
+        document.getElementById("events-calendar").innerHTML = "";
+        document.getElementById("events").innerHTML = "";
+        var elements = {
+            // Calendar element
+            calendar: document.getElementById("events-calendar"),
+            // Input element
+            events: document.getElementById("events")
+        }
+
+        // Create the calendar
+        elements.calendar.className = "material-theme custom-green";
+        var calendar = jsCalendar.new(elements.calendar);
+
+        //
         let data = {
             Id: '@User.GetUserId()',
         }
-        // get working times
-        $.ajax({
+        var mindate = moment();
+        var workTimes = [];
+        var events = {
+        };
+        var times = {}
+
+        await $.ajax({
+            type: 'POST',
+            url: '/Appointment/getWorkingTimes',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                workTimes = result;
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    console.log(result);
+
+                    workTimes = result;
+                    //set min max month
+                    if (moment().diff(result[0].date, 'days') > 0)
+                        mindate = moment().format("DD/MM/YYYY");
+                    else
+                        mindate = moment(result[0].date).format("DD/MM/YYYY");
+                    console.log('333',mindate)
+                    calendar.min(mindate);
+                    calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
+                    calendar.set(mindate);
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+        // get booking times
+        await $.ajax({
             type: 'POST',
             url: '/Appointment/readAppointmentsById',
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -198,7 +259,6 @@
                 }
                 else {
                     var mainData = JSON.parse(result);
-                    var events = [];
                     var colors = [
                         "#198754",
                         "#0D6EFD",
@@ -206,18 +266,25 @@
                         "#8540F5",
                         "#4DD4AC"
                     ];
-                    for(i=0;i<mainData.length;i++)
-                    {
-                        let item = {
-                            start: moment(mainData[i].StartTime).subtract(3, "hours"),
-                            end: moment(mainData[i].StartTime).subtract(2.25, "hours"),
-                            title: mainData[i].Customer.FirstLastName,
-                            color: colors[Math.floor(Math.random() * colors.length)],
-                            id: mainData[i].Id,
+                    console.log('11111111',mainData)
+                    for (i = 0; i < mainData.length; i++) {
+                        let tId = moment(mainData[i].StartTime).format("DD/MM/YYYY");
+                        console.log(tId)
+                        let val = parseInt(moment(mainData[i].StartTime).subtract(3, 'hours').format("H"));
+                            // If no events, create list
+                        if (!events.hasOwnProperty(tId)) {
+                            // Create list
+                            events[tId] = [];
                         }
-                        events.push(item)
+                        events[tId].push({
+                                time: val,
+                                id: mainData[i].Id,
+                                name: mainData[i].Customer.FirstLastName,
+                                service: mainData[i].Service.Name
+                        });
                     }
-                    inst.setEvents(events);
+                    console.log('222222222',events)
+
                 }
             },
             error: function () {
@@ -225,15 +292,92 @@
                 console.log('Error occures ');
             }
         })
-    }
-    
-    function toggleModal(id) {
-        var myModal = new bootstrap.Modal(document.getElementById('a-'+id), {
-            keyboard: false
+
+        console.log('dddddddd',events)
+        //
+        // Make changes on the date elements that disbled
+        calendar.onDateRender(function (date, element, info) {
+            if (!isContainDate(workTimes, date)) {
+                element.style.color = '#CACACA'
+            }
+        });
+        //
+        // Create events elements
+        elements.title = document.createElement("div");
+        elements.title.className = "title";
+        elements.events.appendChild(elements.title);
+        elements.subtitle = document.createElement("div");
+        elements.subtitle.className = "subtitle";
+        elements.events.appendChild(elements.subtitle);
+        elements.list = document.createElement("div");
+        elements.list.className = "list";
+        elements.events.appendChild(elements.list);
+        elements.actions = document.createElement("div");
+        elements.actions.className = "action";
+        elements.events.appendChild(elements.actions);
+        elements.addButton = document.createElement("input");
+
+        // Refresh layout
+        calendar.refresh();
+
+
+        var date_format = "DD/MM/YYYY";
+        var current = null;
+
+        var showEvents = function (date) {
+            console.log("datedate", date)
+            // getDatetimes(date)
+            // Date string
+            var id = jsCalendar.tools.dateToString(date, date_format, "en");
+            // Set date
+            current = new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, 'months').format("MM"), moment(mindate).format("DD"));
+            console.log("curent", current)
+            // Set title
+            elements.title.textContent = id;
+            // Clear old events
+            elements.list.innerHTML = "";
+            // Add events on list
+            if (events.hasOwnProperty(id) && events[id].length) {
+                // Number of events
+                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "times are" : "time is") + " available.";
+
+                var div;
+                var close;
+                for (var i = 0; i < events[id].length; i++) {
+                    div = document.createElement("div");
+                    div.className = "event-item-i";
+                    let time = ''
+                    if(events[id][i]<10)
+                        time = `0${events[id][i].time} : 00`;
+                    else
+                        time = `${events[id][i].time} : 00`;
+                    div.textContent = time + " " + events[id][i].name + ". ";
+                    elements.list.appendChild(div);
+                    div.addEventListener("click", (function (date, index) {
+                        return function () {
+                            toggleModal(events[id][index]?.id)
+                        }
+                    })(date, i), false);
+                }
+            } else {
+                elements.subtitle.textContent = "No events";
+            }
+        };
+
+        // Show current date events
+        showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
+
+
+        // Add events
+        calendar.onDateClick(function (event, date) {
+            // Update calendar date
+            if (isContainDate(workTimes, date)) {
+                calendar.set(date);
+                // Show events
+                showEvents(date);
+            }
         });
 
-        myModal.toggle();
     }
 
 </script>
-<link rel="stylesheet" href="~/css/mobiscroll.javascript.min.css" />
