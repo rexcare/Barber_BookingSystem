@@ -1,69 +1,310 @@
 ﻿@using App.Domain
 @model App.Domain.Identity.AppUser
 
+@using Microsoft.AspNetCore.Identity
+@using App.Domain.Identity
+@using Base.Extensions
+@inject SignInManager<AppUser> _signInManager
+@inject UserManager<AppUser> _userManager
 @{
+    var appointments = (IEnumerable<Appointment>?)ViewData["appointments"];
     ViewData["Title"] = "Details";
+    var index = 0;
 }
 
 <h1>@Html.DisplayFor(model => model.FirstLastName) Information</h1>
 
-<div>
-    <dl class="row row-bordered row-striped row-hover" >
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
+<div class="row">
+
+    <div class="col-lg-4 col-md-5 col-sm-12">
+
+        <div>
+            <dl class="row row-bordered row-striped row-hover" >
+                <dt class = "col-sm-4">
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </dt>
+                <dd class = "col-sm-8">
+                    @Html.DisplayFor(model => model.FirstName)
+                </dd>
+                <dt class = "col-sm-4">
+                    @Html.DisplayNameFor(model => model.LastName)
+                </dt>
+                <dd class = "col-sm-8">
+                    @Html.DisplayFor(model => model.LastName)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.PhoneNumber)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.PhoneNumber)
+                </dd>
 
 
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+            </dl>
+        </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>
 
 
-    @if (User.IsInRole("user"))
-    {
-        <table class="table table-ww table-bordered table-striped table-hover">
-            <thead>
-            <tr>
-                <th>
-                    Work Time
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (WorkTime item in @Model!.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
-            {
+        @if (User.IsInRole("user"))
+        {
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
                 <tr>
-                    <td>
-                        <a style="text-decoration: none" class="nav-item text-dark">@Html.DisplayFor(modelItem => item.DateTime)</a>
-                    </td>
+                    <th>
+                        Work Time
+                    </th>
                 </tr>
+                </thead>
+                <tbody>
+                @foreach (WorkTime item in @Model!.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
+                {
+                    <tr>
+                        <td>
+                            <a style="text-decoration: none" class="nav-item text-dark">@Html.DisplayFor(modelItem => item.DateTime)</a>
+                        </td>
+                    </tr>
                 
 
-            }
-            </tbody>
-        </table>
+                }
+                </tbody>
+            </table>
+        }
+
+    </div>
+
+    <div class="col-lg-8 col-md-7 col-sm-12">
+         
+        <div class="border-primary" style="border:ridge">
+
+            <div mbsc-page class="demo-event-labels">
+                <div style="height:100%">
+                    <div id="demo-events-labels"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@foreach (var item in appointments!)
+{
+    var customer = (Customer?)item.Customer;
+    <!-- Modal -->
+    <div class="modal fade" id="a-@item.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                        <h5 class="text-primary">@item.Id</h5>
+
+                        <div class="card border-primary mb-3" style="min-width: 16rem; height: 100%; width: 100%">
+                            <div class="card-body text-primary" style="display:flex">
+                                <div class="calendar-icon">
+                                    <a asp-action="index" class="text-secondary" style="font-size:100px; text-decoration: none;"><i class="fa fa-light fa-calendar"></i></a>
+                                </div>
+                                <div class="w-100">
+                                    <figure>
+                                        <blockquote class="blockquote">
+                                            <p style="text-transform: capitalize;">@item?.Customer?.FirstLastName</p>
+                                            <p id="bookTime">@item?.StartTime</p>
+                                        </blockquote>
+                                        <figcaption class="blockquote-footer">
+                                            <p>@item?.Service?.Name</p>
+                                            <p>@item?.Service?.TimeSpan</p>
+                                            <p>$@item?.Service?.Price</p>
+                                        </figcaption>
+                                    </figure>
+                                    <hr />
+                                    <div class="w-50" style="float: right">
+                                        <div class="space-between">
+                                            <p>Subtotal</p>
+                                            <p>$@item?.Service?.Price</p>
+                                        </div>
+                                        <div class="space-between">
+                                            <p>Sales Tax</p>
+                                            <p>$0</p>
+                                        </div>
+                                        <hr />
+                                        <div class="space-between">
+                                            <p>Total</p>
+                                            <p>$@item?.Service?.Price</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
+                    <button type="button" class="btn btn-primary w-50">OK</button>
+
+                    @if (User.IsInRole("admin"))
+                    {
+                        <button type="button" class="btn btn-danger w-50">Cancel appointment</button>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="b-@item?.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Confirm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                        <h5 class="text-primary">Confirm delete</h5>
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
+                    <a class="btn btn-danger w-50"
+                   asp-action="DeleteAppointment"
+                   asp-route-id="@item?.Id"
+                   asp-route-uid="@User.GetUserId()">
+                        Cancel Appointment
+                    </a>
+                    <button type="button" class="btn btn-info w-50">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="~/js/mobiscroll.javascript.min.js"></script>
+<script src="~/js/moment.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+
+    function viewDetail(id) {
+        toggleModal();
     }
+
+    function cancel(id) {
+        let data = {
+            id: id
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/DeleteAppointment',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to reserve the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    alert('Successfully reserve Data ');
+                }
+            },
+            error: function () {
+                alert('Error occures to reserve the Data');
+                console.log('Error occures ');
+            }
+        })
+        toggleModal();
+    }
+
+</script>
+
+<script>
+
+    readAppointmentsById()
+
+    var inst = mobiscroll.eventcalendar('#demo-events-labels', {
+        theme: 'ios',                           // Specify theme like: theme: 'ios' or omit setting to use default
+        themeVariant: 'light',                  // More info about themeVariant: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#opt-themeVariant
+        view: {                                 // More info about view: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#opt-view
+            calendar: {
+                labels: true                    // More info about labels: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#opt-labels
+            }
+        },
+        timeFormat: 'HH:mm',
+        onEventClick: function (event, inst) {  // More info about onEventClick: https://docs.mobiscroll.com/5-23-0/javascript/eventcalendar#event-onEventClick
+            mobiscroll.toast({
+                message: event.event.title
+            });
+            toggleModal(event.event.id)
+        }
+    });
+
+    function readAppointmentsById() {
+        let data = {
+            Id: '@Model!.Id',
+        }
+        // get working times
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/readAppointmentsById',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: data,
+            success: function (result) {
+                console.log(result);
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    var mainData = JSON.parse(result);
+                    var events = [];
+                    var colors = [
+                        "#198754",
+                        "#0D6EFD",
+                        "#FFC107",
+                        "#8540F5",
+                        "#4DD4AC"
+                    ];
+                    for (i = 0; i < mainData.length; i++) {
+                        let item = {
+                            start: moment(mainData[i].StartTime).subtract(3, "hours"),
+                            end: moment(mainData[i].StartTime).subtract(2.25, "hours"),
+                            title: mainData[i].Customer.FirstLastName,
+                            color: colors[Math.floor(Math.random() * colors.length)],
+                            id: mainData[i].Id,
+                        }
+                        events.push(item)
+                    }
+                    inst.setEvents(events);
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+    }
+
+    function toggleModal(id) {
+        var myModal = new bootstrap.Modal(document.getElementById('a-' + id), {
+            keyboard: false
+        });
+
+        myModal.toggle();
+    }
+
+</script>
+<link rel="stylesheet" href="~/css/mobiscroll.javascript.min.css" />
+<script src="~/js/scripts.js" asp-append-version="true"></script>

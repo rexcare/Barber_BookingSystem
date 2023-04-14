@@ -10,10 +10,10 @@
         if (!User.IsInRole("admin") && !User.IsInRole("user"))
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})" title="Login">Login</a>
+                <a class="nav-link " asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})" title="Login">Login</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})" title="Register">Register</a>
+                <a class="nav-link " asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})" title="Register">Register</a>
             </li>
         }
         
@@ -22,7 +22,7 @@
         {
             <li class="nav-item dropdown">
                 <a title="Manage"
-               class="nav-link dropdown-toggle text-dark"
+               class="nav-link dropdown-toggle "
                href="javascript:{}"
                id="navbarLangDropdown"
                role="button"
@@ -32,7 +32,7 @@
                     @(User.GetUserName())
                 </a>
 
-                <div class="dropdown-menu" aria-labelledby="navbarLangDropdown" style="right: 0; left: auto; min-width: 6rem">
+                <div class="dropdown-menu" aria-labelledby="navbarLangDropdown" style="right: 0; left: auto; min-width: 7rem">
                     @if (User.GetUserEmail() == "admin@itcollege.ee")
                     {
                         <a class="nav-link text-dark"><i class="fas fa-user mx-1"></i>@(User.GetUserName())</a>
@@ -41,9 +41,9 @@
                     {
                         <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><i class="fas fa-user mx-1"></i>@(User.GetUserName())</a>
                     }
-                     
-                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})">
-                        <button type="submit" class="nav-link btn btn-link text-dark"><i class="fas fa-sign-out-alt mx-1"></i>Logout</button>
+
+                    <form class="form-inline text-dark" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})">
+                        <button type="submit" class="nav-link btn btn-link "><i class="fas fa-sign-out-alt mx-1"></i>Logout</button>
                 </form>
                 </div>
             </li>
@@ -53,7 +53,7 @@
             <li class="nav-item dropdown">
                 <a 
                    title="Manage"
-                   class="nav-link dropdown-toggle text-dark"
+               class="nav-link dropdown-toggle"
                    href="javascript:{}"
                    id="navbarLangDropdown"
                    role="button"
@@ -64,7 +64,7 @@
                     @(User.GetUserName())
                </a>
 
-                <div class="dropdown-menu" aria-labelledby="navbarLangDropdown" style="right: 0; left: auto; min-width: 6rem">
+                <div class="dropdown-menu" aria-labelledby="navbarLangDropdown" style="right: 0; left: auto; min-width: 7rem">
                     <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><i class="fas fa-user mx-1"></i>Profile</a>
                         
                     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})">

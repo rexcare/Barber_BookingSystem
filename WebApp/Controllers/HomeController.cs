@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using WebApp.Models;
+using System.Text.Json;
+using System;
+using Newtonsoft.Json;
 
 namespace WebApp.Controllers;
 
@@ -89,17 +92,30 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Details(Guid? id)
     {
+
         if (id == null)
         {
             return NotFound();
         }
 
-        var user = await _userManager.Users.Include(x => x.WorkTimes)
+        var user = await _userManager.Users.Include(x => x.WorkTimes).Include(a=>a.Appointments)
             .FirstOrDefaultAsync(m => m.Id == id);
+        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(c => c.Customer).Include(s => s.Service);
+
+        /*var jsonString = JsonConvert.SerializeObject(
+                            appointments,
+                            Formatting.None,
+                            new JsonSerializerSettings()
+                            {
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                            }
+        );*/
         if (user == null)
         {
             return NotFound();
         }
+
+        ViewData["appointments"] = appointments;
 
         return View("AppUser/Details",user);
     }

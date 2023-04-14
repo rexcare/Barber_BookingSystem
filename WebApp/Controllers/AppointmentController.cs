@@ -122,25 +122,15 @@ public class AppointmentController : Controller
         }
 
         var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(c=>c.Customer).Include(s=>s.Service);
-        /*foreach(var appointment in appointments)
-        {
-            appointment.Service = _context.Services.Find(appointment.ServiceId);
-            appointment.Customer = _context.Customers.Find(appointment.CustomerId);
-        }*/
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            MaxDepth = 31 // Fixed
-        };
-        // string jsonString = JsonSerializer.Serialize(appointments, options);
-
-
-        var jsonString = JsonConvert.SerializeObject(appointments, Formatting.None,
-                        new JsonSerializerSettings()
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                        });
-
+        
+        var jsonString = JsonConvert.SerializeObject(
+                            appointments, 
+                            Formatting.None,
+                            new JsonSerializerSettings()
+                            {
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                            }
+        );
 
         return Json(jsonString);
     }

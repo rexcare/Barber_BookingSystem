@@ -25,7 +25,9 @@ public class AppUser : BaseUser
     public ICollection<Vacation>? Vacations { get; set; }
     
     public ICollection<WorkTime>? WorkTimes { get; set; }
-    
+
+    public ICollection<Appointment>? Appointments { get; set; }
+
     public ICollection<ReservedTime>? ReservedTime { get; set; }
 
     public ICollection<RefreshToken>? RefreshTokens { get; set; }
