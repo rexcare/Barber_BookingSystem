@@ -32,7 +32,7 @@
                     @(User.GetUserName())
                 </a>
 
-                <div class="dropdown-menu" aria-labelledby="navbarLangDropdown" style="right: 0; left: auto; min-width: 7rem">
+                <div class="dropdown-menu" aria-labelledby="navbarLangDropdown" style="right: 0; left: auto; min-width: 8rem">
                     @if (User.GetUserEmail() == "admin@itcollege.ee")
                     {
                         <a class="nav-link text-dark"><i class="fas fa-user mx-1"></i>@(User.GetUserName())</a>
@@ -43,7 +43,7 @@
                     }
 
                     <form class="form-inline text-dark" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})">
-                        <button type="submit" class="nav-link btn btn-link "><i class="fas fa-sign-out-alt mx-1"></i>Logout</button>
+                        <button type="submit" class="nav-link btn btn-link text-dark"><i class="fas fa-sign-out-alt mx-1"></i>Logout</button>
                 </form>
                 </div>
             </li>

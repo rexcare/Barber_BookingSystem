@@ -3,16 +3,27 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>No privacy!!!</p>
+<div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
 
+    @if (User.Claims.Count() == 0)
 
-<table class="table table-striped">
-    @foreach (var claim in User.Claims)
     {
-        <tr>
-            <td>@claim.Type</td>
-            <td>@claim.ValueType</td>
-            <td>@claim.Value</td>
-        </tr>
+        <p class="text-center">No privacy!!!</p>
     }
-</table>
+    else
+    {   
+        <div class="table-responsive">
+        <table class="table table-striped">
+            @foreach (var claim in User.Claims)
+            {
+                <tr>
+                    <td>@claim.Type</td>
+                    <td>@claim.ValueType</td>
+                    <td>@claim.Value</td>
+                </tr>
+            }
+        </table>
+        </div>
+    }
+
+</div>

@@ -260,3 +260,15 @@ ul {
         width: 100%
     }
 }
+
+.address-card {
+    width: 100%;
+    min-width: 500px;
+}
+
+@media only screen and (max-width: 700px) {
+    .address-card {
+        width: 100%;
+        min-width: none;
+    }
+}

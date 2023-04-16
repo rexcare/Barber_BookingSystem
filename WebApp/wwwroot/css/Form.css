@@ -87,3 +87,15 @@ input[type=text], input[type=tel], input[type=email] {
 .valid-feedback {
     color: #2acc80;
 }
+
+.register-panel {
+    width: 50%;
+    min-width: 500px;
+}
+
+@media only screen and (max-width: 700px) {
+    .register-panel {
+        width: 100%;
+        min-width: none;
+    }
+}

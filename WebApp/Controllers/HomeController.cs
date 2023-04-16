@@ -102,14 +102,6 @@ public class HomeController : Controller
             .FirstOrDefaultAsync(m => m.Id == id);
         var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(c => c.Customer).Include(s => s.Service);
 
-        /*var jsonString = JsonConvert.SerializeObject(
-                            appointments,
-                            Formatting.None,
-                            new JsonSerializerSettings()
-                            {
-                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                            }
-        );*/
         if (user == null)
         {
             return NotFound();

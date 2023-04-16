@@ -18,10 +18,16 @@
 
 
 @if (User.IsInRole("admin") || User.IsInRole("user"))
-    {
+    {<div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
         <div class="row main-box                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ">
             <h1>Our Members</h1>
         </div>
+        @if (User.IsInRole("admin"))
+        {
+            <span>
+                <a class="btn btn-primary" style="float: right; text-decoration: none black" asp-action="GenerateWTT">Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()</a>
+            </span>
+        }
         <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover">
             <thead>
@@ -52,8 +58,8 @@
             </thead>
             <tbody>
             @foreach (var item in Model) {
-                    index++;
-                    if (item.Email != "admin@itcollege.ee")
+                index++;
+                if (item.Email != "admin@itcollege.ee")
                 {
                     <tr>
                         <td>
@@ -78,20 +84,20 @@
 
                             @if (User.IsInRole("user"))
                             {
-                                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
                             }
                             @if (User.IsInRole("admin"))
                             {
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                             }
 
                             @if (User.IsInRole("admin") && item.Email != "admin@itcollege.ee")
                             {
                                 <span>
-                                    | <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                                 </span>
                                 <span>
-                                    | <a asp-area="Admin" asp-controller="Vacations" asp-action="Create" asp-route-id="@item.Id">Vacations</a>
+                                    <a class="btn btn-warning btn-sm" asp-area="Admin" asp-controller="Vacations" asp-action="Create" asp-route-id="@item.Id">Vacations</a>
                                 </span>
                             }
                         </td>
@@ -102,13 +108,8 @@
             </tbody>
         </table>
        </div> 
+        </div>
         
-        @if (User.IsInRole("admin"))
-        {
-            <span>
-                <a style="text-decoration: none black" asp-action="GenerateWTT">Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()</a>
-            </span>
-        }
         
         
     }
