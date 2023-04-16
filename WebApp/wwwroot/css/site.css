@@ -263,11 +263,15 @@ ul {
 
 .address-card {
     width: 100%;
-    min-width: 500px;
+}
+
+.delete-confirm-card {
+    width: 60%;
+    min-width: 550px;
 }
 
 @media only screen and (max-width: 700px) {
-    .address-card {
+    .delete-confirm-card {
         width: 100%;
         min-width: none;
     }

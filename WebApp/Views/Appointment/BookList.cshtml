@@ -11,6 +11,9 @@
     ViewData["Title"] = "Index";
     var index = 0;
 }
+
+
+
 <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
 
 <h1>Your Schedule</h1>
@@ -115,9 +118,28 @@
 <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
 <link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
 
+<style>
+    #wrapper {
+        height: 100%;
+    }
+    #events {
+        width: 98%;
+    }
+
+        #events .list {
+            border-bottom: none;
+        }
+
+        #events .list .event-item-i {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        }
+</style>
+
 <script src="~/js/moment.js"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="~/js/jsCalendar.js"></script>
+
+
 
 <script>
     

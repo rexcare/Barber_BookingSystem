@@ -272,14 +272,19 @@ public class HomeController : Controller
             return NotFound();
         }
 
-        var user = await _userManager.Users.Include(x => x.WorkTimeTemplate).Include(x => x.WorkTimes)
+        var user = await _userManager.Users.Include(x => x.WorkTimeTemplate).Include(x => x.WorkTimes).Include(a => a.Appointments)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (user == null)
         {
             return NotFound();
         }
+        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(c => c.Customer).Include(s => s.Service);
+
 
         ViewData["WorkTimeTemplateId"] = new SelectList(_context.WorkTimeTemplates, "Id", "Times", user.WorkTimeTemplateId);
+
+        ViewData["id"] = id;
+        ViewData["appointments"] = appointments;
 
         ViewBag.WorkTime = user.WorkTimes!;
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;

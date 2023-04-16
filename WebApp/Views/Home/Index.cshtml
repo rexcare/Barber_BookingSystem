@@ -84,20 +84,20 @@
 
                             @if (User.IsInRole("user"))
                             {
-                                <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                        <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i>&nbsp&nbspDetails</a>
                             }
                             @if (User.IsInRole("admin"))
                             {
-                                <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i>&nbsp&nbspEdit</a>
                             }
 
                             @if (User.IsInRole("admin") && item.Email != "admin@itcollege.ee")
                             {
                                 <span>
-                                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-user-times"></i>&nbsp&nbspDelete</a>
                                 </span>
                                 <span>
-                                    <a class="btn btn-warning btn-sm" asp-area="Admin" asp-controller="Vacations" asp-action="Create" asp-route-id="@item.Id">Vacations</a>
+                                    <a class="btn btn-warning btn-sm" asp-area="Admin" asp-controller="Vacations" asp-action="Create" asp-route-id="@item.Id"><i class="fas fa-calendar-plus"></i>&nbsp&nbspVacations</a>
                                 </span>
                             }
                         </td>

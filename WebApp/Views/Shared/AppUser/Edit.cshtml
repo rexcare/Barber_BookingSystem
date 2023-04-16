@@ -1,90 +1,478 @@
 ﻿@using App.Domain
 @model App.Domain.Identity.AppUser
 
+@using Microsoft.AspNetCore.Identity
+@using App.Domain.Identity
+@using Base.Extensions
+@inject SignInManager<AppUser> _signInManager
+@inject UserManager<AppUser> _userManager
+
 @{
+    var appointments = (IEnumerable<Appointment>?)ViewData["appointments"];
+    var index = 0;
     ViewData["Title"] = "Edit";
     WorkTime workTimes = ViewBag.WorkTimes;
     CompanyInfo wtt = ViewBag.WTT;
+    var uuid = ViewData["id"];
 }
 
-<h1>@Model.FirstLastName Information</h1>
+<style>
+    input {
+        padding: 5px 5px 5px 15px !important;
+        margin-top: 0px !important;
+    }
+    .form-group{
+        margin-top: 10px
+    }
+</style>
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="Role" />
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+<a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
+
+<div class="card shadow mb-4 p-4" style="height: calc(100% - 150px); top: 10px">
+    <div class="row">
+        <div class="col-lg-8 col-md-7 col-sm-12">
+            <div class="mb-2">
+                <div class="card border-primary p-3">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Role" />
+                    <div class="row">
+                        <label asp-for="FirstName" class="control-label col-sm-4 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="LastName" class="control-label col-sm-4 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Email" class="control-label col-sm-4 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                     </div>
+                    <div class="form-group row">
+                        <label asp-for="PhoneNumber" class="control-label col-sm-4 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                     <div class="form-group row">
+                        <label asp-for="WorkTimeTemplateId" class="control-label col-sm-4 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <select asp-for="WorkTimeTemplateId" class="form-control" asp-items="ViewBag.WorkTimeTemplateId"></select>
+                        </div>
+                     </div>
+                    <div class="form-group text-end">
+                        <input type="submit" value="Save" class="btn btn-primary w-25" />
+                    </div>
+
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
-            
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+
+            <div id="wrapper">
+                <!-- Calendar element -->
+                <div id="events-calendar" data-month-format="month YYYY"></div>
+
+                <div class="row">
+
+                    <!-- Events -->
+                    <div id="events"></div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-            <div class="form-group">
-                <label asp-for="WorkTimeTemplateId" class="control-label"></label>
-                <select asp-for="WorkTimeTemplateId" class ="form-control" asp-items="ViewBag.WorkTimeTemplateId"></select>
-            </div>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-            <div class="form-group">
-                <a asp-area="" asp-controller="Home" asp-route-id="@Model.Id" asp-action="GenerateWttForUser" style="text-decoration: none" type="submit" class="btn btn-primary" >Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()</a>
-            </div>
-            
-        </form>
+        </div>
+        <div class="col-lg-4 col-md-5 col-sm-12">
+            @if (User.IsInRole("admin"))
+            {
+                <a asp-area=""
+               asp-controller="Home"
+               asp-route-id="@Model.Id"
+               asp-action="GenerateWttForUser"
+               type="submit"
+               class="btn btn-primary w-100">
+                    Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()
+                </a>
+                <table class="table table-ww table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                Work Time
+                            </th>
+                            <th>
+                                <a asp-area="Admin" asp-controller="WorkTimes" asp-route-id="@Model.Id" asp-action="Create" style="text-decoration: green" type="submit" value="Create"> + </a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (WorkTime item in @Model.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-area="Admin" asp-controller="WorkTimes" asp-action="Edit" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.DateTime)</a>
+                                </td>
+                                <td>
+                                    <a asp-area="" asp-controller="Home" asp-action="DeleteWW" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id"> - </a>
+                                </td>
+
+                            </tr>
+
+
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
     </div>
 </div>
 
-    @if (User.IsInRole("admin"))
-    {
-        <table class="table table-ww table-bordered table-striped table-hover">
-            <thead>
-            <tr>
-                <th>
-                    Work Time
-                </th>
-                <th>
-                    <a asp-area="Admin" asp-controller="WorkTimes" asp-route-id="@Model.Id" asp-action="Create" style="text-decoration: green" type="submit" value="Create" > + </a>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (WorkTime item in @Model.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
-            {
-                <tr>
-                    <td>
-                        <a asp-area="Admin" asp-controller="WorkTimes" asp-action="Edit" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.DateTime)</a>
-                    </td>
-                    <td>
-                        <a asp-area="" asp-controller="Home" asp-action="DeleteWW" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id"> - </a>
-                    </td>
-                    
-                </tr>
-                
 
+
+
+
+
+
+@foreach (var item in appointments!)
+{
+    var customer = (Customer?)item.Customer;
+    <!-- Modal -->
+    <div class="modal fade" id="a-@item.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                        <h5 class="text-primary">Appointment</h5>
+
+                        <div class="card border-primary mb-3" style="min-width: 16rem; height: 100%; width: 100%">
+                            <div class="card-body text-primary" style="display:flex">
+                                <div class="calendar-icon">
+                                    <i class="fa fa-light fa-calendar text-secondary" style="font-size:100px; text-decoration: none;"></i>
+                                </div>
+                                <div class="w-100">
+                                    <figure>
+                                        <blockquote class="blockquote text-black">
+                                            <p style="text-transform: capitalize;">Name : @item?.Customer?.FirstLastName</p>
+                                            <p id="bookTime">Time&nbsp;&nbsp;: @item?.StartTime</p>
+                                        </blockquote>
+                                        <figcaption class="blockquote-footer">
+                                            <p>Type&nbsp;: @item?.Service?.Name</p>
+                                            <p>Span&nbsp;: @item?.Service?.TimeSpan</p>
+                                            <p>Price&nbsp;: $@item?.Service?.Price</p>
+                                        </figcaption>
+                                    </figure>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
+                    <button type="button" class="btn btn-primary w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
+
+                    @if (User.IsInRole("admin"))
+                    {
+                        <button type="button" class="btn btn-danger w-50">Cancel appointment</button>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="b-@item?.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Confirm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                        <h5 class="text-primary">Confirm delete</h5>
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
+                    <a class="btn btn-danger w-50"
+                   asp-action="DeleteAppointment"
+                   asp-route-id="@item?.Id"
+                   asp-route-uid="@User.GetUserId()">
+                        Cancel Appointment
+                    </a>
+                    <button type="button" class="btn btn-info w-50">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
+<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
+
+<script src="~/js/moment.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/js/jsCalendar.js"></script>
+
+<script>
+
+    function cancel(id) {
+        let data = {
+            id: id
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/DeleteAppointment',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to reserve the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    alert('Successfully reserve Data ');
+                }
+            },
+            error: function () {
+                alert('Error occures to reserve the Data');
+                console.log('Error occures ');
             }
-            </tbody>
-        </table>
+        })
     }
+
+    function toggleModal(id) {
+        console.log(id)
+        var myModal = new bootstrap.Modal(document.getElementById('a-' + id), {
+            keyboard: false
+        });
+
+        myModal.toggle();
+    }
+
+</script>
+
+<script type="text/javascript">
+    function isContainDate(Days, date) {
+        for (i = 0; i < Days.length; i++) {
+            if (moment(Days[i].date).format("YYYY-MM-DD") == moment(date).format("YYYY-MM-DD")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    generatecalendar()
+
+    async function generatecalendar() {
+        // Get elements
+        document.getElementById("events-calendar").innerHTML = "";
+        document.getElementById("events").innerHTML = "";
+        var elements = {
+            // Calendar element
+            calendar: document.getElementById("events-calendar"),
+            // Input element
+            events: document.getElementById("events")
+        }
+
+        // Create the calendar
+        elements.calendar.className = "material-theme custom-green";
+        var calendar = jsCalendar.new(elements.calendar);
+
+        //
+        let data = {
+            Id: '@uuid',
+        }
+        var mindate = moment();
+        var workTimes = [];
+        var events = {
+        };
+        var times = {}
+
+        await $.ajax({
+            type: 'POST',
+            url: '/Appointment/getWorkingTimes',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                workTimes = result;
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    console.log(result);
+
+                    workTimes = result;
+                    //set min max month
+                    if (moment().diff(result[0].date, 'days') > 0)
+                        mindate = moment().format("DD/MM/YYYY");
+                    else
+                        mindate = moment(result[0].date).format("DD/MM/YYYY");
+                    console.log('333', mindate)
+                    calendar.min(mindate);
+                    calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
+                    calendar.set(mindate);
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+        // get booking times
+        await $.ajax({
+            type: 'POST',
+            url: '/Appointment/readAppointmentsById',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    var mainData = JSON.parse(result);
+                    var colors = [
+                        "#198754",
+                        "#0D6EFD",
+                        "#FFC107",
+                        "#8540F5",
+                        "#4DD4AC"
+                    ];
+                    console.log('11111111', mainData)
+                    for (i = 0; i < mainData.length; i++) {
+                        let tId = moment(mainData[i].StartTime).format("DD/MM/YYYY");
+                        console.log(tId)
+                        let val = parseInt(moment(mainData[i].StartTime).subtract(3, 'hours').format("H"));
+                        // If no events, create list
+                        if (!events.hasOwnProperty(tId)) {
+                            // Create list
+                            events[tId] = [];
+                        }
+                        events[tId].push({
+                            time: val,
+                            id: mainData[i].Id,
+                            name: mainData[i].Customer.FirstLastName,
+                            service: mainData[i].Service.Name,
+                            price: mainData[i].Service.Price,
+                        });
+                    }
+
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+
+        console.log('events', events)
+        //
+        // Make changes on the date elements that disbled
+        calendar.onDateRender(function (date, element, info) {
+            if (!isContainDate(workTimes, date)) {
+                element.style.color = '#CACACA'
+            }
+        });
+        //
+        // Create events elements
+        elements.title = document.createElement("div");
+        elements.title.className = "title";
+        elements.events.appendChild(elements.title);
+        elements.subtitle = document.createElement("div");
+        elements.subtitle.className = "subtitle";
+        elements.events.appendChild(elements.subtitle);
+        elements.list = document.createElement("div");
+        elements.list.className = "list";
+        elements.events.appendChild(elements.list);
+        elements.actions = document.createElement("div");
+        elements.actions.className = "action";
+        elements.events.appendChild(elements.actions);
+        elements.addButton = document.createElement("input");
+
+        // Refresh layout
+        calendar.refresh();
+
+
+        var date_format = "DD/MM/YYYY";
+        var current = null;
+
+        var showEvents = function (date) {
+            console.log("datedate", date)
+            // getDatetimes(date)
+            // Date string
+            var id = jsCalendar.tools.dateToString(date, date_format, "en");
+            // Set date
+            current = new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, 'months').format("MM"), moment(mindate).format("DD"));
+            console.log("curent", current)
+            // Set title
+            elements.title.textContent = id;
+            // Clear old events
+            elements.list.innerHTML = "";
+            // Add events on list
+            if (events.hasOwnProperty(id) && events[id].length) {
+                // Number of events
+                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "times are" : "time is") + " available.";
+
+                var div;
+                var close;
+                for (var i = 0; i < events[id].length; i++) {
+                    div = document.createElement("div");
+                    div.className = "event-item-i";
+                    let time = ''
+                    if (events[id][i] < 10)
+                        time = `0${events[id][i].time} : 00`;
+                    else
+                        time = `${events[id][i].time} : 00`;
+                    div.textContent = time + " " + events[id][i].name + ". ";
+                    elements.list.appendChild(div);
+                    div.addEventListener("click", (function (date, index) {
+                        return function () {
+                            toggleModal(events[id][index]?.id)
+                        }
+                    })(date, i), false);
+                    sType = document.createElement("span");
+                    sType.className = "bg-info rounded-pill mx-2";
+                    sType.textContent = " " + events[id][i].service + " ";
+                    div.appendChild(sType);
+                }
+            } else {
+                elements.subtitle.textContent = "No events";
+            }
+        };
+
+        // Show current date events
+        showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
+
+
+        // Add events
+        calendar.onDateClick(function (event, date) {
+            // Update calendar date
+            if (isContainDate(workTimes, date)) {
+                calendar.set(date);
+                // Show events
+                showEvents(date);
+            }
+        });
+
+    }
+
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -121,7 +121,7 @@ public class AppointmentController : Controller
             return NotFound();
         }
 
-        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(c=>c.Customer).Include(s=>s.Service);
+        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(c=>c.Customer).Include(s=>s.Service).OrderBy(d=>d.StartTime);
         
         var jsonString = JsonConvert.SerializeObject(
                             appointments, 

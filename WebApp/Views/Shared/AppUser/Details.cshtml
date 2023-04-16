@@ -17,38 +17,32 @@
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
 <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
-
-    
     <div class="row">
-    <div class="col-lg-4 col-md-5 col-sm-12">
-        @if (User.IsInRole("user"))
-        {
-            <table class="table table-bordered table-striped table-hover">
-                <thead>
-                <tr>
-                    <th>
-                        Work Time
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (WorkTime item in @Model!.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
-                {
+        <div class="col-lg-4 col-md-5 col-sm-12">
+            @if (User.IsInRole("user"))
+            {
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
                     <tr>
-                        <td>
-                            <a style="text-decoration: none" class="nav-item text-dark">@Html.DisplayFor(modelItem => item.DateTime)</a>
-                        </td>
+                        <th>
+                            Work Time
+                        </th>
                     </tr>
-                
-
-                }
-                </tbody>
-            </table>
-        }
-
-    </div>
-
-    <div class="col-lg-8 col-md-7 col-sm-12">
+                    </thead>
+                    <tbody>
+                    @foreach (WorkTime item in @Model!.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
+                    {
+                        <tr>
+                            <td>
+                                <a style="text-decoration: none" class="nav-item text-dark">@Html.DisplayFor(modelItem => item.DateTime)</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div class="col-lg-8 col-md-7 col-sm-12">
             <div class="mb-2" style="display: flex; justify-content: center;">
                 <div class="address-card card border-primary p-3">
                     <div style="display: flex;">
@@ -90,20 +84,17 @@
             </div>
 
             <div id="wrapper">
-            <!-- Calendar element -->
-            <div id="events-calendar" data-month-format="month YYYY"></div>
+                <!-- Calendar element -->
+                <div id="events-calendar" data-month-format="month YYYY"></div>
 
-            <div class="row">
+                <div class="row">
 
-                <!-- Events -->
-                <div id="events"></div>
+                    <!-- Events -->
+                    <div id="events"></div>
+                </div>
             </div>
         </div>
-
     </div>
-
-</div>
-
 </div>
 @foreach (var item in appointments!)
 {

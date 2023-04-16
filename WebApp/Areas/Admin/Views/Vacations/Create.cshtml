@@ -7,35 +7,49 @@
     AppUser appUser = ViewBag.AppUser;
     var vacation = ViewBag!.Vacations;
 }
+<style>
+
+input {
+        padding: 5px 5px 5px 15px !important;
+        margin-top: 0px !important;
+    }
+    .form-group{
+        margin-bottom: 10px
+    }
+</style>
+<p onclick="history.go(-1)" class="text-primary" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</p>
+<div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
 
 <h1>Manage Vacation for @appUser.FirstLastName</h1>
 
 <hr />
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6 col-sm-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
-                <label asp-for="DateStart" class="control-label"></label>
-                <input type="Date" asp-for="DateStart" class="form-control" />
-                <span asp-validation-for="DateStart" class="text-danger"></span>
+            <div class="row form-group">
+                <label asp-for="DateStart" class="control-label col-sm-3 col-form-label"></label>
+                <div class="col-sm-9">
+                    <input type="Date" asp-for="DateStart" class="form-control" />
+                    <span asp-validation-for="DateStart" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DateStop" class="control-label"></label>
-                <input type="Date" asp-for="DateStop" class="form-control" />
-                <span asp-validation-for="DateStop" class="text-danger"></span>
+            <div class="row form-group">
+                <label asp-for="DateStop" class="control-label col-sm-3 col-form-label"></label>
+                <div class="col-sm-9">
+                    <input type="Date" asp-for="DateStop" class="form-control" />
+                    <span asp-validation-for="DateStop" class="text-danger"></span>
+                </div>
             </div>
             <input type="hidden" asp-for="AppUserId" value="@appUser.Id" />
             
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-calendar-plus"></i>&nbsp&nbspCreate</button>
             </div>
         </form>
     </div>
-</div>
-
+    <div class="col-md-6 col-sm-12">
         <table class="table table-ww table-bordered table-striped table-hover">
             <thead>
             <tr>
@@ -56,14 +70,12 @@
             }
             </tbody>
         </table>
+    </div>
+</div>
+
+        
 
 
-
-
-
-
-<div>
-    <a asp-area="" asp-controller="Home" asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
