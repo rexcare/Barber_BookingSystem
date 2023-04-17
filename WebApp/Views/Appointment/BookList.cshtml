@@ -254,17 +254,19 @@
                 }
                 else {
                     console.log(result);
-
-                    workTimes = result;
-                    //set min max month
-                    if (moment().diff(result[0].date, 'days') > 0)
-                        mindate = moment().format("DD/MM/YYYY");
-                    else
-                        mindate = moment(result[0].date).format("DD/MM/YYYY");
-                    console.log('333',mindate)
-                    calendar.min(mindate);
-                    calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
-                    calendar.set(mindate);
+                    if(result.length != 0) 
+                    {
+                        workTimes = result;
+                        //set min max month
+                        if (moment().diff(result[0].date, 'days') > 0)
+                            mindate = moment()
+                        else
+                            mindate = moment(result[0].date)
+                        console.log('333',mindate)
+                        calendar.min(moment(mindate).format("DD/MM/YYYY"));
+                        calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
+                        calendar.set(moment(mindate).format("DD/MM/YYYY"));
+                    }
                 }
             },
             error: function () {
@@ -344,16 +346,12 @@
 
 
         var date_format = "DD/MM/YYYY";
-        var current = null;
 
         var showEvents = function (date) {
             console.log("datedate", date)
             // getDatetimes(date)
             // Date string
-            var id = jsCalendar.tools.dateToString(date, date_format, "en");
-            // Set date
-            current = new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, 'months').format("MM"), moment(mindate).format("DD"));
-            console.log("curent", current)
+            var id = date;
             // Set title
             elements.title.textContent = id;
             // Clear old events
@@ -391,8 +389,9 @@
         };
 
         // Show current date events
-        showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
-
+        console.log(mindate)
+        // showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
+        showEvents(moment(mindate).format("MM/DD/YYYY"))
 
         // Add events
         calendar.onDateClick(function (event, date) {

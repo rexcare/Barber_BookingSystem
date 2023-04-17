@@ -402,12 +402,13 @@
                     workTimes = result;
                     //set min max month
                     if (moment().diff(result[0].date, 'days') > 0)
-                        mindate = moment().format("DD/MM/YYYY");
+                        mindate = moment()
                     else
-                        mindate = moment(result[0].date).format("DD/MM/YYYY");
-                    calendar.min(mindate);
+                        mindate = moment(result[0].date)
+                    console.log('333', mindate)
+                    calendar.min(moment(mindate).format("DD/MM/YYYY"));
                     calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
-                    calendar.set(mindate);
+                    calendar.set(moment(mindate).format("DD/MM/YYYY"));
 
                     for (j = 0; j < result.length; j++) {
                         let invalidDate = moment(result[j]?.date)
