@@ -361,7 +361,7 @@
                         "#4DD4AC"
                     ];
                     for (i = 0; i < mainData.length; i++) {
-                        let tId = moment(mainData[i].StartTime).format("DD/MM/YYYY");
+                        let tId = moment(mainData[i].StartTime).format("MM/DD/YYYY");
                         console.log(tId)
                         let val = parseInt(moment(mainData[i].StartTime).subtract(3, 'hours').format("H"));
                         // If no events, create list
@@ -414,7 +414,7 @@
         calendar.refresh();
 
 
-        var date_format = "DD/MM/YYYY";
+        // var date_format = "DD/MM/YYYY";
 
         var showEvents = function (date) {
             console.log("datedate", date)
@@ -422,7 +422,7 @@
             // Date string
             //var id = jsCalendar.tools.dateToString(date, date_format, "en");
             var id = date;
-            console.log('ididididid',id)
+            // console.log('ididididid',id)
             // Set title
             elements.title.textContent = id;
             // Clear old events

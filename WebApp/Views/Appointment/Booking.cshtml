@@ -589,8 +589,10 @@
                 elements.list.appendChild(div);
                 div.addEventListener("click", (function (date, index) {
                     return function () {
-                        let tId = moment(date).format("DD/MM/YYYY")
-                        hel = moment(date).set({ h: events[tId][index] });
+                        console.log('date', date, 'events', events, 'index', index)
+                        let tId = moment(date).format("MM/DD/YYYY")
+                        hel = moment(date).set({ h: events[date][index] });
+                        console.log(hel)
                     }
                 })(date, i), false);
             }
