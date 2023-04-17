@@ -94,12 +94,14 @@
         <div class="col-lg-4 col-md-5 col-sm-12">
             @if (User.IsInRole("admin"))
             {
-                <a asp-area=""
-               asp-controller="Home"
-               asp-route-id="@Model.Id"
-               asp-action="GenerateWttForUser"
-               type="submit"
-               class="btn btn-primary w-100">
+                <a 
+                    asp-area=""
+                    asp-controller="Home"
+                    asp-route-id="@Model.Id"
+                    asp-action="GenerateWttForUser"
+                    type="submit"
+                    class="btn btn-primary w-100"
+                >
                     Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()
                 </a>
                 <table class="table table-ww table-bordered table-striped table-hover">
