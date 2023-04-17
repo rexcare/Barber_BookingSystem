@@ -1,7 +1,5 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700;900&display=swap');
 
-
-
 .form-content label, .was-validated .form-check-input:invalid ~ .form-check-label, .was-validated .form-check-input:valid ~ .form-check-label {
     color: #fff;
 }
@@ -43,12 +41,12 @@ input[type=text], input[type=tel], input[type=email] {
     box-shadow: none;
 }
 
-    .btn-warning:hover, .btn-warning:focus, .btn-warning:active {
-        background-color: #dd9d43;
-        outline: none !important;
-        border: none !important;
-        box-shadow: none;
-    }
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active {
+    background-color: #dd9d43;
+    outline: none !important;
+    border: none !important;
+    box-shadow: none;
+}
 
 .form-content textarea {
     position: static !important;

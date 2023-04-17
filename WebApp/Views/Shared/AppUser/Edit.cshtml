@@ -32,7 +32,7 @@
     <div class="row">
         <div class="col-lg-8 col-md-7 col-sm-12">
             <div class="mb-2">
-                <div class="card border-primary p-3">
+                <div class="card border p-3">
                 <form asp-action="Edit">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
@@ -135,12 +135,6 @@
     </div>
 </div>
 
-
-
-
-
-
-
 @foreach (var item in appointments!)
 {
     var customer = (Customer?)item.Customer;
@@ -156,7 +150,7 @@
                     <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
                         <h5 class="text-primary">Appointment</h5>
 
-                        <div class="card border-primary mb-3" style="min-width: 16rem; height: 100%; width: 100%">
+                        <div class="card border mb-3" style="min-width: 16rem; height: 100%; width: 100%">
                             <div class="card-body text-primary" style="display:flex">
                                 <div class="calendar-icon">
                                     <i class="fa fa-light fa-calendar text-secondary" style="font-size:100px; text-decoration: none;"></i>
@@ -185,7 +179,7 @@
 
                     @if (User.IsInRole("admin"))
                     {
-                        <button type="button" class="btn btn-danger w-50">Cancel appointment</button>
+                        <button type="button" class="btn btn-danger w-50">Cancel Appointment</button>
                     }
 
 
@@ -193,7 +187,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="b-@item?.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal fade" id="d-@item?.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -207,32 +201,32 @@
 
                 </div>
                 <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
-                    <a class="btn btn-danger w-50"
-                   asp-action="DeleteAppointment"
-                   asp-route-id="@item?.Id"
-                   asp-route-uid="@User.GetUserId()">
+                    <button 
+                        class="btn btn-danger w-50"
+                        onclick="cancel('@item?.Id')"
+                    >
                         Cancel Appointment
-                    </a>
-                    <button type="button" class="btn btn-info w-50">Close</button>
+                    </button>
+                    <button type="button" class="btn btn-info w-50" data-bs-dismiss="modal" aria-label="Close">Close</button>
                 </div>
             </div>
         </div>
     </div>
-
 }
 
-<link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
-<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
+<link rel="stylesheet" type="text/css" href="~/css/calendar.css" asp-append-version="true" />
+<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css" asp-append-version="true">
 
-<script src="~/js/moment.js"></script>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/js/moment.js"></script>
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="~/js/jsCalendar.js"></script>
 
 <script>
 
     function cancel(id) {
         let data = {
-            id: id
+            id: id,
+            uid: '@User?.GetUserId()'
         }
         $.ajax({
             type: 'POST',
@@ -241,11 +235,11 @@
             data: data,
             success: function (result) {
                 if (result == "error") {
-                    alert('Failed to reserve the Data');
+                    alert('Failed to cancel that appointment');
                     console.log('Failed ');
                 }
                 else {
-                    alert('Successfully reserve Data ');
+                    location.reload()
                 }
             },
             error: function () {
@@ -255,11 +249,18 @@
         })
     }
 
-    function toggleModal(id) {
+    function toggleModal(id, type) {
         console.log(id)
-        var myModal = new bootstrap.Modal(document.getElementById('a-' + id), {
-            keyboard: false
-        });
+        if(type === "info"){
+            var myModal = new bootstrap.Modal(document.getElementById('a-' + id), {
+                keyboard: false
+            });
+        }
+        else if(type === "delete") {
+            var myModal = new bootstrap.Modal(document.getElementById('d-' + id), {
+                keyboard: false
+            });
+        }
 
         myModal.toggle();
     }
@@ -323,7 +324,6 @@
                         mindate = moment().format("DD/MM/YYYY");
                     else
                         mindate = moment(result[0].date).format("DD/MM/YYYY");
-                    console.log('333', mindate)
                     calendar.min(mindate);
                     calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
                     calendar.set(mindate);
@@ -354,7 +354,6 @@
                         "#8540F5",
                         "#4DD4AC"
                     ];
-                    console.log('11111111', mainData)
                     for (i = 0; i < mainData.length; i++) {
                         let tId = moment(mainData[i].StartTime).format("DD/MM/YYYY");
                         console.log(tId)
@@ -434,22 +433,54 @@
                 for (var i = 0; i < events[id].length; i++) {
                     div = document.createElement("div");
                     div.className = "event-item-i";
-                    let time = ''
+                    elements.list.appendChild(div);
+
+                    sText = document.createElement("div");
+                    sText.className = "";
+                    let time = '';
                     if (events[id][i] < 10)
                         time = `0${events[id][i].time} : 00`;
                     else
                         time = `${events[id][i].time} : 00`;
-                    div.textContent = time + " " + events[id][i].name + ". ";
-                    elements.list.appendChild(div);
-                    div.addEventListener("click", (function (date, index) {
+                    sText.textContent = time + " " + events[id][i].name + " ";
+                    div.appendChild(sText);
+                    sText.addEventListener("click", (function (date, index) {
                         return function () {
-                            toggleModal(events[id][index]?.id)
+                            toggleModal(events[id][index]?.id, "info")
                         }
                     })(date, i), false);
+
                     sType = document.createElement("span");
-                    sType.className = "bg-info rounded-pill mx-2";
+                    sType.className = "bg-info rounded-pill mx-2 px-2";
                     sType.textContent = " " + events[id][i].service + " ";
-                    div.appendChild(sType);
+                    sText.appendChild(sType);
+
+                    sActionDiv = document.createElement("div");
+                    div.appendChild(sActionDiv);
+
+                    sEdit = document.createElement("a");
+                    sEdit.className = "btn btn-success btn-sm btn-edit rounded-circle";
+                    sEdit.setAttribute("href", `/Appointment/Edit/${events[id][i].id}`);
+                    sActionDiv.appendChild(sEdit);
+                    
+                    sEditIcon = document.createElement("i");
+                    sEditIcon.className= "fas fa-edit"
+                    sEdit.appendChild(sEditIcon);
+
+                    sDelete = document.createElement("a");
+                    sDelete.className = "btn btn-danger btn-sm btn-del rounded-circle";
+                    sDelete.setAttribute("href", `javascript: void(0)`);
+                    sActionDiv.appendChild(sDelete);
+
+                    sDeleteIcon = document.createElement("i");
+                    sDeleteIcon.className = "far fa-calendar-times"
+                    sDelete.appendChild(sDeleteIcon);
+
+                    sDelete.addEventListener("click", (function (date, index) {
+					    return function () {
+                            toggleModal(events[id][index]?.id, "delete")
+					    }
+					})(date, i), false);
                 }
             } else {
                 elements.subtitle.textContent = "No events";
@@ -471,7 +502,6 @@
         });
 
     }
-
 </script>
 
 @section Scripts {

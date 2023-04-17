@@ -1,28 +1,11 @@
-html {
-  font-size: 14px;
+.main-panel {
+  margin-top: 94px;
 }
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 .div-space {
   position: relative;
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
-  justify-content: center;
-  align-items: center;
-}
 label, input {
   display: block;
 }
@@ -270,9 +253,16 @@ ul {
     min-width: 550px;
 }
 
+.workTimeTemplate-panel {
+    width: 50%;
+    min-width: 500px;
+}
+
 @media only screen and (max-width: 700px) {
-    .delete-confirm-card {
+    .delete-confirm-card, .workTimeTemplate-panel {
         width: 100%;
         min-width: none;
     }
 }
+
+

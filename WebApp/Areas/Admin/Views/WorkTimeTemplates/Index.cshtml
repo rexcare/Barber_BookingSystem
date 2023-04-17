@@ -3,12 +3,14 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+<div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="row">
+<div class="text-end">
+    <a class="btn btn-primary" asp-action="create"><i class="fas fa-calendar-plus"></i>&nbsp&nbsp Create New</a>
+        </div>
+    </div>
 <table class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
@@ -34,7 +36,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.StartTime)
@@ -55,11 +57,13 @@
                 @Html.DisplayFor(modelItem => item.StopTime2)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i>&nbsp&nbspEdit</a>
+                <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i>&nbsp&nbspDetails</a>
+                <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-user-times"></i>&nbsp&nbspDelete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>
+
+</div>

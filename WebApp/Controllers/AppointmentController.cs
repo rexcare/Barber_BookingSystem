@@ -4,6 +4,7 @@ using App.Domain.Identity;
 using Base.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NuGet.Protocol;
@@ -160,7 +161,53 @@ public class AppointmentController : Controller
 
         await _context.SaveChangesAsync();
         // return RedirectToAction(nameof(Index));
-        return RedirectToAction(nameof(BookList), new { id = uid });
+        return Json(uid);
+    }
+
+    public async Task<IActionResult> Edit(Guid? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        //var appointment = _context.Appointments.Where(x => x.Id == id);
+        var appointment = _context.Appointments.Where(c => c.Id.Equals(id)).Include(c => c.Customer).Include(s => s.Service).First();
+        ViewData["appointment"] = appointment;
+        var barbers = _userManager.Users.Where(x => x.Role == "user").Include(w => w.WorkTimes);
+        ViewData["barber"] = barbers;
+
+        return View();
+    }
+
+    public async Task<IActionResult> UpdateAppointment([Bind("Id,ServiceId,AppUserId,StartTime,CustomerId")] Appointment appointment)
+    {
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _context.Update(appointment);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AppointmentExists(appointment.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return Json("success");
+        }
+        return Json("error");
+    }
+
+    private bool AppointmentExists(Guid id)
+    {
+        return (_context.Appointments?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 
     public async Task<IActionResult> getWorkingTimes(Guid? id)

@@ -33,14 +33,14 @@
                 <div class="step" data-target="#test-l-2">
                     <button type="button" class="btn step-trigger">
                         <span class="bs-stepper-circle"><i class="fas fa-clock"></i></span>
-                        <span class="bs-stepper-label"></span>
+                        <span class="bs-stepper-label">Time</span>
                     </button>
                 </div>
                 <div class="line"></div>
                 <div class="step" data-target="#test-l-3">
                     <button type="button" class="btn step-trigger">
                         <span class="bs-stepper-circle"><i class="fas fa-address-card"></i></span>
-                        <span class="bs-stepper-label"></span>
+                        <span class="bs-stepper-label">Contact</span>
                     </button>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                             </select>
                             <div class="valid-feedback">You selected a position!</div>
                             <div class="invalid-feedback">Please select a position!</div>
-                            <div class="text-primary">
+                            <div class="text-dark">
                                 @if (counts == 0)
                                 {
                                     <p>There is no available barber</p>
@@ -142,9 +142,9 @@
         </div>
     </div>
     <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-4">
-        <div class="card border-primary mb-3" style="min-width: 16rem;">
+        <div class="card border mb-3" style="min-width: 16rem;">
             <div class="card-header" style="text-align: center">Service Detail</div>
-            <div class="card-body text-primary">
+            <div class="card-body text-dark">
                 <figure>
                     <blockquote class="blockquote">
                         <p style="text-transform: capitalize;">@Service?.Name</p>
@@ -165,7 +165,6 @@
                     </blockquote>
                 </figure>
             </div>
-            @*<div class="card-footer bg-transparent border-primary" style="text-align: center">@@#@@</div>*@
         </div>
     </div>
 </div>
@@ -180,11 +179,10 @@
             </div>
             <div class="modal-body">
                 <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                    <h5 class="text-primary">Popover in a modal</h5>
-                    <p>This triggers a popover on click.</p>
+                    <h5 class="text-dark">Appointment</h5>
                 </div>
-                <div class="card border-primary mb-3" style="min-width: 16rem; height: 100%;">
-                    <div class="card-body text-primary" style="display:flex">
+                <div class="card border mb-3" style="min-width: 16rem; height: 100%;">
+                    <div class="card-body text-dark" style="display:flex">
                         <div class="calendar-icon">
                             <a asp-action="index" class="text-secondary" style="font-size:100px; text-decoration: none;"><i class="fa fa-light fa-calendar"></i></a>
                         </div>
@@ -197,25 +195,9 @@
                                 <figcaption class="blockquote-footer">
                                     <p>@Service?.Description</p>
                                     <p>@Service?.TimeSpan</p>
-                                    <p>@Service?.Price</p>
+                                    <p>$@Service?.Price</p>
                                 </figcaption>
                             </figure>
-                            <hr />
-                            <div class="w-50" style="float: right">
-                                <div class="space-between">
-                                    <p>Subtotal</p>
-                                    <p>$@Service?.Price</p>
-                                </div>
-                                <div class="space-between">
-                                    <p>Sales Tax</p>
-                                    <p>$0</p>
-                                </div>
-                                <hr />
-                                <div class="space-between">
-                                    <p>Total</p>
-                                    <p>$@Service?.Price</p>
-                                </div>
-                            </div>
                         </div>
 
                     </div>

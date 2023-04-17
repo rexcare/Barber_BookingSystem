@@ -50,10 +50,17 @@
 }
 
 #events .list .event-item-i {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     line-height: 24px;
     min-height: 24px;
     padding: 2px 5px;
     border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+#events .list .event-item-i .btn-edit {
+    margin-right: 5px;
 }
 
 #events .list .event-item-i .close {
