@@ -45,11 +45,18 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         // var uuid = User.GetUserId();
-        if (User.IsInRole("user")) {
+        var bal = User.IsInRole("user");
+        if (bal) {
             var uuid = User.GetUserId();
             var appointments = _context.Appointments.Where(a=>a.AppUserId.Equals(uuid)).Include(c => c.Customer).Include(s => s.Service);
             ViewData["appointments"] = appointments;
         }
+        /*else
+        {
+            var appointments = _context.Appointments.First();
+            ViewData["appointments"] = appointments;
+        }*/
+        
         var users = _userManager.Users.Include(x => x.WorkTimeTemplate);
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
         ViewBag.WTT = wtt;

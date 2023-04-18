@@ -8,7 +8,7 @@
 @model IEnumerable<App.Domain.Identity.AppUser>
 @{
     var appointments = (IEnumerable<Appointment>?)ViewData["appointments"];
-
+    var bal = appointments == null ? "isNull" : "notNull";
     ViewData["Title"] = "Home Page";
     CompanyInfo wtt = ViewBag.Wtt;
     int index = 0;
@@ -105,6 +105,7 @@
         <!-- Shedule-->
         @if (User.IsInRole("user"))
         {
+            <input type="hidden" id="uuid" value="@User.GetUserId()" />
             <div class="row main-box">
                 <h1>My Schedule</h1>
             </div>
@@ -307,61 +308,62 @@
     </footer>
 }
 
-@if(appointments?.Count() != 0)
-@foreach (var item in appointments!)
+@if (bal == "notNull")
 {
-    var customer = (Customer?)item.Customer;
-    <!-- Modal -->
-    <div class="modal fade" id="a-@item.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                        <h5 class="text-primary">Appointment</h5>
+    @foreach (var item in appointments!)
+    {
+        var customer = (Customer?)item.Customer;
+        <!-- Modal -->
+        <div class="modal fade" id="a-@item.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                            <h5 class="text-primary">Appointment</h5>
 
-                        <div class="card border mb-3" style="min-width: 16rem; height: 100%; width: 100%">
-                            <div class="card-body text-primary" style="display:flex">
-                                <div class="calendar-icon">
-                                    <i class="fa fa-light fa-calendar text-secondary" style="font-size:100px; text-decoration: none;"></i>
-                                </div>
-                                <div class="w-100">
-                                    <figure>
-                                        <blockquote class="blockquote text-black">
-                                            <p style="text-transform: capitalize;">Name : @item?.Customer?.FirstLastName</p>
-                                            <p id="bookTime">Time&nbsp;&nbsp;: @item?.StartTime</p>
-                                        </blockquote>
-                                        <figcaption class="blockquote-footer">
-                                            <p>Type&nbsp;: @item?.Service?.Name</p>
-                                            <p>Span&nbsp;: @item?.Service?.TimeSpan</p>
-                                            <p>Price&nbsp;: $@item?.Service?.Price</p>
-                                        </figcaption>
-                                    </figure>
-                                </div>
+                            <div class="card border mb-3" style="min-width: 16rem; height: 100%; width: 100%">
+                                <div class="card-body text-primary" style="display:flex">
+                                    <div class="calendar-icon">
+                                        <i class="fa fa-light fa-calendar text-secondary" style="font-size:100px; text-decoration: none;"></i>
+                                    </div>
+                                    <div class="w-100">
+                                        <figure>
+                                            <blockquote class="blockquote text-black">
+                                                <p style="text-transform: capitalize;">Name : @item?.Customer?.FirstLastName</p>
+                                                <p id="bookTime">Time&nbsp;&nbsp;: @item?.StartTime</p>
+                                            </blockquote>
+                                            <figcaption class="blockquote-footer">
+                                                <p>Type&nbsp;: @item?.Service?.Name</p>
+                                                <p>Span&nbsp;: @item?.Service?.TimeSpan</p>
+                                                <p>Price&nbsp;: $@item?.Service?.Price</p>
+                                            </figcaption>
+                                        </figure>
+                                    </div>
 
+                                </div>
                             </div>
                         </div>
+
                     </div>
+                    <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
+                        <button type="button" class="btn btn-primary w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
 
-                </div>
-                <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
-                    <button type="button" class="btn btn-primary w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
-
-                    @if (User.IsInRole("admin"))
-                    {
-                        <button type="button" class="btn btn-danger w-50">Cancel Appointment</button>
-                    }
+                        @if (User.IsInRole("admin"))
+                        {
+                            <button type="button" class="btn btn-danger w-50">Cancel Appointment</button>
+                        }
 
 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 }
-
 
 <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
 <link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
@@ -398,7 +400,6 @@
         }
         return false;
     }
-
     generatecalendar()
 
     async function generatecalendar() {
@@ -415,9 +416,8 @@
         // Create the calendar
         elements.calendar.className = "material-theme custom-green";
         var calendar = jsCalendar.new(elements.calendar);
-
         let data = {
-            Id: '@User.GetUserId()',
+            Id: document.getElementById("uuid").value,
         }
         var mindate = moment();
         var workTimes = [];
@@ -563,7 +563,7 @@
                     div.appendChild(sText);
 
                     sType = document.createElement("span");
-                    sType.className = "bg-info rounded-pill mx-2 px-2";
+                    sType.className = "mx-2 px-2 item-tag";
                     sType.textContent = " " + events[id][i].service + " ";
                     sText.appendChild(sType);
 
@@ -596,5 +596,4 @@
         });
 
     }
-
 </script>
