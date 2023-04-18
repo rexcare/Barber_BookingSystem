@@ -421,7 +421,7 @@
             // getDatetimes(date)
             // Date string
             //var id = jsCalendar.tools.dateToString(date, date_format, "en");
-            var id = date;
+            var id = moment(date).format("MM/DD/YYYY");
             // console.log('ididididid',id)
             // Set title
             elements.title.textContent = id;

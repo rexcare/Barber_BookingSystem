@@ -15,46 +15,35 @@
                 <div class="address-card card border p-3">
             <div>
                 <h4>WorkTimeTemplate</h4>
-                <hr />
-                <dl class="row">
-                    <dt class = "col-sm-4">
-                        @Html.DisplayNameFor(model => model.StartTime)
-                    </dt>
-                    <dd class = "col-sm-8">
-                        @Html.DisplayFor(model => model.StartTime)
-                    </dd>
-                    <dt class = "col-sm-4">
-                        @Html.DisplayNameFor(model => model.StopTime)
-                    </dt>
-                    <dd class = "col-sm-8">
-                        @Html.DisplayFor(model => model.StopTime)
-                    </dd>
-                    <dt class = "col-sm-4">
-                        @Html.DisplayNameFor(model => model.StartTime1)
-                    </dt>
-                    <dd class = "col-sm-8">
-                        @Html.DisplayFor(model => model.StartTime1)
-                    </dd>
-                    <dt class = "col-sm-4">
-                        @Html.DisplayNameFor(model => model.StopTime1)
-                    </dt>
-                    <dd class = "col-sm-8">
-                        @Html.DisplayFor(model => model.StopTime1)
-                    </dd>
-                    <dt class = "col-sm-4">
-                        @Html.DisplayNameFor(model => model.StartTime2)
-                    </dt>
-                    <dd class = "col-sm-8">
-                        @Html.DisplayFor(model => model.StartTime2)
-                    </dd>
-                    <dt class = "col-sm-4">
-                        @Html.DisplayNameFor(model => model.StopTime2)
-                    </dt>
-                    <dd class = "col-sm-8">
-                        @Html.DisplayFor(model => model.StopTime2)
-                    </dd>
-                </dl>
-    
+                        <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <td class="w-50">@Html.DisplayNameFor(model => model.StartTime)</td>
+                            <td>@Html.DisplayFor(model => model.StartTime)</td>
+                        </tr>
+                        <tr>
+                            <td class="w-50">@Html.DisplayNameFor(model => model.StopTime)</td>
+                            <td>@Html.DisplayFor(model => model.StopTime)</td>
+                        </tr>
+                        <tr>
+                            <td class="w-50">@Html.DisplayNameFor(model => model.StartTime1)</td>
+                            <td>@Html.DisplayFor(model => model.StartTime1)</td>
+                        </tr>
+                        <tr>
+                            <td class="w-50">@Html.DisplayNameFor(model => model.StopTime1)</td>
+                            <td>@Html.DisplayFor(model => model.StopTime1)</td>
+
+                        </tr>
+                        <tr>
+                            <td class="w-50">@Html.DisplayNameFor(model => model.StartTime2)</td>
+                            <td>@Html.DisplayFor(model => model.StartTime2)</td>
+                        </tr>
+                        <tr>
+                            <td class="w-50">@Html.DisplayNameFor(model => model.StopTime2)</td>
+                            <td>@Html.DisplayFor(model => model.StopTime2)</td>
+                        </tr>
+                    </tbody>
+                </table>
                 <form asp-action="Delete">
                     <input type="hidden" asp-for="Id" />
                     <input type="submit" value="Delete" class="btn btn-danger" />

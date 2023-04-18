@@ -15,6 +15,7 @@ using WebApp.Models;
 using System.Text.Json;
 using System;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace WebApp.Controllers;
 
@@ -43,6 +44,12 @@ public class HomeController : Controller
     /// <returns></returns>
     public IActionResult Index()
     {
+        // var uuid = User.GetUserId();
+        if (User.IsInRole("user")) {
+            var uuid = User.GetUserId();
+            var appointments = _context.Appointments.Where(a=>a.AppUserId.Equals(uuid)).Include(c => c.Customer).Include(s => s.Service);
+            ViewData["appointments"] = appointments;
+        }
         var users = _userManager.Users.Include(x => x.WorkTimeTemplate);
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
         ViewBag.WTT = wtt;

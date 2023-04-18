@@ -371,7 +371,7 @@
             // getDatetimes(date)
             // Date string
             // var id = jsCalendar.tools.dateToString(date, date_format, "en");
-            var id = date
+            var id = moment(date).format("MM/DD/YYYY");
             // Set date
             // current = new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, 'months').format("MM"), moment(mindate).format("DD"));
             console.log("curent", current)

@@ -171,7 +171,6 @@ public class AppointmentController : Controller
             return NotFound();
         }
 
-        //var appointment = _context.Appointments.Where(x => x.Id == id);
         var appointment = _context.Appointments.Where(c => c.Id.Equals(id)).Include(c => c.Customer).Include(s => s.Service).First();
         ViewData["appointment"] = appointment;
         var barbers = _userManager.Users.Where(x => x.Role == "user").Include(w => w.WorkTimes);

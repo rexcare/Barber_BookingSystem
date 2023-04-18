@@ -20,7 +20,7 @@
 
 #events {
     float: left;
-    width: 100%;
+    width: 98%;
     margin: 10px 20px 10px 5px;
 }
 
@@ -39,6 +39,7 @@
 }
 
 #events .list {
+
     height: 250px;
     overflow-y: auto;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -57,7 +58,8 @@
     line-height: 24px;
     min-height: 24px;
     padding: 2px 5px;
-    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 #events .list .event-item-i .btn-edit {

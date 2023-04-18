@@ -480,7 +480,7 @@
                         start2 = parseInt(result[j]?.startTime2?.substr(0, 2));
                         stop2 = parseInt(result[j]?.stopTime2?.substr(0, 2));
                         let tmp = [];
-                        let tId = moment(result[j]?.date).format("DD/MM/YYYY")
+                        let tId = moment(result[j]?.date).format("MM/DD/YYYY")
                         times[tId] = [];
                         for (i = 0; i < 24; i++) {
                             if ((((start - 1) < i && i < (stop)) || ((start1 - 1) < i && i < (stop1)) || ((start2 - 1) < i && i < (stop2)))) {
@@ -512,7 +512,7 @@
             }
             else {
                 for(i=0; i<result.length; i++){
-                    let tId = moment(result[i]).format("DD/MM/YYYY");
+                    let tId = moment(result[i]).format("MM/DD/YYYY");
                         let val = parseInt(moment(result[i]).subtract(3, 'hours').format("H"));
                         for (a = 0; a < times[tId]?.length; a++) {
                         if(val == times[tId][a])
@@ -565,8 +565,8 @@
         console.log("datedate", date)
         // getDatetimes(date)
         // Date string
-        // var id = jsCalendar.tools.dateToString(date, date_format, "en");
-        var id = date
+            // var id = jsCalendar.tools.dateToString(date, date_format, "en");
+            var id = moment(date).format("MM/DD/YYYY");
         // Set title
         elements.title.textContent = id;
         // Clear old events
@@ -604,7 +604,8 @@
     // Show current date events
         //showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, 'months').format("MM"), moment(mindate).format("DD")));
         // showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
-        showEvents(moment(mindate).format("DD/MM/YYYY"))
+        console.log('pre',moment(mindate).format("MM/DD/YYYY"))
+        showEvents(moment(mindate).format("MM/DD/YYYY"))
 
             // Add events
     calendar.onDateClick(function (event, date) {

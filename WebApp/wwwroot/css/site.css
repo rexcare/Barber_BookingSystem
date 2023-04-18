@@ -265,4 +265,7 @@ ul {
     }
 }
 
+.btn-action{
+  min-width: max-content;
+}
 

@@ -4,6 +4,7 @@
 @using App.Domain.Identity
 @using App.Domain
 @using Base.Extensions
+
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
 
@@ -12,25 +13,18 @@
     var index = 0;
 }
 
-
-
 <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
-
-<h1>Your Schedule</h1>
-<!-- Wrapper -->
-<div id="wrapper">
-    <!-- Calendar element -->
-    <div id="events-calendar" data-month-format="month YYYY"></div>
-
-    <div class="row" style="height: 100%">
-
-        <!-- Events -->
-        <div id="events" class="border"></div>
+    <h1>Your Schedule</h1>
+    <!-- Wrapper -->
+    <div id="wrapper">
+        <!-- Calendar element -->
+        <div id="events-calendar" data-month-format="month YYYY"></div>
+        <div class="row" style="height: 100%">
+            <!-- Events -->
+            <div id="events" class="border"></div>
+        </div>
     </div>
 </div>
-
-</div>
-
 
 @foreach (var item in Model)
 {
@@ -135,11 +129,7 @@
             </div>
         </div>
     </div>
-
 }
-
-<link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
-<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
 
 <style>
     #wrapper {
@@ -159,11 +149,10 @@
     }
 </style>
 
-<script src="~/js/moment.js"></script>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
+<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
+
 <script type="text/javascript" src="~/js/jsCalendar.js"></script>
-
-
 
 <script>
     
@@ -296,7 +285,7 @@
                     ];
                     console.log('11111111',mainData)
                     for (i = 0; i < mainData.length; i++) {
-                        let tId = moment(mainData[i].StartTime).format("DD/MM/YYYY");
+                        let tId = moment(mainData[i].StartTime).format("MM/DD/YYYY");
                         console.log(tId)
                         let val = parseInt(moment(mainData[i].StartTime).subtract(3, 'hours').format("H"));
                             // If no events, create list
@@ -345,13 +334,13 @@
         calendar.refresh();
 
 
-        var date_format = "DD/MM/YYYY";
+        var date_format = "MM/DD/YYYY";
 
         var showEvents = function (date) {
             console.log("datedate", date)
             // getDatetimes(date)
             // Date string
-            var id = date;
+            var id = moment(date).format("MM/DD/YYYY");
             // Set title
             elements.title.textContent = id;
             // Clear old events
