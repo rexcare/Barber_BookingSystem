@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @using App.Domain.Identity
 @using Base.Extensions
+@model IEnumerable<App.Domain.Appointment>
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
 
@@ -9,6 +10,8 @@
     ViewData["Title"] = "Booking ";
     var Service = (Service?)ViewData["service"];
     var Barbers = (IEnumerable<AppUser>?)ViewData["barber"];
+    var uid = User.GetUserId();
+    var phonenumber = _userManager.Users.Where(w => w.Id == uid).Select(s => s.PhoneNumber).First();
     int counts = 0;
 }
 
@@ -108,25 +111,53 @@
                     <div class="row">
                         <form class="requires-validation" novalidate id="contactForm">
                             <div class="col-md-12">
-                                <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" required>
+                                @if(User.IsInRole("customer"))
+                                {
+                                    <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" value="@User.GetUserFirstName()" required>
+                                }
+                                else
+                                {
+                                    <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" required>
+                                }
                                 <div class="valid-feedback">Fist name field is valid!</div>
                                 <div class="invalid-feedback">First name field cannot be blank!</div>
                             </div>
 
                             <div class="col-md-12">
-                                <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Koppel" required>
+                                @if(User.IsInRole("customer"))
+                                {
+                                    <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Koppel" value="@User.GetUserLastName()" required>
+                                }
+                                else
+                                {
+                                    <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Koppel" required>
+                                }
                                 <div class="valid-feedback">Last name field is valid!</div>
                                 <div class="invalid-feedback">Last name field cannot be blank!</div>
                             </div>
 
                             <div class="col-md-12">
-                                <input class="form-control" type="email" id="email" name="email" placeholder="admin@example.com" required>
+                                @if(User.IsInRole("customer"))
+                                {
+                                        <input class="form-control" type="email" id="email" name="email" placeholder="admin@example.com" value="@User.GetUserEmail()" required>
+                                    }
+                                else
+                                {
+                                    <input class="form-control" type="email" id="email" name="email" placeholder="admin@example.com" required>
+                                }
                                 <div class="valid-feedback">Email field is valid!</div>
                                 <div class="invalid-feedback">Email field cannot be blank!</div>
                             </div>
 
                             <div class="col-md-12">
-                                <input class="form-control" type="text" id="phone" name="phone" placeholder="3726329598" required>
+                                @if(User.IsInRole("customer"))
+                                {
+                                        <input class="form-control" type="text" id="phone" name="phone" placeholder="3726329598" value="@phonenumber" required>
+                                }
+                                else
+                                {
+                                    <input class="form-control" type="text" id="phone" name="phone" placeholder="3726329598" required>
+                                }
                                 <div class="valid-feedback">PhoneNumber field is valid!</div>
                                 <div class="invalid-feedback">PhoneNumber field cannot be blank!</div>
                             </div>

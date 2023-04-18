@@ -106,7 +106,7 @@ public class AppointmentController : Controller
             return NotFound();
         }
 
-        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(w => w.Service).Include(w => w.Customer);
+        var appointments = _context.Appointments.Where(c => c.CustomerId.Equals(id)).Include(w => w.Service).Include(w => w.Customer);
         /*foreach(var appointment in appointments)
         {
             appointment.Service = _context.Services.Find(appointment.ServiceId);

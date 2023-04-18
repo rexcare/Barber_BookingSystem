@@ -4,10 +4,9 @@
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
 
-
 <ul class="navbar-nav">
     @{
-        if (!User.IsInRole("admin") && !User.IsInRole("user"))
+        if (!User.IsInRole("admin") && !User.IsInRole("user") && !User.IsInRole("customer"))
         {
             <li class="nav-item">
                 <a class="nav-link " asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})" title="Login">Login</a>
@@ -16,19 +15,19 @@
                 <a class="nav-link " asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})" title="Register">Register</a>
             </li>
         }
-        
-        
         if (User.IsInRole("admin"))
         {
             <li class="nav-item dropdown">
-                <a title="Manage"
-               class="nav-link dropdown-toggle "
-               href="javascript:{}"
-               id="navbarLangDropdown"
-               role="button"
-               data-bs-toggle="dropdown"
-               aria-haspopup="true"
-               aria-expanded="false">
+                <a 
+                    title="Manage"
+                    class="nav-link dropdown-toggle"
+                    href="javascript:{}"
+                    id="navbarLangDropdown"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                >
                     @(User.GetUserName())
                 </a>
 
@@ -44,25 +43,25 @@
 
                     <form class="form-inline text-dark" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})">
                         <button type="submit" class="nav-link btn btn-link text-dark"><i class="fas fa-sign-out-alt mx-1"></i>Logout</button>
-                </form>
+                    </form>
                 </div>
             </li>
         }
-        if (User.IsInRole("user") && !User.IsInRole("admin"))
+        if (User.IsInRole("user") || User.IsInRole("customer") && !User.IsInRole("admin"))
         {
             <li class="nav-item dropdown">
                 <a 
-                   title="Manage"
-               class="nav-link dropdown-toggle"
-                   href="javascript:{}"
-                   id="navbarLangDropdown"
-                   role="button"
-                   data-bs-toggle="dropdown"
-                   aria-haspopup="true"
-                   aria-expanded="false"
+                    title="Manage"
+                    class="nav-link dropdown-toggle"
+                    href="javascript:{}"
+                    id="navbarLangDropdown"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
                 >
                     @(User.GetUserName())
-               </a>
+                </a>
 
                 <div class="dropdown-menu" aria-labelledby="navbarLangDropdown" style="right: 0; left: auto; min-width: 7rem">
                     <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><i class="fas fa-user mx-1"></i>Profile</a>

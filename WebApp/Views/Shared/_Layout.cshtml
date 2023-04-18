@@ -52,7 +52,7 @@
                             <a class="nav-link" asp-area="" asp-controller="Appointment" asp-action="Index">Make an Appointment</a>
                         </li>
                     }
-                    @if (User.IsInRole("user"))
+                    @if (User.IsInRole("customer"))
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Appointment" asp-route-id="@User.GetUserId()" asp-action="BookList">Appointments</a>

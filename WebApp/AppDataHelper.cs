@@ -81,7 +81,8 @@ public static class AppDataHelper
             var roles = new (string name, string displayName)[]
             {
                 ("admin", "System administrator"),
-                ("user", "Normal system user")
+                ("user", "Normal system user"),
+                ("customer", "Normal customer"),
             };
 
             foreach (var roleInfo in roles)
@@ -129,6 +130,7 @@ public static class AppDataHelper
                     var identityResult = userManager.CreateAsync(user, userInfo.password).Result;
                     identityResult =  userManager.AddClaimAsync(user, new Claim("aspnet.firstname",user.FirstName)).Result;
                     identityResult =  userManager.AddClaimAsync(user, new Claim("aspnet.lastname",user.LastName)).Result;
+                    identityResult = userManager.AddClaimAsync(user, new Claim("aspnet.phonenumber", user.PhoneNumber)).Result;
 
                     if (!identityResult.Succeeded)
                     {

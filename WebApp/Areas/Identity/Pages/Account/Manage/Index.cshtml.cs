@@ -121,9 +121,11 @@ namespace WebApp.Areas.Identity.Pages.Account.Manage
        
             await _userManager.RemoveClaimAsync(user, new Claim("aspnet.firstname",firstName));
             await _userManager.RemoveClaimAsync(user, new Claim("aspnet.lastname",lastName));
-            
+            await _userManager.RemoveClaimAsync(user, new Claim("aspnet.phonenumber", lastName));
+
             await _userManager.AddClaimAsync(user, new Claim("aspnet.firstname",Input.FirstName));
             await _userManager.AddClaimAsync(user, new Claim("aspnet.lastname",Input.LastName));
+            await _userManager.AddClaimAsync(user, new Claim("aspnet.phonenumber",Input.LastName));
             // user.UserName = user.FirstName + " " + user.LastName;
             user.FirstName = Input.FirstName;
             user.LastName = Input.LastName;

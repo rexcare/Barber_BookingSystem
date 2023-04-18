@@ -28,7 +28,7 @@ using Microsoft.Extensions.Logging;
 namespace WebApp.Areas.Identity.Pages.Account
 {
     /*[Authorize(Roles ="admin")]*/
-    public class RegisterModel : PageModel
+    public class Register_CustomerModel : PageModel
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
@@ -38,7 +38,7 @@ namespace WebApp.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly AppDbContext _context;
 
-        public RegisterModel(
+        public Register_CustomerModel(
             UserManager<AppUser> userManager,
             IUserStore<AppUser> userStore,
             SignInManager<AppUser> signInManager,
@@ -88,17 +88,17 @@ namespace WebApp.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
-            
+
             [Required]
             [Display(Name = "First name")]
             [StringLength(128, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
             public string FirstName { get; set; }
-            
+
             [Required]
             [Display(Name = "Last name")]
             [StringLength(128, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
             public string LastName { get; set; }
-            
+
             [Required]
             [StringLength(128, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
             public string Phone { get; set; }
@@ -112,11 +112,10 @@ namespace WebApp.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
-            
-            public bool Roles { get; set; }
-            
-            public Guid WorkTimeTemplateId { get; set; }
 
+            public bool Roles { get; set; }
+
+            public Guid WorkTimeTemplateId { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -128,7 +127,7 @@ namespace WebApp.Areas.Identity.Pages.Account
         }
 
 
-        public async Task OnGetAsync(string returnUrl = null) 
+        public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -147,48 +146,28 @@ namespace WebApp.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-                
-                
+
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.PhoneNumber = Input.Phone;
-                user.WorkTimeTemplateId = Input.WorkTimeTemplateId;
+                var id = _context.WorkTimeTemplates.Select(x => x.Id).FirstOrDefault();
+                user.WorkTimeTemplateId = id;
                 Console.WriteLine("======================================");
+                Console.WriteLine(user.WorkTimeTemplateId);
                 Console.WriteLine("======================================");
-                Console.WriteLine("======================================");
+                user.WorkTimeTemplate = _context.WorkTimeTemplates.First();
+                user.Role = "customer";
 
-                user.WorkTimeTemplate =
-                    _context.WorkTimeTemplates.FirstOrDefault(x => x.Id == Input.WorkTimeTemplateId);
-
-
-                if (Input.Roles)
-                {
-                    user.Role = "admin";
-                }
-                else
-                {
-                    user.Role = "user";
-                }
-                
-                
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                
 
 
-                result = await _userManager.AddClaimAsync(user, new Claim("aspnet.firstname",user.FirstName));
-                result = await _userManager.AddClaimAsync(user, new Claim("aspnet.lastname",user.LastName));
-                result = await _userManager.AddClaimAsync(user, new Claim("aspnet.phonenumber", user.LastName));
-                if (Input.Roles)
-                {
-                    result = await _userManager.AddToRoleAsync(user, "admin");
-                }
-                else
-                {
-                    result = await _userManager.AddToRoleAsync(user, "user");
-                }
-                
+                result = await _userManager.AddClaimAsync(user, new Claim("aspnet.firstname", user.FirstName));
+                result = await _userManager.AddClaimAsync(user, new Claim("aspnet.lastname", user.LastName));
+                result = await _userManager.AddClaimAsync(user, new Claim("aspnet.phonenumber", user.PhoneNumber));
+                result = await _userManager.AddToRoleAsync(user, "customer");
 
-             
+
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
@@ -209,8 +188,8 @@ namespace WebApp.Areas.Identity.Pages.Account
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
-                        // await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                    // await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)
                 {

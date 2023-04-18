@@ -63,8 +63,8 @@
 }
 
 .item-tag {
-    transform: skew(-20deg);
-    background-color: #5CB85C;
+    border-radius: 3px;
+    background-color: #c9d4c9;
 }
 
 #events .list .event-item-i .btn-edit {

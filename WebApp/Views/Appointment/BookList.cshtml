@@ -16,14 +16,45 @@
 <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
     <h1>Your Schedule</h1>
     <!-- Wrapper -->
-    <div id="wrapper">
-        <!-- Calendar element -->
-        <div id="events-calendar" data-month-format="month YYYY"></div>
-        <div class="row" style="height: 100%">
-            <!-- Events -->
-            <div id="events" class="border"></div>
-        </div>
-    </div>
+    @if (User.IsInRole("admin"))
+    {
+        <a asp-area=""
+       asp-controller="Home"
+       asp-route-id="Model?.Id"
+       asp-action="GenerateWttForUser"
+       type="submit"
+       class="btn btn-primary w-100">
+            Book now
+        </a>
+        <table class="table table-ww table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        Work Time
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Appointment item in Model!)
+                {
+                    <tr>
+                        <td>
+                            <a asp-area="Admin" asp-controller="WorkTimes" asp-action="Edit" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item?.Id">@item?.Service?.Name</a>
+                        </td>
+                        <td>
+                            <a asp-area="" asp-controller="Home" asp-action="DeleteWW" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item?.Id"> - </a>
+                        </td>
+
+                    </tr>
+
+
+                }
+            </tbody>
+        </table>
+    }
 </div>
 
 @foreach (var item in Model)
