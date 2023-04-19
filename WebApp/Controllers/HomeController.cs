@@ -58,7 +58,7 @@ public class HomeController : Controller
             ViewData["appointments"] = appointments;
         }*/
         
-        var users = _userManager.Users.Include(x => x.WorkTimeTemplate);
+        var users = _userManager.Users.Where(w=>w.Role=="user").Include(x => x.WorkTimeTemplate);
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
         ViewBag.WTT = wtt;
         var services = _context.Services.ToList();
