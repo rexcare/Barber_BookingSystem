@@ -76,6 +76,9 @@ public class AppointmentController : Controller
     {
         if (ModelState.IsValid)
         {
+            var oldCustomer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == customer.Email && c.Phone == customer.Phone);
+            if(oldCustomer != null)
+                return Json(oldCustomer.Id);
             customer.Id = Guid.NewGuid();
             _context.Add(customer);
             await _context.SaveChangesAsync();
@@ -106,12 +109,11 @@ public class AppointmentController : Controller
             return NotFound();
         }
 
-        var appointments = _context.Appointments.Where(c => c.CustomerId.Equals(id)).Include(w => w.Service).Include(w => w.Customer);
-        /*foreach(var appointment in appointments)
-        {
-            appointment.Service = _context.Services.Find(appointment.ServiceId);
-            appointment.Customer = _context.Customers.Find(appointment.CustomerId);
-        }*/
+        var user = _userManager.Users.First(u => u.Id == id);
+        if (user== null) return NotFound();
+        var customer = _context.Customers.First(f => f.Email == user.Email);
+        if (customer == null) return NotFound();
+        var appointments = _context.Appointments.Where(c => c.CustomerId.Equals(customer.Id)).Include(w => w.Service).Include(w => w.AppUser);
         return View(await appointments.ToListAsync());
     }
 

@@ -10,8 +10,12 @@
     ViewData["Title"] = "Booking ";
     var Service = (Service?)ViewData["service"];
     var Barbers = (IEnumerable<AppUser>?)ViewData["barber"];
-    var uid = User.GetUserId();
-    var phonenumber = _userManager.Users.Where(w => w.Id == uid).Select(s => s.PhoneNumber).First();
+    var phonenumber = "";
+    if (User.IsInRole("customer"))
+    {
+        var uid = User.GetUserId();
+        phonenumber = _userManager.Users.Where(w => w.Id == uid).Select(s => s.PhoneNumber).First();
+    }
     int counts = 0;
 }
 
@@ -113,7 +117,7 @@
                             <div class="col-md-12">
                                 @if(User.IsInRole("customer"))
                                 {
-                                    <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" value="@User.GetUserFirstName()" required>
+                                        <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" value="@User.GetUserFirstName()" required readonly>
                                 }
                                 else
                                 {
@@ -126,7 +130,7 @@
                             <div class="col-md-12">
                                 @if(User.IsInRole("customer"))
                                 {
-                                    <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Koppel" value="@User.GetUserLastName()" required>
+                                        <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Koppel" value="@User.GetUserLastName()" required readonly>
                                 }
                                 else
                                 {
@@ -139,7 +143,7 @@
                             <div class="col-md-12">
                                 @if(User.IsInRole("customer"))
                                 {
-                                        <input class="form-control" type="email" id="email" name="email" placeholder="admin@example.com" value="@User.GetUserEmail()" required>
+                                        <input class="form-control" type="email" id="email" name="email" placeholder="admin@example.com" value="@User.GetUserEmail()" required readonly>
                                     }
                                 else
                                 {
@@ -152,7 +156,7 @@
                             <div class="col-md-12">
                                 @if(User.IsInRole("customer"))
                                 {
-                                        <input class="form-control" type="text" id="phone" name="phone" placeholder="3726329598" value="@phonenumber" required>
+                                        <input class="form-control" type="text" id="phone" name="phone" placeholder="3726329598" value="@phonenumber" required readonly>
                                 }
                                 else
                                 {

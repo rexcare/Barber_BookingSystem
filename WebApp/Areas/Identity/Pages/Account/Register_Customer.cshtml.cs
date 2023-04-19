@@ -152,18 +152,21 @@ namespace WebApp.Areas.Identity.Pages.Account
                 user.PhoneNumber = Input.Phone;
                 var id = _context.WorkTimeTemplates.Select(x => x.Id).FirstOrDefault();
                 user.WorkTimeTemplateId = id;
-                Console.WriteLine("======================================");
-                Console.WriteLine(user.WorkTimeTemplateId);
-                Console.WriteLine("======================================");
                 user.WorkTimeTemplate = _context.WorkTimeTemplates.First();
                 user.Role = "customer";
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
+                var customer = CreateCustomer();
+                customer.FirstName= Input.FirstName;
+                customer.LastName= Input.LastName;
+                customer.Phone = Input.Phone;
+                customer.Email= Input.Email;
+                _context.Add(customer);
+                await _context.SaveChangesAsync();
 
                 result = await _userManager.AddClaimAsync(user, new Claim("aspnet.firstname", user.FirstName));
                 result = await _userManager.AddClaimAsync(user, new Claim("aspnet.lastname", user.LastName));
-                result = await _userManager.AddClaimAsync(user, new Claim("aspnet.phonenumber", user.PhoneNumber));
                 result = await _userManager.AddToRoleAsync(user, "customer");
 
 
@@ -211,6 +214,20 @@ namespace WebApp.Areas.Identity.Pages.Account
             {
                 throw new InvalidOperationException($"Can't create an instance of '{nameof(AppUser)}'. " +
                     $"Ensure that '{nameof(AppUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
+        }
+
+        private Customer CreateCustomer()
+        {
+            try
+            {
+                return Activator.CreateInstance<Customer>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(Customer)}'. " +
+                    $"Ensure that '{nameof(Customer)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }

@@ -16,25 +16,38 @@
 <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
     <h1>Your Schedule</h1>
     <!-- Wrapper -->
-    @if (User.IsInRole("admin"))
+    @if (User.IsInRole("customer"))
     {
-        <a asp-area=""
-       asp-controller="Home"
-       asp-route-id="Model?.Id"
-       asp-action="GenerateWttForUser"
-       type="submit"
-       class="btn btn-primary w-100">
-            Book now
-        </a>
+        <div>
+            <a 
+                asp-area=""
+                asp-controller="Home"
+                asp-route-id="Model?.Id"
+                asp-action="GenerateWttForUser"
+                type="submit"
+                class="btn btn-primary"
+                style="float: right"
+            >
+                Book now
+            </a>
+        </div>
+        
         <table class="table table-ww table-bordered table-striped table-hover">
             <thead>
                 <tr>
                     <th>
-                        Work Time
+                        Time
                     </th>
                     <th>
-                        Action
+                        Service
                     </th>
+                    <th>
+                        Price
+                    </th>
+                    <th>
+                        Barber
+                    </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -42,15 +55,22 @@
                 {
                     <tr>
                         <td>
-                            <a asp-area="Admin" asp-controller="WorkTimes" asp-action="Edit" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item?.Id">@item?.Service?.Name</a>
+                            @item.StartTime
                         </td>
                         <td>
-                            <a asp-area="" asp-controller="Home" asp-action="DeleteWW" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item?.Id"> - </a>
+                            @item?.Service?.Name
                         </td>
-
+                        <td>
+                            @item?.Service?.Price
+                        </td>
+                        <td>
+                            @item?.AppUser?.FirstLastName
+                        </td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="toggleModal('@item?.Id', 'info')"><i class="fas fa-eye"></i></button>
+                            <button class="btn btn-danger btn-sm" onclick="toggleModal('@item?.Id', 'delete')"><i class="fas fa-user-times"></i></button>
+                        </td>
                     </tr>
-
-
                 }
             </tbody>
         </table>
@@ -61,7 +81,7 @@
 {
     var customer = (Customer?)item.Customer;
     <!-- Modal -->
-    <div class="modal fade" id="a-@item?.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal fade" id="a-@item.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -96,13 +116,12 @@
                     </div>
 
                 </div>
-                
                 <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
                     <button type="button" class="btn btn-primary w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
 
                     @if (User.IsInRole("admin"))
                     {
-                        <button type="button" class="btn btn-danger w-50">Cancel appointment</button>
+                        <button type="button" class="btn btn-danger w-50">Cancel Appointment</button>
                     }
 
 
@@ -111,51 +130,24 @@
         </div>
     </div>
     <div class="modal fade" id="d-@item?.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Confirm</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                        <h5 class="text-primary">Appointment</h5>
-
-                        <div class="card border mb-3" style="min-width: 16rem; height: 100%; width: 100%">
-                            <div class="card-body text-primary" style="display:flex">
-                                <div class="calendar-icon">
-                                    <i class="fa fa-light fa-calendar text-secondary" style="font-size:100px; text-decoration: none;"></i>
-                                </div>
-                                <div class="w-100">
-                                    <figure>
-                                        <blockquote class="blockquote text-black">
-                                            <p style="text-transform: capitalize;">Name : @item?.Customer?.FirstLastName</p>
-                                            <p id="bookTime">Time&nbsp;&nbsp;: @item?.StartTime</p>
-                                        </blockquote>
-                                        <figcaption class="blockquote-footer">
-                                            <p>Type  &nbsp; : @item?.Service?.Name</p>
-                                            <p>Span  &nbsp; : @item?.Service?.TimeSpan</p>
-                                            <p>Price &nbsp; : $@item?.Service?.Price</p>
-                                        </figcaption>
-                                    </figure>
-                                </div>
-
-                            </div>
-                        </div>
+                        <h5 class="text-primary">Confirm delete</h5>
                     </div>
 
                 </div>
-
                 <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
-                    <button type="button" class="btn btn-primary w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
-
-                    @if (User.IsInRole("admin"))
-                    {
-                        <button type="button" class="btn btn-danger w-50">Edit appointment</button>
-                        <button type="button" class="btn btn-danger w-50">Cancel appointment</button>
-                    }
-
-
+                    <button class="btn btn-danger w-50"
+                        onclick="cancel('@item?.Id')">
+                        Cancel Appointment
+                    </button>
+                    <button type="button" class="btn btn-info w-50" data-bs-dismiss="modal" aria-label="Close">Close</button>
                 </div>
             </div>
         </div>
@@ -189,7 +181,8 @@
     
     function cancel(id) {
         let data = {
-            id: id
+            id: id,
+            uid: '@User?.GetUserId()'
         }
         $.ajax({
             type: 'POST',
@@ -198,11 +191,11 @@
             data: data,
             success: function (result) {
                 if (result == "error") {
-                    alert('Failed to reserve the Data');
+                    alert('Failed to cancel that appointment');
                     console.log('Failed ');
                 }
                 else {
-                    alert('Successfully reserve Data ');
+                    location.reload()
                 }
             },
             error: function () {
@@ -210,14 +203,20 @@
                 console.log('Error occures ');
             }
         })
-        toggleModal();
     }
-    
-    function toggleModal(id) {
+
+    function toggleModal(id, type) {
         console.log(id)
-        var myModal = new bootstrap.Modal(document.getElementById('a-' + id), {
-            keyboard: false
-        });
+        if (type === "info") {
+            var myModal = new bootstrap.Modal(document.getElementById('a-' + id), {
+                keyboard: false
+            });
+        }
+        if (type === "delete") {
+            var myModal = new bootstrap.Modal(document.getElementById('d-' + id), {
+                keyboard: false
+            });
+        }
 
         myModal.toggle();
     }
