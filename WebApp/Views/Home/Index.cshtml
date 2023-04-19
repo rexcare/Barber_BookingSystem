@@ -11,13 +11,14 @@
     var bal = appointments == null ? "isNull" : "notNull";
     ViewData["Title"] = "Home Page";
     CompanyInfo wtt = ViewBag.Wtt;
+    var services = (IEnumerable<Service>?)ViewBag.Services;
     int index = 0;
 }
 
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
 
-@if (User.IsInRole("admin") || User.IsInRole("user"))
+@if (User.IsInRole("admin"))
 {
     <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
         <!-- Member table-->
@@ -102,22 +103,25 @@
                 </tbody>
             </table>
         </div>
-        <!-- Shedule-->
-        @if (User.IsInRole("user"))
-        {
-            <input type="hidden" id="uuid" value="@User.GetUserId()" />
-            <div class="row main-box">
-                <h1>My Schedule</h1>
-            </div>
-            <div id="wrapper">
-                <!-- Calendar element -->
-            <div id="events-calendar" data-month-format="month YYYY"></div>
-            <div class="row" style="height: 100%">
-                <!-- Events -->
-                <div id="events" class="border"></div>
-            </div>
+    </div>
+}
+
+@if (User.IsInRole("user"))
+{
+    <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
+        <!-- Schedule-->
+        <input type="hidden" id="uuid" value="@User.GetUserId()" />
+        <div class="row main-box">
+            <h1>My Schedule</h1>
         </div>
-        }
+        <div id="wrapper">
+            <!-- Calendar element -->
+        <div id="events-calendar" data-month-format="month YYYY"></div>
+        <div class="row" style="height: 100%">
+            <!-- Events -->
+            <div id="events" class="border"></div>
+        </div>
+        </div>
     </div>
 }
 
@@ -191,54 +195,20 @@
     </section>
     <!-- About-->
     <section class="page-section" id="about">
-        <div class="container bg-light">
+        <div class="container">
             <div class="text-center">
                 <h2 class="section-heading text-uppercase">Price</h2>
             </div>
             <div class="row" style="display: flex">
                 <div>
-                    <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
-                        <h4 style="white-space: nowrap">Haircut</h4>
-                        <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
-                        <div style="font-size: 30px">$20</div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
-                        <h4 style="white-space: nowrap">Clipper cut</h4>
-                        <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
-                        <div style="font-size: 30px">$20</div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
-                        <h4 style="white-space: nowrap">Head massage 10 min.</h4>
-                        <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
-                        <div style="font-size: 30px">$20</div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
-                        <h4 style="white-space: nowrap">Head washing</h4>
-                        <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
-                        <div style="font-size: 30px">$20</div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
-                        <h4 style="white-space: nowrap">Children haircut till 12 y.</h4>
-                        <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
-                        <div style="font-size: 30px">$20</div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
-                        <h4 style="white-space: nowrap">Children haircut 0-5y.</h4>
-                        <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
-                        <div style="font-size: 30px">$20</div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
-                        <h4 style="white-space: nowrap">
-                            Beard correction (0-9mm)
-                        </h4>
-                        <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
-                        <div style="font-size: 30px">$20</div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
-                        <h4 style="white-space: nowrap">Beard correction</h4>
-                        <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
-                        <div style="font-size: 30px">$20</div>
-                    </div>
+                    @foreach (var item in services!)
+                    {
+                        <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
+                            <h4 style="white-space: nowrap">@item.Name</h4>
+                            <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
+                            <div style="font-size: 30px">$@item.Price</div>
+                        </div>
+                    }
                 </div>
             </div>
             <div class="row" style="display: flex; align-items:center; justify-content: center;">

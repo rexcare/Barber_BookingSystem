@@ -16,6 +16,7 @@ using System.Text.Json;
 using System;
 using Newtonsoft.Json;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 
 namespace WebApp.Controllers;
 
@@ -60,6 +61,8 @@ public class HomeController : Controller
         var users = _userManager.Users.Include(x => x.WorkTimeTemplate);
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
         ViewBag.WTT = wtt;
+        var services = _context.Services.ToList();
+        ViewBag.Services = services;
         return View("Index", users);
     }
 
@@ -277,6 +280,14 @@ public class HomeController : Controller
         return vacations;
     }
     
+    public async Task<IActionResult> MemberList()
+    {
+
+        CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
+        ViewBag.WTT = wtt;
+        var users = _userManager.Users.Where(w=>w.Role == "user").Include(x => x.WorkTimeTemplate);
+        return View("AppUser/index", users);
+    }
     
     
     public async Task<IActionResult> Edit(Guid? id)
@@ -354,8 +365,6 @@ public class HomeController : Controller
         ViewData["WorkTimeTemplateId"] = new SelectList(_context.WorkTimeTemplates, "Id", "Times", user.WorkTimeTemplateId);
         return View("AppUser/Edit",user);
     }
-    
-    
     
     
     

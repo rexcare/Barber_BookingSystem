@@ -40,8 +40,11 @@
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">@App.Resources.WebApp.Views.Shared._Layout.Home</a>
                     </li>
-                    @if (User.IsInRole("user") || User.IsInRole("admin"))
+                    @if (User.IsInRole("user"))
                     {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="MemberList">@App.Resources.WebApp.Views.Shared._Layout.Members</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">@App.Resources.WebApp.Views.Shared._Layout.Privacy</a>
                         </li>
