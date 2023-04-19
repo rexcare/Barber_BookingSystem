@@ -132,11 +132,11 @@
                                 <div class="col-md-12">
                                     @if(User.IsInRole("customer"))
                                     {
-                                            <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" value="@User.GetUserFirstName()" required readonly>
+                                            <input class="form-control" type="text" name="firstName" placeholder="Sander" value="@User.GetUserFirstName()" required readonly>
                                     }
                                     else
                                     {
-                                        <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Sander" required>
+                                        <input class="form-control" type="text" name="firstName" placeholder="Sander" required oninput="handleInput(event)">
                                     }
                                     <div class="valid-feedback">Fist name field is valid!</div>
                                     <div class="invalid-feedback">First name field cannot be blank!</div>
@@ -145,11 +145,11 @@
                                 <div class="col-md-12">
                                     @if(User.IsInRole("customer"))
                                     {
-                                            <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Koppel" value="@User.GetUserLastName()" required readonly>
+                                        <input class="form-control" type="text" name="lastName" placeholder="Koppel" value="@User.GetUserLastName()" required readonly>
                                     }
                                     else
                                     {
-                                        <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Koppel" required>
+                                        <input class="form-control" type="text" name="lastName" placeholder="Koppel" required oninput="handleInput(event)">
                                     }
                                     <div class="valid-feedback">Last name field is valid!</div>
                                     <div class="invalid-feedback">Last name field cannot be blank!</div>
@@ -158,11 +158,11 @@
                                 <div class="col-md-12">
                                     @if(User.IsInRole("customer"))
                                     {
-                                            <input class="form-control" type="email" id="email" name="email" placeholder="admin@example.com" value="@User.GetUserEmail()" required readonly>
-                                        }
+                                        <input class="form-control" type="email" name="email" placeholder="admin@example.com" value="@User.GetUserEmail()" required readonly>
+                                    }
                                     else
                                     {
-                                        <input class="form-control" type="email" id="email" name="email" placeholder="admin@example.com" required>
+                                        <input class="form-control" type="email" name="email" placeholder="admin@example.com" required oninput="handleInput(event)">
                                     }
                                     <div class="valid-feedback">Email field is valid!</div>
                                     <div class="invalid-feedback">Email field cannot be blank!</div>
@@ -171,11 +171,11 @@
                                 <div class="col-md-12">
                                     @if(User.IsInRole("customer"))
                                     {
-                                        <input class="form-control" type="text" id="phone" name="phone" placeholder="3726329598" value="@phonenumber" required readonly>
+                                        <input class="form-control" type="text" name="phone" placeholder="3726329598" value="@phonenumber" required readonly>
                                     }
                                     else
                                     {
-                                        <input class="form-control" type="text" id="phone" name="phone" placeholder="3726329598" required>
+                                        <input class="form-control" type="text" name="phone" placeholder="3726329598" required oninput="handleInput(event)">
                                     }
                                     <div class="valid-feedback">PhoneNumber field is valid!</div>
                                     <div class="invalid-feedback">PhoneNumber field cannot be blank!</div>
@@ -204,9 +204,9 @@
                             <span>$@Service?.Price</span>
                         </blockquote>
                         <figcaption class="blockquote-footer">
-                            <p>@User.GetUserFirstName()</p>
-                            <p>@User.GetUserEmail()</p>
-                            <p>@phonenumber</p>
+                            <p><span id="firstName">@User.GetUserFirstName()</span>&nbsp;<span id="lastName">@User.GetUserLastName()</span></p>
+                            <p id="email">@User.GetUserEmail()</p>
+                            <p id="phone">@phonenumber</p>
                         </figcaption>
                     </figure>
                 </div>
@@ -239,9 +239,9 @@
                                 </blockquote>
                                 <hr/>
                                 <blockquote>
-                                    <p>@User.GetUserFirstName()</p>
-                                    <p>@phonenumber</p>
-                                    <p>@User.GetUserEmail()</p>
+                                    <p><span id="m-firstName">@User.GetUserFirstName()</span>&nbsp;<span id="m-lastName">@User.GetUserLastName()</span></p>
+                                    <p id="m-email">@User.GetUserEmail()</p>
+                                    <p id="m-phone">@phonenumber</p>
                                 </blockquote>
                             </div>
                         </div>
@@ -273,6 +273,13 @@
         document.getElementById("m_barberName").innerText =" / " + event.target.selectedOptions[0].innerText;
         // console.log('ddddddddddddddd', event.target.selectedOptions[0].innerText);
 
+    }
+
+    function handleInput(event) {
+        document.getElementById(event.target.name).innerText = event.target.value;
+        document.getElementById('m-'+event.target.name).innerText = event.target.value;
+
+        console.log(document.getElementById(event.target.name), event.target.name, event.target.value)
     }
 
     function validateBarber() {
