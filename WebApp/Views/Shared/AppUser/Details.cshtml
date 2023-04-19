@@ -13,7 +13,7 @@
     var index = 0;
 }
 
-<a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
+<a asp-controller="Home" asp-action="MemberList" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
 <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
     <div class="row">
@@ -274,13 +274,18 @@
                     workTimes = result;
                     //set min max month
                     if (moment().diff(result[0].date, 'days') > 0)
-                        mindate = moment().format("DD/MM/YYYY");
+                    {
+                        mindate = moment().format("MM/DD/YYYY");
+                        tmp_mindate = moment().format("DD/MM/YYYY");
+                    }
                     else
-                        mindate = moment(result[0].date).format("DD/MM/YYYY");
-                    console.log('333', mindate)
-                    calendar.min(mindate);
+                    {
+                        mindate = moment(result[0].date).format("MM/DD/YYYY");
+                        tmp_mindate = moment(result[0].date).format("DD/MM/YYYY");
+                    }
+                    calendar.min(tmp_mindate);
                     calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
-                    calendar.set(mindate);
+                    calendar.set(tmp_mindate);
                 }
             },
             error: function () {
@@ -308,7 +313,6 @@
                         "#8540F5",
                         "#4DD4AC"
                     ];
-                    console.log('11111111', mainData)
                     for (i = 0; i < mainData.length; i++) {
                         let tId = moment(mainData[i].StartTime).format("MM/DD/YYYY");
                         console.log(tId)
@@ -389,22 +393,31 @@
                 for (var i = 0; i < events[id].length; i++) {
                     div = document.createElement("div");
                     div.className = "event-item-i";
+                    elements.list.appendChild(div);
+
+                    sText = document.createElement("div");
+                    sText.className = "";
+
                     let time = ''
                     if (events[id][i] < 10)
                         time = `0${events[id][i].time} : 00`;
                     else
                         time = `${events[id][i].time} : 00`;
-                    div.textContent = time + " " + events[id][i].name + ". ";
-                    elements.list.appendChild(div);
+                    sText.textContent = time + " " + events[id][i].name + ". ";
+                    div.appendChild(sText);
+
+                    sType = document.createElement("span");
+                    sType.className = "mx-2 px-2 item-tag";
+                    sType.textContent = " " + events[id][i].service + " ";
+                    sText.appendChild(sType);
+
+
                     div.addEventListener("click", (function (date, index) {
                         return function () {
-                            toggleModal(events[id][index]?.id)
+                            toggleModal(events[id][index]?.id, "info")
                         }
                     })(date, i), false);
-                    sType = document.createElement("span");
-                    sType.className = "bg-info rounded-pill mx-2";
-                    sType.textContent = " " + events[id][i].service + " ";
-                    div.appendChild(sType);
+
                 }
             } else {
                 elements.subtitle.textContent = "No events";
@@ -413,6 +426,7 @@
 
         // Show current date events
         // showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
+        console.log('asdfasdfasdf',moment(mindate).format("MM/DD/YYYY"));
         showEvents(moment(mindate).format("MM/DD/YYYY"))
 
         // Add events

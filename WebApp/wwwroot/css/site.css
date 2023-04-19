@@ -78,7 +78,7 @@ for details on configuring this project to bundle and minify static web assets. 
 a.navbar-brand {
   white-space: normal;
   font-family: 'Yellowtail', cursive;
-  font-size: xx-large;
+  font-size: 30px;
   text-align: center;
   word-break: break-all;
 }

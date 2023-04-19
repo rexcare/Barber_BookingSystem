@@ -43,7 +43,7 @@ public class HomeController : Controller
     /// 
     /// </summary>
     /// <returns></returns>
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         // var uuid = User.GetUserId();
         var bal = User.IsInRole("user");
@@ -51,13 +51,15 @@ public class HomeController : Controller
             var uuid = User.GetUserId();
             var appointments = _context.Appointments.Where(a=>a.AppUserId.Equals(uuid)).Include(c => c.Customer).Include(s => s.Service);
             ViewData["appointments"] = appointments;
+            var user = await _userManager.Users.Include(x => x.WorkTimes).Include(a => a.Appointments).FirstOrDefaultAsync(m => m.Id == uuid);
+            ViewData["user"] = user;
         }
         /*else
         {
             var appointments = _context.Appointments.First();
             ViewData["appointments"] = appointments;
         }*/
-        
+
         var users = _userManager.Users.Where(w=>w.Role=="user").Include(x => x.WorkTimeTemplate);
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
         ViewBag.WTT = wtt;

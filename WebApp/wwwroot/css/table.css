@@ -83,8 +83,6 @@ table.table td:last-child i {
 }
 
 table.table td a {
-    font-weight: bold;
-    color: #566787;
     display: inline-block;
     text-decoration: none;
     outline: none !important;

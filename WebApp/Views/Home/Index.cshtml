@@ -11,8 +11,11 @@
 @model IEnumerable<App.Domain.Identity.AppUser>
 @{
     var appointments = (IEnumerable<Appointment>?)ViewData["appointments"];
+    var userInfo = (AppUser)ViewData["user"];
+
     var bal = appointments == null ? "isNull" : "notNull";
     ViewData["Title"] = "Home Page";
+
     CompanyInfo wtt = ViewBag.Wtt;
     var services = (IEnumerable<Service>?)ViewBag.Services;
     int index = 0;
@@ -124,18 +127,48 @@
 @if (User.IsInRole("user"))
 {
     <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
-        <!-- Schedule-->
-        <input type="hidden" id="uuid" value="@User.GetUserId()" />
         <div class="row main-box">
             <h1>My Schedule</h1>
         </div>
-        <div id="wrapper">
-            <!-- Calendar element -->
-        <div id="events-calendar" data-month-format="month YYYY"></div>
-        <div class="row" style="height: 100%">
-            <!-- Events -->
-            <div id="events" class="border"></div>
-        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-5 col-sm-12">
+                @if (User.IsInRole("user"))
+                {
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>
+                                Work Time
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in @userInfo!.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
+                        {
+                            <tr>
+                                <td>
+                                    <a style="text-decoration: none" class="nav-item text-dark">@item.DateTime</a>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+            </div>
+            <div class="col-lg-8 col-md-7 col-sm-12">
+
+                <!-- Schedule-->
+                <input type="hidden" id="uuid" value="@User.GetUserId()" />
+                
+                <div id="wrapper">
+                    <!-- Calendar element -->
+                    <div id="events-calendar" data-month-format="month YYYY"></div>
+                    <div class="row" style="height: 100%">
+                        <!-- Events -->
+                        <div id="events" class="border"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 }
@@ -280,13 +313,13 @@
             <div class="row align-items-center">
                 <div class="col-lg-4 text-lg-start">Copyright &copy; Your Website 2023</div>
                 <div class="col-lg-4 my-3 my-lg-0">
-                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="javascript:;" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="javascript:;" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="javascript:;" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 </div>
                 <div class="col-lg-4 text-lg-end">
-                    <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
-                    <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+                    <a class="link-dark text-decoration-none me-3" href="javascript:;">Privacy Policy</a>
+                    <a class="link-dark text-decoration-none" href="javascript:;">Terms of Use</a>
                 </div>
             </div>
         </div>
@@ -362,6 +395,7 @@
         let main = document.getElementById("main");
         main.style.setProperty("max-width", "2000px", "important");
         main.style.setProperty("--bs-gutter-x", "0px", "important");
+        main.style.setProperty("padding", "0px", "important");
     }
 </script>
 
