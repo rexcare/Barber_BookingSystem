@@ -55,7 +55,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Appointment item in Model!)
+                    @foreach (Appointment item in Model.OrderBy(o => o.StartTime)!)
                     {
                         DateTime now = new DateTime();
                         int result = DateTime.Compare(now, item.StartTime);
@@ -111,7 +111,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Appointment item in Model!)
+                    @foreach (Appointment item in Model.OrderBy(o=>o.StartTime)!)
                     {
                         DateTime now = new DateTime();
                         int result = DateTime.Compare(now, item.StartTime);
@@ -156,25 +156,39 @@
                 </div>
                 <div class="modal-body">
                     <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                        <h5 class="text-primary">Appointment</h5>
+                        <h5 class="text-warning">Appointment</h5>
 
                         <div class="card border mb-3" style="min-width: 16rem; height: 100%; width: 100%">
-                            <div class="card-body text-primary" style="display:flex">
-                                <div class="calendar-icon">
-                                    <i class="fa fa-light fa-calendar text-secondary" style="font-size:100px; text-decoration: none;"></i>
-                                </div>
+                            <div class="card-body text-dark" style="display:flex">
                                 <div class="w-100">
-                                    <figure>
-                                        <blockquote class="blockquote text-black">
-                                            <p style="text-transform: capitalize;">Name : @item?.Customer?.FirstLastName</p>
-                                            <p id="bookTime">Time&nbsp;&nbsp;: @item?.StartTime</p>
+                                    <div class="text-center">
+                                        <blockquote class="blockquote">
+                                            <p>
+                                                <span id="m_serviceName" style="text-transform: capitalize;">@item?.Service?.Name</span>
+                                            </p>
+                                            <p>
+                                                <span id="m_barberName" style="text-transform: capitalize;">@item?.AppUser?.FirstLastName</span>
+                                            </p>
+                                            <p>
+                                                <span>$@item?.Service?.Price</span>
+                                            </p>
+                                            <p>
+                                                <span id="m_bookTime">@item?.StartTime</span>
+                                            </p>
                                         </blockquote>
-                                        <figcaption class="blockquote-footer">
-                                            <p>Type&nbsp;: @item?.Service?.Name</p>
-                                            <p>Span&nbsp;: @item?.Service?.TimeSpan</p>
-                                            <p>Price&nbsp;: $@item?.Service?.Price</p>
-                                        </figcaption>
-                                    </figure>
+                                        <hr />
+                                        <blockquote>
+                                            <p>
+                                                <span id="m-firstName">@User.GetUserFirstName()</span>&nbsp;<span id="m-lastName">@User.GetUserLastName()</span>
+                                            </p>
+                                            <p>
+                                                <span id="m-email">@User.GetUserEmail()</span>
+                                            </p>
+                                            <p>
+                                                <span id="m-phone">@item?.Customer?.Phone</span>
+                                            </p>
+                                        </blockquote>
+                                    </div>
                                 </div>
 
                             </div>

@@ -339,20 +339,33 @@
                                     <div class="w-100">
                                         <div class="text-center">
                                             <blockquote class="blockquote">
-                                                <span id="m_serviceName" style="text-transform: capitalize;">@item?.Service?.Name</span>
-                                                <span id="m_barberName" style="text-transform: capitalize;">/ @item?.AppUser?.FirstLastName</span>
-                                                <p id="m_bookTime">@item?.StartTime</p>
-                                                <span>$@item?.Service?.Price</span>
+                                                <p>
+                                                    <span id="m_serviceName" style="text-transform: capitalize;">@item?.Service?.Name</span>
+                                                </p>
+                                                <p>
+                                                    <span id="m_barberName" style="text-transform: capitalize;">@item?.AppUser?.FirstLastName</span>
+                                                </p>
+                                                <p>
+                                                    <span>$@item?.Service?.Price</span>
+                                                </p>
+                                                <p>
+                                                    <span id="m_bookTime">@item?.StartTime</span>
+                                                </p>
                                             </blockquote>
                                             <hr />
                                             <blockquote>
-                                                <p><span id="m-firstName">@item?.Customer?.FirstName</span>&nbsp;<span id="m-lastName">@item?.Customer?.LastName</span></p>
-                                                <p id="m-email">@item?.Customer?.Email</p>
-                                                <p id="m-phone">@item?.Customer?.Phone</p>
+                                                <p>
+                                                    <span id="m-firstName">@User.GetUserFirstName()</span>&nbsp;<span id="m-lastName">@User.GetUserLastName()</span>
+                                                </p>
+                                                <p>
+                                                    <span id="m-email">@User.GetUserEmail()</span>
+                                                </p>
+                                                <p>
+                                                    <span id="m-phone">@item?.Customer?.Phone</span>
+                                                </p>
                                             </blockquote>
                                         </div>
                                     </div>
-                                    
 
                                 </div>
                             </div>
