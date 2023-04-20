@@ -16,7 +16,7 @@ input[type=text], input[type=tel], input[type=email] {
     color: #000000;
     -webkit-transition: all 0.3s ease;
     transition: all 0.3s ease;
-    margin-top: 16px;
+    margin-top: 3px;
 }
 
 

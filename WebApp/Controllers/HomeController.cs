@@ -54,11 +54,6 @@ public class HomeController : Controller
             var user = await _userManager.Users.Include(x => x.WorkTimes).Include(a => a.Appointments).FirstOrDefaultAsync(m => m.Id == uuid);
             ViewData["user"] = user;
         }
-        /*else
-        {
-            var appointments = _context.Appointments.First();
-            ViewData["appointments"] = appointments;
-        }*/
 
         var users = _userManager.Users.Where(w=>w.Role=="user").Include(x => x.WorkTimeTemplate);
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;

@@ -18,46 +18,45 @@
 
 }
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" asp-append-version="true" />
+
 <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
-<h1>Our services</h1>
-
-<div class="row">
-    @foreach (var item in Model)
-    {
-        i++;
-        <div class=" col-lg-4 col-md-6 col-sm-6">
-            <div class="card @cardStyle[i%4, 1]">
-                <div class="card-statistic-3 p-4">
-                    <div class="card-icon card-icon-large"><i class="fas @cardStyle[i%4, 0]"></i></div>
-                    <div class="mb-4">
+    <h1>Our services</h1>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            i++;
+            <div class=" col-lg-4 col-md-6 col-sm-6">
+                <div class="card @cardStyle[i%4, 1]">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas @cardStyle[i%4, 0]"></i></div>
+                        <div class="mb-4">
                             <h5 class="card-title mb-0">@Html.DisplayFor(modelItem => item.Name)</h5>
-                    </div>
-                    <div class="row align-items-center mb-2 d-flex">
-                        <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-                            <h2 class="d-flex align-items-center mb-0">
-                                 $@Html.DisplayFor(modelItem => item.Price)
-                            </h2>
-                            <span>@Html.DisplayFor(modelItem => item.TimeSpan) <i class="fa fa-arrow-up"></i></span>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+                                <h2 class="d-flex align-items-center mb-0">
+                                     $@Html.DisplayFor(modelItem => item.Price)
+                                </h2>
+                                <span>@Html.DisplayFor(modelItem => item.TimeSpan) <i class="fa fa-arrow-up"></i></span>
+                            </div>
                         </div>
                     </div>
+                    <a 
+                        asp-area=""
+                        asp-controller="Appointment"
+                        asp-route-id="@item.Id"
+                        asp-action="Booking"
+                        style="text-decoration: none"
+                        type="submit"
+                    >
+                        <div class="card-footer" style="display:flex;justify-content:space-between;color:aliceblue">
+                            <h5>View Detail</h5>
+                            <i class="fas fa-sign-out-alt" style="font-size:25px"></i>
+                            </div>
+                    </a>
                 </div>
-                <a asp-area=""
-                   asp-controller="Appointment"
-                   asp-route-id="@item.Id"
-                   asp-action="Booking"
-                   style="text-decoration: none"
-                   type="submit"
-                >
-                    <div class="card-footer" style="display:flex;justify-content:space-between;color:aliceblue">
-                        <h5>View Detail</h5>
-                        <i class="fas fa-sign-out-alt" style="font-size:25px"></i>
-                        </div>
-                </a>
             </div>
-        </div>
-    }
-
+        }
     </div>
 </div>
-
-<link rel="stylesheet" href="~/css/card.css" asp-append-version="true" />
