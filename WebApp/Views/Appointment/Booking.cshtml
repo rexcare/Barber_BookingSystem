@@ -462,7 +462,7 @@
                     })(date, i), false);
                 }
             } else {
-                elements.subtitle.textContent = "No events";
+                elements.subtitle.textContent = "No times";
             }
         };
 
@@ -541,9 +541,9 @@
 
     function Reserve() {
 
-        if(document.getElementById("barberId").value !== "")
+        if(document.getElementById("barberId").value === "" || document.getElementById("barberId").value === null)
             alert("Please select a barber")
-        else if (hel !== "")
+        else if (hel === "" || hel === null)
             alert("Please choose time to reserve")
         else
             CreateCustomer();

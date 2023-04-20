@@ -93,11 +93,11 @@ table.table td a {
     }
 
     table.table td a.edit {
-        color: #FFC107;
+        color: #FFC800;
     }
     
     table.table td a.detail {
-        color: #FFC107;
+        color: #FFC800;
     }
 
     table.table td a.delete {

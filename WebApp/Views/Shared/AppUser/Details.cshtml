@@ -306,7 +306,7 @@
                         let tId = moment(mainData[i].StartTime).format("MM/DD/YYYY");
                         console.log(tId)
                         let val = parseInt(moment(mainData[i].StartTime).subtract(3, 'hours').format("H"));
-                        // If no events, create list
+                        // If No times, create list
                         if (!events.hasOwnProperty(tId)) {
                             // Create list
                             events[tId] = [];
@@ -418,7 +418,7 @@
 
                 }
             } else {
-                elements.subtitle.textContent = "No events";
+                elements.subtitle.textContent = "No times";
             }
         };
 
