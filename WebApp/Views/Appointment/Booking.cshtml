@@ -41,6 +41,7 @@
                 </div>
                 <form class="requires-validation" novalidate id="barberForm" style="max-width: 300px">
                     <select class="form-select mt-3" required id="barberId" onchange="selectBarber(event)">
+                        <option selected disabled value="">please choose a barber</option>
                         @foreach (var item in Barbers!)
                         {
                             @if (item?.WorkTimes?.Count != 0)
@@ -71,13 +72,6 @@
             </div>
             <div id="stepper1" class="bs-stepper">
                 <div class="bs-stepper-header">
-                    @*<div class="step" data-target="#test-l-1">
-                        <button type="button" class="btn step-trigger">
-                            <span class="bs-stepper-circle"><i class="fas fa-user"></i></span>
-                            <span class="bs-stepper-label">Barber</span>
-                        </button>
-                    </div>
-                    <div class="line"></div>*@
                     <div class="step" data-target="#test-l-2">
                         <button type="button" class="btn step-trigger">
                             <span class="bs-stepper-circle"><i class="fas fa-clock"></i></span>
@@ -93,48 +87,11 @@
                     </div>
                 </div>
                 <div class="bs-stepper-content">
-                    @*<div id="test-l-1" class="content">
-                        <div class="row">
-                            <form class="requires-validation" novalidate id="barberForm">
-                                <select class="form-select mt-3" required id="barberId" onchange="selectBarber(event)">
-                                    @foreach (var item in Barbers!)
-                                    {
-                                        @if (item?.WorkTimes?.Count != 0)
-                                        {
-                                            counts++;
-                                            <option value="@item?.Id">@item?.FirstLastName</option>
-                                        }
-                                    }
-                                </select>
-                                <div class="valid-feedback">You selected a position!</div>
-                                <div class="invalid-feedback">Please select a position!</div>
-                                <div class="text-dark">
-                                    @if (counts == 0)
-                                    {
-                                        <p>There is no available barber</p>
-                                    }
-                                    @if (counts == 1)
-                                    {
-                                        <p>There is an available barber</p>
-                                    }
-                                    @if (counts > 1)
-                                    {
-                                        <p>There are @counts available barbers</p>
-                                    }
-                                </div>
-                            </form>
-                        
-                        
-
-                            <div style="display: flex; justify-content: center">
-                                <button class="btn btn-primary w-100 mx-2" id="reserveBtn" onclick="validateBarber()">Next</button>
-                            </div>
-                        </div>
-                    </div>*@
 
                     <div id="test-l-2" class="content">
                         <!-- Wrapper -->
                         <div id="wrapper">
+                            <div id="empty" style="text-align-last: center; padding: 3rem 0px 2rem 0px; font-size:2rem;">Please select a barber</div>
                             <!-- Calendar element -->
                             <div id="events-calendar" data-month-format="month YYYY"></div>
                         
@@ -153,7 +110,6 @@
                             {
                                 <button class="btn btn-primary w-100 mx-2" onclick="hel ? stepper1.next() : alert('click date')">Next</button>
                             }
-                            <button class="btn btn-warning w-100 mx-2" onclick="backStep()">Back</button>
                         </div>
                     </div>
 
@@ -281,34 +237,34 @@
                             <div class="text-center">
                                 <blockquote class="blockquote">
                                     <p>
-                                        <span>Service: </span>
+                                        @*<span>Service: </span>*@
                                         <span id="m_serviceName" style="text-transform: capitalize;">@Service?.Name</span>
                                     </p>
                                     <p>
-                                        <span>Barber: </span>
+                                        @*<span>Barber: </span>*@
                                         <span id="m_barberName" style="text-transform: capitalize;"></span>
                                     </p>
                                     <p>
-                                        <span>Price: </span>
+                                        @*<span>Price: </span>*@
                                         <span>$@Service?.Price</span>
                                     </p>
                                     <p>
-                                        <span>BookTime: </span>
+                                        @*<span>BookTime: </span>*@
                                         <span id="m_bookTime"></span>
                                     </p>
                                 </blockquote>
                                 <hr/>
                                 <blockquote>
                                     <p>
-                                        <span>Name: </span>
+                                        @*<span>Name: </span>*@
                                         <span id="m-firstName">@User.GetUserFirstName()</span>&nbsp;<span id="m-lastName">@User.GetUserLastName()</span>
                                     </p>
                                     <p>
-                                        <span>Email: </span>
+                                        @*<span>Email: </span>*@
                                         <span id="m-email">@User.GetUserEmail()</span>
                                     </p>
                                     <p>
-                                        <span>Phone: </span>
+                                        @*<span>Phone: </span>*@
                                         <span id="m-phone">@phonenumber</span>
                                     </p>
                                 </blockquote>
@@ -326,10 +282,10 @@
 </div>
 
 <script type="text/javascript">
-    generatecalendar()
+    // generatecalendar()
     async function generatecalendar() {
-        console.log("selecteed")
         // Get elements
+        document.getElementById("empty").innerHTML = "";
         document.getElementById("events-calendar").innerHTML = "";
         document.getElementById("events").innerHTML = "";
         var elements = {
@@ -584,7 +540,13 @@
     }
 
     function Reserve() {
-        CreateCustomer();
+
+        if(document.getElementById("barberId").value !== "")
+            alert("Please select a barber")
+        else if (hel !== "")
+            alert("Please choose time to reserve")
+        else
+            CreateCustomer();
     }
 
     function CreateCustomer() {
@@ -638,7 +600,7 @@
                     console.log('Failed ');
                 }
                 else {
-                    alert('Successfully reserve Data ');
+                    // alert('Successfully reserve Data ');
                     location.href = "/Appointment"
                 }
             },
