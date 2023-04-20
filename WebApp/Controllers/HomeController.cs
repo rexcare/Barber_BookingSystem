@@ -129,7 +129,7 @@ public class HomeController : Controller
     
     public async Task<IActionResult> GenerateWTT()
     {
-        var users =  _userManager.Users.Include(x => x.WorkTimeTemplate).Include(x => x.Vacations).Include(x => x.WorkTimes);
+        var users =  _userManager.Users.Where(w => w.Role == "user").Include(x => x.WorkTimeTemplate).Include(x => x.Vacations).Include(x => x.WorkTimes);
         var companyInfo = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1);
 
         foreach (var user in users)
