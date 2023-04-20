@@ -30,4 +30,9 @@
       </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="WebApp\Views\Home\" />
+      <Folder Include="WebApp\Views\Apointment\" />
+    </ItemGroup>
+
 </Project>

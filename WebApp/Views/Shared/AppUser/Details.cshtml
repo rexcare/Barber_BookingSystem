@@ -99,33 +99,29 @@
     var customer = (Customer?)item.Customer;
     <!-- Modal -->
     <div class="modal fade" id="a-@item.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
                 <div class="modal-body">
                     <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                        <h5 class="text-primary">Appointment</h5>
+                        <h5 class="text-warning">Appointment</h5>
 
                         <div class="card border mb-3" style="min-width: 16rem; height: 100%; width: 100%">
-                            <div class="card-body text-primary" style="display:flex">
-                                <div class="calendar-icon">
-                                        <i class="fa fa-light fa-calendar text-secondary" style="font-size:100px; text-decoration: none;"></i>
-                                </div>
+                            <div class="card-body text-dark" style="display:flex">
                                 <div class="w-100">
-                                    <figure>
-                                        <blockquote class="blockquote text-black">
-                                            <p style="text-transform: capitalize;">Name : @item?.Customer?.FirstLastName</p>
-                                            <p id="bookTime">Time&nbsp;&nbsp;: @item?.StartTime</p>
+                                    <div class="text-center">
+                                        <blockquote class="blockquote">
+                                            <span id="m_serviceName" style="text-transform: capitalize;">@item?.Service?.Name</span>
+                                            <span id="m_barberName" style="text-transform: capitalize;">/ @item?.AppUser?.FirstLastName</span>
+                                            <p id="m_bookTime">@item?.StartTime</p>
+                                            <span>$@item?.Service?.Price</span>
                                         </blockquote>
-                                        <figcaption class="blockquote-footer">
-                                            <p>Type&nbsp;: @item?.Service?.Name</p>
-                                            <p>Span&nbsp;: @item?.Service?.TimeSpan</p>
-                                            <p>Price&nbsp;: $@item?.Service?.Price</p>
-                                        </figcaption>
-                                    </figure>
+                                        <hr />
+                                        <blockquote>
+                                            <p><span id="m-firstName">@item?.Customer?.FirstName</span>&nbsp;<span id="m-lastName">@item?.Customer?.LastName</span></p>
+                                            <p id="m-email">@item?.Customer?.Email</p>
+                                            <p id="m-phone">@item?.Customer?.Phone</p>
+                                        </blockquote>
+                                    </div>
                                 </div>
 
                             </div>
@@ -135,13 +131,6 @@
                 </div>
                 <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
                     <button type="button" class="btn btn-primary w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
-
-                    @if (User.IsInRole("admin"))
-                    {
-                        <button type="button" class="btn btn-danger w-50">Cancel appointment</button>
-                    }
-
-
                 </div>
             </div>
         </div>
@@ -397,17 +386,26 @@
 
                     sText = document.createElement("div");
                     sText.className = "";
+                    div.appendChild(sText);
 
                     let time = ''
-                    if (events[id][i] < 10)
+                    if (events[id][i].time < 10)
                         time = `0${events[id][i].time} : 00`;
                     else
                         time = `${events[id][i].time} : 00`;
-                    sText.textContent = time + " " + events[id][i].name + ". ";
-                    div.appendChild(sText);
+
+                    sTime = document.createElement("span");
+                    sTime.className = "px-2 item-tag-time";
+                    sTime.textContent = " " + time + " ";
+                    sText.appendChild(sTime);
+
+                    sName = document.createElement("span");
+                    sName.className = "px-2 item-tag-name";
+                    sName.textContent = " " + events[id][i].name + " ";
+                    sText.appendChild(sName);
 
                     sType = document.createElement("span");
-                    sType.className = "mx-2 px-2 item-tag";
+                    sType.className = "px-2 item-tag-type";
                     sType.textContent = " " + events[id][i].service + " ";
                     sText.appendChild(sType);
 

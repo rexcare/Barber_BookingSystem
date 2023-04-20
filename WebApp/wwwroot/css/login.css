@@ -40,15 +40,20 @@ h2 {
       width: 100%; } }
   .half .contents .form-control, .half .bg .form-control {
     border: none;
-    -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-    height: 54px;
+    height: 40px;
     background: #fff; }
     .half .contents .form-control:active, .half .contents .form-control:focus, .half .bg .form-control:active, .half .bg .form-control:focus {
       outline: none;
       -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1); }
+
+.form-group {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
 
 .half .bg {
   background-size: cover;

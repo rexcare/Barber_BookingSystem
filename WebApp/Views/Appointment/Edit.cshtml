@@ -19,6 +19,16 @@
     }
 </style>
 
+<link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
+<link rel="stylesheet" type="text/css" href="~/css/calendar.css" asp-append-version="true" />
+<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css" asp-append-version="true">
+<link rel="stylesheet" href="~/css/bs-stepper.min.css" asp-append-version="true" />
+
+<script type="text/javascript" src="~/js/moment.js"></script>
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/js/jsCalendar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
 <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
@@ -49,7 +59,7 @@
                         <div class="row">
 
                             <form class="requires-validation" novalidate id="barberForm">
-                                <select class="form-select mt-3" required id="barberId" value="@Appointment?.AppUserId" onselect="selectBarber()">
+                                <select class="form-select mt-3" required id="barberId" value="@Appointment?.AppUserId" onchange="selectBarber(event)">
                                     <option selected disabled>Please select a Barber to book</option>
                                     @foreach (var item in Barbers!)
                                     {
@@ -115,25 +125,20 @@
         <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-4">
             <div class="card border mb-3" style="min-width: 16rem;">
                 <div class="card-header" style="text-align: center">Service Detail</div>
-                <div class="card-body text-primary">
+                <div class="card-body text-dark">
                     <figure>
                         <blockquote class="blockquote">
-                            <p style="text-transform: capitalize;">@Appointment?.Service?.Name</p>
-                            <p id="bookTime">April 20, 2023 at 10:00 am</p>
+                            <span id="serviceName" style="text-transform: capitalize;">@Appointment?.Service?.Name</span>
+                            <span id="barberName" style="text-transform: capitalize;"> / @Appointment?.AppUser?.FirstLastName</span>
+                            <p id="bookTime">@Appointment?.StartTime</p>
+                            <p>@Appointment?.Service?.TimeSpan</p>
+                            <span>$@Appointment?.Service?.Price</span>
                         </blockquote>
                         <figcaption class="blockquote-footer">
-                            <p>@Appointment?.Service?.Description</p>
-                            <p>@Appointment?.Service?.TimeSpan</p>
-                            <p>$@Appointment?.Service?.Price</p>
+                            <p><span id="firstName">@Appointment?.Customer?.FirstName</span>&nbsp;<span id="lastName">@Appointment?.Customer?.LastName</span></p>
+                            <p id="email">@Appointment?.Customer?.Email</p>
+                            <p id="phone">@Appointment?.Customer?.Phone</p>
                         </figcaption>
-                    </figure>
-                    <hr />
-                    <figure>
-                        <blockquote class="blockquote">
-                            <p style="text-transform: capitalize;" id="contact_fullName"></p>
-                            <p id="contact_email"></p>
-                            <p id="contact_phone"></p>
-                        </blockquote>
                     </figure>
                 </div>
             </div>
@@ -143,41 +148,36 @@
 
 <!-- Modal -->
 <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Confirm</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
             <div class="modal-body">
                 <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                    <h5 class="text-primary">Popover in a modal</h5>
-                    <p>This triggers a popover on click.</p>
+                    <h3 class="text-warning">Appointment</h3>
                 </div>
                 <div class="card border mb-3" style="min-width: 16rem; height: 100%;">
-                    <div class="card-body text-primary" style="display:flex">
-                        <div class="calendar-icon">
-                            <a asp-action="index" class="text-secondary" style="font-size:100px; text-decoration: none;"><i class="fa fa-light fa-calendar"></i></a>
-                        </div>
+                    <div class="card-body text-dark" style="display:flex">
                         <div class="w-100">
-                            <figure>
+                            <div class="text-center">
                                 <blockquote class="blockquote">
-                                    <p style="text-transform: capitalize;">@Appointment?.Service?.Name</p>
-                                    <p id="bookTime">April 20, 2023 at 10:00 am</p>
+                                    <span id="m_serviceName" style="text-transform: capitalize;">@Appointment?.Service?.Name</span>
+                                    <span id="m_barberName" style="text-transform: capitalize;"> / @Appointment?.AppUser?.FirstLastName</span>
+                                    <p id="m_bookTime">@Appointment?.StartTime</p>
+                                    <span>$@Appointment?.Service?.Price</span>
                                 </blockquote>
-                                <figcaption class="blockquote-footer">
-                                    <p>@Appointment?.Service?.Description</p>
-                                    <p>@Appointment?.Service?.TimeSpan</p>
-                                    <p>@Appointment?.Service?.Price</p>
-                                </figcaption>
-                            </figure>
+                                <hr />
+                                <blockquote>
+                                    <p><span id="m-firstName">@Appointment?.Customer?.FirstName</span>&nbsp;<span id="m-lastName">@Appointment?.Customer?.LastName</span></p>
+                                    <p id="m-email">@Appointment?.Customer?.Email</p>
+                                    <p id="m-phone">@Appointment?.Customer?.Phone</p>
+                                </blockquote>
+                            </div>
                         </div>
 
                     </div>
                 </div>
             </div>
             <div class="modal-footer" style="display: flex; justify-content: center;">
-                <button type="button" class="btn btn-primary w-50" onclick="update()">OK</button>
+                <button type="button" class="btn btn-primary w-50" onclick="update()"><i class="fas fa-save"></i>update</button>
             </div>
         </div>
     </div>
@@ -202,10 +202,16 @@
 <script>
 
     var barberId = document.getElementById("barberId").value;
+    
     function backStep() {
         event.preventDefault();
         event.stopPropagation();
         stepper1.previous()
+    }
+
+    function selectBarber(event) {
+        document.getElementById("barberName").innerText =" / " + event.target.selectedOptions[0].innerText;
+        document.getElementById("m_barberName").innerText =" / " + event.target.selectedOptions[0].innerText;
     }
 
     function validateBarber() {
@@ -246,8 +252,9 @@
                     console.log('Failed ');
                 }
                 else {
-                    console.log(result)
+                    console.log(result);
                     alert('Successfully reserve Data ');
+                    location.href = "/Appointment";
                     
                 }
             },
@@ -375,7 +382,6 @@
         elements.calendar.className = "material-theme custom-green";
         var calendar = jsCalendar.new(elements.calendar);
 
-        //
         let data = {
             Id: document.getElementById("barberId").value,
         }
@@ -398,36 +404,37 @@
                 }
                 else {
                     console.log(result);
+                    if (result.length != 0) {
+                        workTimes = result;
+                        //set min max month
+                        if (moment().diff(result[0].date, 'days') > 0)
+                            mindate = moment()
+                        else
+                            mindate = moment(result[0].date)
+                        console.log('333', mindate)
+                        calendar.min(moment(mindate).format("DD/MM/YYYY"));
+                        calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
+                        calendar.set(moment(mindate).format("DD/MM/YYYY"));
 
-                    workTimes = result;
-                    //set min max month
-                    if (moment().diff(result[0].date, 'days') > 0)
-                        mindate = moment()
-                    else
-                        mindate = moment(result[0].date)
-                    console.log('333', mindate)
-                    calendar.min(moment(mindate).format("DD/MM/YYYY"));
-                    calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
-                    calendar.set(moment(mindate).format("DD/MM/YYYY"));
+                        for (j = 0; j < result.length; j++) {
+                            let invalidDate = moment(result[j]?.date)
+                            start = parseInt(result[j]?.startTime.substr(0, 2));
+                            stop = parseInt(result[j]?.stopTime.substr(0, 2));
+                            start1 = parseInt(result[j]?.startTime1?.substr(0, 2));
+                            stop1 = parseInt(result[j]?.stopTime1?.substr(0, 2));
+                            start2 = parseInt(result[j]?.startTime2?.substr(0, 2));
+                            stop2 = parseInt(result[j]?.stopTime2?.substr(0, 2));
+                            let tmp = [];
+                            let tId = moment(result[j]?.date).format("MM/DD/YYYY")
+                            times[tId] = [];
+                            for (i = 0; i < 24; i++) {
+                                if ((((start - 1) < i && i < (stop)) || ((start1 - 1) < i && i < (stop1)) || ((start2 - 1) < i && i < (stop2)))) {
+                                    times[tId] = [
+                                        ...times[tId], i
+                                    ]
+                                }
 
-                    for (j = 0; j < result.length; j++) {
-                        let invalidDate = moment(result[j]?.date)
-                        start = parseInt(result[j]?.startTime.substr(0, 2));
-                        stop = parseInt(result[j]?.stopTime.substr(0, 2));
-                        start1 = parseInt(result[j]?.startTime1?.substr(0, 2));
-                        stop1 = parseInt(result[j]?.stopTime1?.substr(0, 2));
-                        start2 = parseInt(result[j]?.startTime2?.substr(0, 2));
-                        stop2 = parseInt(result[j]?.stopTime2?.substr(0, 2));
-                        let tmp = [];
-                        let tId = moment(result[j]?.date).format("MM/DD/YYYY")
-                        times[tId] = [];
-                        for (i = 0; i < 24; i++) {
-                            if ((((start - 1) < i && i < (stop)) || ((start1 - 1) < i && i < (stop1)) || ((start2 - 1) < i && i < (stop2)))) {
-                                times[tId] = [
-                                    ...times[tId], i
-                                ]
                             }
-
                         }
                     }
                 }
@@ -450,7 +457,7 @@
                 }
                 else {
                     for (i = 0; i < result.length; i++) {
-                        let tId = moment(result[i]).format("DD/MM/YYYY");
+                        let tId = moment(result[i]).format("MM/DD/YYYY");
                         let val = parseInt(moment(result[i]).subtract(3, 'hours').format("H"));
                         for (a = 0; a < times[tId]?.length; a++) {
                             if (val == times[tId][a])
@@ -497,17 +504,14 @@
         calendar.refresh();
 
 
-        // var date_format = "DD/MM/YYYY";
-        var current = null;
+        var date_format = "DD/MM/YYYY";
 
         var showEvents = function (date) {
             console.log("datedate", date)
             // getDatetimes(date)
             // Date string
-            //var id = jsCalendar.tools.dateToString(date, date_format, "en");
+            // var id = jsCalendar.tools.dateToString(date, date_format, "en");
             var id = moment(date).format("MM/DD/YYYY");
-            // Set date
-            // current = new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, 'months').format("MM"), moment(mindate).format("DD"));
             // Set title
             elements.title.textContent = id;
             // Clear old events
@@ -523,8 +527,6 @@
                 for (var i = 0; i < events[id].length; i++) {
                     div = document.createElement("button");
                     div.className = "btn btn-primary event-item";
-                    // if (moment('@Appointment?.StartTime').format("h") == )
-                    // div.classList.add("btn-active")
                     if (events[id][i] < 10)
                         div.textContent = `0${events[id][i]} : 00`;
                     else
@@ -532,8 +534,13 @@
                     elements.list.appendChild(div);
                     div.addEventListener("click", (function (date, index) {
                         return function () {
-                            let tId = moment(date).format("MM/DD/YYYY")
-                            hel = moment(date).set({ h: events[date][index] });
+                            console.log('date', date, 'events', events, 'index', index);
+                            let tId = moment(date).format("MM/DD/YYYY");
+                            console.log('tid', tId);
+                            hel = moment(date).set({ h: events[tId][index] });
+                            document.getElementById("bookTime").innerText = moment(hel).format("ddd MMM DD YYYY HH:mm")
+                            document.getElementById("m_bookTime").innerText = moment(hel).format("ddd MMM DD YYYY HH:mm")
+                            console.log(hel)
                         }
                     })(date, i), false);
                 }
@@ -543,8 +550,6 @@
         };
 
         // Show current date events
-        //showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, 'months').format("MM"), moment(mindate).format("DD")));
-        //showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
         showEvents(moment(mindate).format("MM/DD/YYYY"))
 
         // Add events
@@ -559,4 +564,5 @@
         });
 
     }
+
 </script>

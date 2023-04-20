@@ -11,7 +11,7 @@
 @model IEnumerable<App.Domain.Identity.AppUser>
 @{
     var appointments = (IEnumerable<Appointment>?)ViewData["appointments"];
-    var userInfo = (AppUser)ViewData["user"];
+    var userInfo = (AppUser?)ViewData["user"];
 
     var bal = appointments == null ? "isNull" : "notNull";
     ViewData["Title"] = "Home Page";
@@ -21,7 +21,6 @@
     int index = 0;
 }
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -136,11 +135,11 @@
                 {
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
-                        <tr>
-                            <th>
-                                Work Time
-                            </th>
-                        </tr>
+                            <tr>
+                                <th>
+                                    Work Time
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
                         @foreach (var item in @userInfo!.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
@@ -220,7 +219,7 @@
     <section class="page-section" id="services">
         <div class="container">
             <div class="text-center">
-                <h2 class="section-heading text-uppercase">Services</h2>
+                <h2 class="section-heading text-uppercase text-warning">Services</h2>
             </div>
             <div class="row text-center">
                 <div class="col-md-4">
@@ -245,7 +244,7 @@
     <section class="page-section" id="about">
         <div class="container">
             <div class="text-center">
-                <h2 class="section-heading text-uppercase">Price</h2>
+                <h2 class="section-heading text-uppercase text-warning">Price</h2>
             </div>
             <div class="row" style="display: flex">
                 <div>
@@ -260,7 +259,7 @@
                 </div>
             </div>
             <div class="row" style="display: flex; align-items:center; justify-content: center;">
-                <a class="btn btn-primary" asp-controller="appointment" asp-action="index" style="width: 200px; font-size:25px">Book Now</a>
+                <a class="btn btn-success" asp-controller="appointment" asp-action="index" style="width: 200px; font-size:25px">Book Now</a>
             </div>
         </div>
     </section>
@@ -333,34 +332,31 @@
         var customer = (Customer?)item.Customer;
         <!-- Modal -->
         <div class="modal fade" id="a-@item.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel"></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
                     <div class="modal-body">
                         <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                            <h5 class="text-primary">Appointment</h5>
+                            <h3 class="text-warning">Appointment</h3>
 
                             <div class="card border mb-3" style="min-width: 16rem; height: 100%; width: 100%">
-                                <div class="card-body text-primary" style="display:flex">
-                                    <div class="calendar-icon">
-                                        <i class="fa fa-light fa-calendar text-secondary" style="font-size:100px; text-decoration: none;"></i>
-                                    </div>
+                                <div class="card-body text-dark" style="display:flex">
                                     <div class="w-100">
-                                        <figure>
-                                            <blockquote class="blockquote text-black">
-                                                <p style="text-transform: capitalize;">Name : @item?.Customer?.FirstLastName</p>
-                                                <p id="bookTime">Time&nbsp;&nbsp;: @item?.StartTime</p>
+                                        <div class="text-center">
+                                            <blockquote class="blockquote">
+                                                <span id="m_serviceName" style="text-transform: capitalize;">@item?.Service?.Name</span>
+                                                <span id="m_barberName" style="text-transform: capitalize;">/ @item?.AppUser?.FirstLastName</span>
+                                                <p id="m_bookTime">@item?.StartTime</p>
+                                                <span>$@item?.Service?.Price</span>
                                             </blockquote>
-                                            <figcaption class="blockquote-footer">
-                                                <p>Type&nbsp;: @item?.Service?.Name</p>
-                                                <p>Span&nbsp;: @item?.Service?.TimeSpan</p>
-                                                <p>Price&nbsp;: $@item?.Service?.Price</p>
-                                            </figcaption>
-                                        </figure>
+                                            <hr />
+                                            <blockquote>
+                                                <p><span id="m-firstName">@item?.Customer?.FirstName</span>&nbsp;<span id="m-lastName">@item?.Customer?.LastName</span></p>
+                                                <p id="m-email">@item?.Customer?.Email</p>
+                                                <p id="m-phone">@item?.Customer?.Phone</p>
+                                            </blockquote>
+                                        </div>
                                     </div>
+                                    
 
                                 </div>
                             </div>
@@ -368,7 +364,7 @@
 
                     </div>
                     <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
-                        <button type="button" class="btn btn-primary w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
+                        <button type="button" class="btn btn-success w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
 
                         @if (User.IsInRole("admin"))
                         {
@@ -460,14 +456,17 @@
                     if (result.length != 0) {
                         workTimes = result;
                         //set min max month
-                        if (moment().diff(result[0].date, 'days') > 0)
-                            mindate = moment()
-                        else
-                            mindate = moment(result[0].date)
-                        console.log('333', mindate)
-                        calendar.min(moment(mindate).format("DD/MM/YYYY"));
+                        if (moment().diff(result[0].date, 'days') > 0) {
+                            mindate = moment().format("MM/DD/YYYY");
+                            tmp_mindate = moment().format("DD/MM/YYYY");
+                        }
+                        else {
+                            mindate = moment(result[0].date).format("MM/DD/YYYY");
+                            tmp_mindate = moment(result[0].date).format("DD/MM/YYYY");
+                        }
+                        calendar.min(tmp_mindate);
                         calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
-                        calendar.set(moment(mindate).format("DD/MM/YYYY"));
+                        calendar.set(tmp_mindate);
                     }
                 }
             },
@@ -572,17 +571,26 @@
 
                     sText = document.createElement("div");
                     sText.className = "";
+                    div.appendChild(sText);
 
                     let time = ''
-                    if (events[id][i] < 10)
+                    if (events[id][i].time < 10)
                         time = `0${events[id][i].time} : 00`;
                     else
                         time = `${events[id][i].time} : 00`;
-                    sText.textContent = time + " " + events[id][i].name + ". ";
-                    div.appendChild(sText);
+
+                    sTime = document.createElement("span");
+                    sTime.className = "px-2 item-tag-time";
+                    sTime.textContent = " " + time + " ";
+                    sText.appendChild(sTime);
+
+                    sName = document.createElement("span");
+                    sName.className = "px-2 item-tag-name";
+                    sName.textContent = " " + events[id][i].name + " ";
+                    sText.appendChild(sName);
 
                     sType = document.createElement("span");
-                    sType.className = "mx-2 px-2 item-tag";
+                    sType.className = "px-2 item-tag-type";
                     sType.textContent = " " + events[id][i].service + " ";
                     sText.appendChild(sType);
 

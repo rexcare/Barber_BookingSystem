@@ -17,7 +17,9 @@ input {
         margin-bottom: 10px
     }
 </style>
-<p onclick="history.go(-1)" class="text-primary" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</p>
+
+<a asp-area="" asp-controller="Home" asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp; back</a>
+
 <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
 
 <h1>Manage Vacation for @appUser.FirstLastName</h1>
