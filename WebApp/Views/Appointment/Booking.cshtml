@@ -35,7 +35,7 @@
     <div class="row" style="justify-content:space-around; margin-top: 10px;">
         <div class="col col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12 my-3">
             <div class="row mx-3" style="display: flex; justify-content: space-between">
-                <div style="width: 150px">
+                <div style="width: fit-content;">
                     <h1>@Service?.Name</h1>
                     <p>@Service?.Description</p>
                 </div>
@@ -241,10 +241,6 @@
                             <span id="bookTime"></span>
                             </p>
                             <p>
-                                <span>Timespan: </span>
-                                <span>@Service?.TimeSpan</span>
-                            </p>
-                            <p>
                                 <span>Price: </span>
                             <span>$@Service?.Price</span>
                             </p>
@@ -285,37 +281,36 @@
                             <div class="text-center">
                                 <blockquote class="blockquote">
                                     <p>
-                                            <span>Service: </span>
+                                        <span>Service: </span>
                                         <span id="m_serviceName" style="text-transform: capitalize;">@Service?.Name</span>
-                                        </p>
+                                    </p>
                                     <p>
-                                            <span>Barber: </span>
+                                        <span>Barber: </span>
                                         <span id="m_barberName" style="text-transform: capitalize;"></span>
-                                        </p>
+                                    </p>
                                     <p>
                                         <span>Price: </span>
                                         <span>$@Service?.Price</span>
-                                        </p>
+                                    </p>
                                     <p>
-                                        <span>Timespan: </span>
+                                        <span>BookTime: </span>
                                         <span id="m_bookTime"></span>
                                     </p>
-                                    
                                 </blockquote>
                                 <hr/>
                                 <blockquote>
                                     <p>
                                         <span>Name: </span>
                                         <span id="m-firstName">@User.GetUserFirstName()</span>&nbsp;<span id="m-lastName">@User.GetUserLastName()</span>
-                                        </p>
-                                        <p>
-                                            <span>Email: </span>
-                                    <span id="m-email">@User.GetUserEmail()</span>
-                                        </p>
-                                        <p>
-                                            <span>Phone: </span>
-                                    <span id="m-phone">@phonenumber</span>
-                                        </p>
+                                    </p>
+                                    <p>
+                                        <span>Email: </span>
+                                        <span id="m-email">@User.GetUserEmail()</span>
+                                    </p>
+                                    <p>
+                                        <span>Phone: </span>
+                                        <span id="m-phone">@phonenumber</span>
+                                    </p>
                                 </blockquote>
                             </div>
                         </div>
@@ -594,11 +589,12 @@
 
     function CreateCustomer() {
         let data = {
-            FirstName: document.getElementById('firstName').value,
-            LastName: document.getElementById('lastName').value,
-            Email: document.getElementById('email').value,
-            Phone: document.getElementById('phone').value,
+            FirstName: document.getElementById('firstName').innerText,
+            LastName: document.getElementById('lastName').innerText,
+            Email: document.getElementById('email').innerText,
+            Phone: document.getElementById('phone').innerText,
         }
+
         $.ajax({
             type: 'POST',
             url: '/Appointment/CreateCustomer',
@@ -630,6 +626,7 @@
                 AppUserId: document.getElementById("barberId").value,
                 StartTime: moment(hel).format("YYYY-MM-DD HH:mm:ss"),
             }
+            console.log('appointments',appointmentData);
             $.ajax({
             type: 'POST',
             url: '/Appointment/CreateAppointment',

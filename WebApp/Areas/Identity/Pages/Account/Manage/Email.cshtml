@@ -13,7 +13,7 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             @if (Model.IsEmailConfirmed)
             {
-                <div class="form-group input-group">
+                <div class="form-group">
                     <label asp-for="Email" class="form-label"></label>
                     <input asp-for="Email" class="form-control" disabled />
                         @*<div class="input-group-append">

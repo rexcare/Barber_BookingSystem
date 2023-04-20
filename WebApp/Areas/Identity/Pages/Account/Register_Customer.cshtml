@@ -7,6 +7,7 @@
 @{
     Layout = null;
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" asp-append-version="true" />
 
 <link rel="stylesheet" href="~/css/login.css">
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
@@ -21,7 +22,8 @@
         <div class="container">
             <div class="row align-items-center justify-content-center">
                 <div class="col-md-7">
-                    <h3>Login to <strong>BARBERSHOP</strong></h3>
+                    <a asp-area="" asp-controller="Home" asp-action="index" style="text-decoration:none;" class="text-warning"><i class="fas fa-home text-warning" style="font-size: 2rem; margin-bottom: 1rem;"></i></a>
+                    <h3>Register to <a asp-area="" asp-controller="Home" asp-action="index" style="text-decoration:none;" class="text-warning">BARBERSHOP</a></h3>
                     <p class="mb-4">As a customer, you can get adictional service from us.</p>
 
                     <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
@@ -56,14 +58,15 @@
                             <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
                             <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                         </div>
-                        <div class="mt-3" style="display: flex; justify-content:space-between;">
-                            <input type="submit" id="registerSubmit" value="Register" class="btn btn-success" style="margin:10px">
-                            <a asp-page="./Login"
-                               asp-route-returnUrl="@Model.ReturnUrl"
-                               class="forgot-pass btn btn-primary text-white"
-                               style="text-decoration: blink; margin: 10px"
+                        <div class="mt-3" style="display: flex; justify-content:space-between; align-items: flex-end;">
+                            <input type="submit" id="registerSubmit" value="Register" class="btn btn-warning" style="margin:10px">
+                            <a 
+                                asp-page="./Login"
+                                asp-route-returnUrl="@Model.ReturnUrl"
+                                class="forgot-pass text-dark"
+                                style="margin: 10px;"
                             >
-                                Login
+                                Do have an account? Login
                             </a>
                         </div>
                     </form>
