@@ -10,11 +10,16 @@
 
 @{
     ViewData["Title"] = "Index";
+    CompanyInfo wtt = ViewBag.Wtt;
     var index = 0;
 }
 <style>
     .modal-body {
         padding: 0px !important;
+    }
+
+    .card {
+        border: 0px !important;
     }
 </style>
 
@@ -155,7 +160,7 @@
         <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-body">
-                    <div class="card border mb-3">
+                    <div class="card mb-3">
                         <div class="card-header bg-warning text-center">
                             <span>Confirmed Time:</span>
                             <br />
@@ -164,35 +169,34 @@
                         <div class="card-body text-dark px-5">
                             <div class="w-100">
                                 <blockquote class="blockquote">
-                                    <span>Service: </span>
+                                    <p class="name-item text-secondary">Service</p>
+                                    <span>Type: </span>
                                     <span id="m_serviceName" class="name-item">@item?.Service?.Name</span>
                                     <br />
                                     <span>Description: </span>
                                     <span id="m_serviceName" class="name-item">@item?.Service?.Description</span>
                                     <br />
+                                    <span>Address: </span>
+                                    <span id="m_address" class="name-item">@wtt?.Address</span>
+                                    <br />
                                     <span>Duration: </span>
                                     <span id="m_duration" class="name-item">@item?.Service?.TimeSpan.TotalMinutes minutes</span>
-                                    <br />
-                                    <span>Staff: </span>
-                                    <span id="m_barberName" class="name-item">@item?.AppUser?.FirstLastName</span>
-                                    <br />
-                                    <span>Staff: </span>
-                                    <span id="m_barberName" class="name-item">@item?.AppUser?.Email</span>
                                     <br />
                                     <span>Total: </span>
                                     <span id="m_price">$@item?.Service?.Price</span>
                                 </blockquote>
                                 <hr />
                                 <blockquote>
-                                    <span>Name: </span>
-                                    <span id="m_firstName" class="name-item">@item?.Customer?.FirstName</span>
-                                    <span id="m_lastName" class="name-item">@item?.Customer?.LastName</span>
-                                    <br />
-                                    <span>Phone: </span>
-                                    <span id="m_phone">@item?.Customer?.Phone</span>
+                                    <p class="name-item text-secondary">barber</p>
+                                    <span>Staff: </span>
+                                    <span id="m_barberName" class="name-item">@item?.AppUser?.FirstLastName</span>
                                     <br />
                                     <span>Email: </span>
-                                    <span id="m_email">@item?.Customer?.Email</span>
+                                    <span id="m_barberName" class="name-item">@item?.AppUser?.Email</span>
+                                    <br />
+                                    <span>Phone: </span>
+                                    <span id="m_barberName" class="name-item">@item?.AppUser?.PhoneNumber</span>
+                                    <br />
                                 </blockquote>
                             </div>
 

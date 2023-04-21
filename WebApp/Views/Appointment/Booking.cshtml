@@ -41,6 +41,9 @@
     .modal-body {
         padding: 0px;
     }
+    .card{
+  border : 0px !important;
+}
 </style>
 
 <link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
@@ -264,7 +267,7 @@
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="card border mb-3">
+                <div class="card mb-3">
                     <div class="card-header bg-warning text-center">
                         <span>Confirmed Time:</span>
                         <br />
@@ -352,7 +355,7 @@
             success: function (result) {
                 workTimes = result;
                 if (result == "error") {
-                    alert('Failed to receive the Data');
+                    alert('Failed to receive the Data 1');
                     console.log('Failed ');
                 }
                 else {
@@ -364,7 +367,7 @@
                             mindate = moment()
                         else
                             mindate = moment(result[0].date)
-                        console.log('333', mindate)
+                        // console.log('333', mindate)
                         calendar.min(moment(mindate).format("DD/MM/YYYY"));
                         calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
                         calendar.set(moment(mindate).format("DD/MM/YYYY"));
@@ -405,7 +408,7 @@
             data: data,
             success: function (result) {
                 if (result == "error") {
-                    alert('Failed to receive the Data');
+                    alert('Failed to receive the Data 2');
                     console.log('Failed ');
                 }
                 else {
@@ -620,7 +623,7 @@
             data: data,
             success: function (result) {
                 if (result == "error") {
-                    alert('Failed to receive the Data');
+                    alert('Failed to receive the Data 3');
                     console.log('Failed ');
                 }
                 else {
@@ -699,7 +702,7 @@
             success: function (result) {
                 workTimes =result;
                 if (result == "error") {
-                    alert('Failed to receive the Data');
+                    alert('Failed to receive the Data 4');
                     console.log('Failed ');
                 }
                 else {
@@ -720,7 +723,7 @@
             data: data,
             success: function (result) {
                 if (result == "error") {
-                    alert('Failed to receive the Data');
+                    alert('Failed to receive the Data 5');
                     console.log('Failed ');
                 }
                 else {
