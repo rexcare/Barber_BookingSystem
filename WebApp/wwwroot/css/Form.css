@@ -33,7 +33,7 @@ input[type=text], input[type=tel], input[type=email] {
     border: none !important;
     box-shadow: none;
 }
-
+/*
 .btn-warning {
     background-color: #f0ad4e;
     outline: none;
@@ -47,6 +47,7 @@ input[type=text], input[type=tel], input[type=email] {
     border: none !important;
     box-shadow: none;
 }
+*/
 
 .form-content textarea {
     position: static !important;
