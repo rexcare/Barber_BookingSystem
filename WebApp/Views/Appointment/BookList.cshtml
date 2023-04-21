@@ -18,9 +18,6 @@
         padding: 0px !important;
     }
 
-    .card {
-        border: 0px !important;
-    }
 </style>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
@@ -160,7 +157,7 @@
         <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-body">
-                    <div class="card mb-3">
+                    <div class="card mb-3" style="border : 0px !important;">
                         <div class="card-header bg-warning text-center">
                             <span>Confirmed Time:</span>
                             <br />
@@ -358,14 +355,17 @@
                     {
                         workTimes = result;
                         //set min max month
-                        if (moment().diff(result[0].date, 'days') > 0)
-                            mindate = moment()
-                        else
-                            mindate = moment(result[0].date)
-                        console.log('333',mindate)
-                        calendar.min(moment(mindate).format("DD/MM/YYYY"));
+                        if (moment().diff(result[0].date, 'days') > 0) {
+                            mindate = moment().format("MM/DD/YYYY");
+                            tmp_mindate = moment().format("DD/MM/YYYY");
+                        }
+                        else {
+                            mindate = moment(result[0].date).format("MM/DD/YYYY");
+                            tmp_mindate = moment(result[0].date).format("DD/MM/YYYY");
+                        }
+                        calendar.min(tmp_mindate);
                         calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
-                        calendar.set(moment(mindate).format("DD/MM/YYYY"));
+                        calendar.set(tmp_mindate);
                     }
                 }
             },

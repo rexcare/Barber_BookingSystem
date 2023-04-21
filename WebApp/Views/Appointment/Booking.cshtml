@@ -41,9 +41,6 @@
     .modal-body {
         padding: 0px;
     }
-    .card{
-  border : 0px !important;
-}
 </style>
 
 <link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
@@ -60,7 +57,7 @@
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
 <!-- Booking Page -->
-<div class="card shadow mb-4 p-4 body-card">
+<div class="card shadow mb-3 p-4 body-card">
     <div class="row" style="justify-content:space-around; margin-top: 10px;">
         <div class="col col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12 my-3">
             <div class="row mx-3" style="display: flex; justify-content: space-between">
@@ -155,10 +152,10 @@
                     <div id="test-l-3" class="content">
                         <div class="row">
                             <form class="requires-validation" novalidate id="contactForm">
-                                <div class="col-md-12">
+                                <div class="col-md-12 mb-3">
                                     @if(User.IsInRole("customer"))
                                     {
-                                            <input class="form-control" type="text" name="firstName" placeholder="Sander" value="@User.GetUserFirstName()" required readonly>
+                                    <input class="form-control" type="text" name="firstName" placeholder="Sander" value="@User.GetUserFirstName()" required readonly>
                                     }
                                     else
                                     {
@@ -168,7 +165,7 @@
                                     <div class="invalid-feedback">First name field cannot be blank!</div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <div class="col-md-12 mb-3">
                                     @if(User.IsInRole("customer"))
                                     {
                                         <input class="form-control" type="text" name="lastName" placeholder="Koppel" value="@User.GetUserLastName()" required readonly>
@@ -181,7 +178,7 @@
                                     <div class="invalid-feedback">Last name field cannot be blank!</div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <div class="col-md-12 mb-3">
                                     @if(User.IsInRole("customer"))
                                     {
                                         <input class="form-control" type="email" name="email" placeholder="admin@example.com" value="@User.GetUserEmail()" required readonly>
@@ -194,7 +191,7 @@
                                     <div class="invalid-feedback">Email field cannot be blank!</div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <div class="col-md-12 mb-3">
                                     @if(User.IsInRole("customer"))
                                     {
                                         <input class="form-control" type="text" name="phone" placeholder="3726329598" value="@phonenumber" required readonly>
@@ -223,6 +220,7 @@
                 <div class="card-body text-dark">
                     <figure>
                         <blockquote class="blockquote">
+                            <p class="name-item text-secondary">Service</p>
                             <p>
                                 <span>Service: </span>
                                 <span id="serviceName" style="text-transform: capitalize;">@Service?.Name</span>
@@ -241,7 +239,7 @@
                             </p>
                         </blockquote>
                         <figcaption class="blockquote-footer">
-                            
+                                    <p class="name-item text-secondary">barber</p>
                             <p>
                                 <span>Name: </span>
                                 <span id="firstName">@User.GetUserFirstName()</span>&nbsp;<span id="lastName">@User.GetUserLastName()</span>
@@ -267,7 +265,7 @@
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="card mb-3">
+                <div class="card mb-3" style="border : 0px !important;">
                     <div class="card-header bg-warning text-center">
                         <span>Confirmed Time:</span>
                         <br />
@@ -363,14 +361,17 @@
                     if (result.length != 0) {
                         workTimes = result;
                         //set min max month
-                        if (moment().diff(result[0].date, 'days') > 0)
-                            mindate = moment()
-                        else
-                            mindate = moment(result[0].date)
-                        // console.log('333', mindate)
-                        calendar.min(moment(mindate).format("DD/MM/YYYY"));
+                        if (moment().diff(result[0].date, 'days') > 0) {
+                            mindate = moment().format("MM/DD/YYYY");
+                            tmp_mindate = moment().format("DD/MM/YYYY");
+                        }
+                        else {
+                            mindate = moment(result[0].date).format("MM/DD/YYYY");
+                            tmp_mindate = moment(result[0].date).format("DD/MM/YYYY");
+                        }
+                        calendar.min(tmp_mindate);
                         calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
-                        calendar.set(moment(mindate).format("DD/MM/YYYY"));
+                        calendar.set(tmp_mindate);
 
                         for (j = 0; j < result.length; j++) {
                             let invalidDate = moment(result[j]?.date)

@@ -115,20 +115,19 @@
                         <div class="card-body text-dark px-5">
                             <div class="w-100">
                                 <blockquote class="blockquote">
+                                    <p class="name-item text-secondary">Service</p>
                                     <span>Service: </span>
                                     <span id="m_serviceName" class="name-item">@item?.Service?.Name</span>
                                     <br />
                                     <span>Duration: </span>
                                     <span id="m_duration" class="name-item">@item?.Service?.TimeSpan.TotalMinutes minutes</span>
                                     <br />
-                                    <span>Staff: </span>
-                                    <span id="m_barberName" class="name-item">@item?.AppUser?.FirstLastName</span>
-                                    <br />
                                     <span>Total: </span>
                                     <span id="m_price">$@item?.Service?.Price</span>
                                 </blockquote>
                                 <hr />
                                 <blockquote>
+                                    <p class="name-item text-secondary">barber</p>
                                     <span>Name: </span>
                                     <span id="m_firstName" class="name-item">@item?.Customer?.FirstName</span>
                                     <span id="m_lastName" class="name-item">@item?.Customer?.LastName</span>
