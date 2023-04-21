@@ -270,14 +270,14 @@
                         <br />
                         <span id="m_bookTime"></span>
                     </div>
-                    <div class="card-body text-dark">
+                    <div class="card-body text-dark px-5">
                         <div class="w-100">
                             <blockquote class="blockquote">
                                 <span>Service: </span>
                                 <span id="m_serviceName" class="name-item">@Service?.Name</span>
                                 <br />
                                 <span>Duration: </span>
-                                <span id="m_duration">@Service?.TimeSpan</span>
+                                <span id="m_duration" class="name-item">@Service?.TimeSpan.TotalMinutes minutes</span>
                                 <br />
                                 <span>Staff: </span>
                                 <span id="m_barberName" class="name-item"></span>
@@ -289,7 +289,6 @@
                             <blockquote>
                                     <span>Name: </span>
                                     <span id="m_firstName" class="name-item">@User.GetUserFirstName()</span>
-                                    &nbsp;
                                     <span id="m_lastName" class="name-item">@User.GetUserLastName()</span>
                                     <br />
                                     <span>Phone: </span>
@@ -323,7 +322,6 @@
         document.getElementById("valid-datepicker").style.display = "none";
         document.getElementById("invalid-datepicker").style.display = "none";
         
-        document.getElementById("empty")?.remove();
         document.getElementById("events-calendar").innerHTML = "";
         document.getElementById("events").innerHTML = "";
         var elements = {
@@ -493,8 +491,8 @@
                             let tId = moment(date).format("MM/DD/YYYY");
                             // console.log('tid', tId);
                             hel = moment(date).set({ h: events[tId][index] });
-                            document.getElementById("bookTime").innerText = moment(hel).format("ddd MMM DD YYYY HH:mm")
-                            document.getElementById("m_bookTime").innerText = moment(hel).format("ddd MMM DD YYYY HH:mm")
+                            document.getElementById("bookTime").innerText = moment(hel).format("DD/MM/YYYY HH:mm:ss")
+                            document.getElementById("m_bookTime").innerText = moment(hel).format("DD/MM/YYYY HH:mm:ss")
                             document.getElementById("valid-datepicker").style.display = "block";
                             document.getElementById("invalid-datepicker").style.display = "none";
                             // console.log(hel)
@@ -539,7 +537,7 @@
     }
 
     function preReserve() {
-        if(hel)
+        if (hel)
             toggleModal()
         else
             document.getElementById("invalid-datepicker").style.display = "block";

@@ -22,6 +22,12 @@
     int sIndex = -1;
 }
 
+<style>
+    .modal-body {
+        padding: 0px !important;
+    }
+</style>
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -285,7 +291,7 @@
                 <h2 class="section-heading text-uppercase">Contact Us</h2>
             </div>
             <div class="row text-white" style="display: flex; justify-content: space-between;">
-                <div class="col-4" style="display: flex;">
+                <div class="col-sm-4" style="display: flex;">
                     <div>
                         <i class="fas fa-phone" style="font-size: 30px; margin-right: 10px"></i>
                     </div>
@@ -294,7 +300,7 @@
                         <p>@wtt.Phone</p>
                     </div>
                 </div>
-                <div class="col-4" style="display: flex;">
+                <div class="col-sm-4" style="display: flex;">
                     <div>
                         <i class="far fa-address-card" style="font-size: 30px; margin-right: 10px;"></i>
                     </div>
@@ -305,13 +311,25 @@
                         <p>@wtt.Address</p>
                     </div>
                 </div>
-                <div class="col-4" style="display: flex;">
+                <div class="col-sm-4" style="display: flex;">
                     <div>
                         <i class="fas fa-clock" style="font-size: 30px; margin-right: 10px"></i>
                     </div>
                     <div>
                         <h4>Working Time</h4>
-                        <p>@wtt.WorkTimes</p>
+                        
+                        <p>
+                            <span>Mon-Sat:</span>
+                            <span>@wtt.WorkTimeWeek</span>
+                        </p>
+                        <p>
+                            <span>Weekend:</span>
+                            <span>@wtt.WorkTimeWeekEnd</span>
+                        </p>
+                        <p>
+                            <span>Holidays:</span>
+                            <span>@wtt.WorkTimeHolidays</span>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -344,56 +362,46 @@
             <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                            <h3 class="text-warning">Appointment</h3>
-
-                            <div class="card border mb-3" style="min-width: 16rem; height: 100%; width: 100%">
-                                <div class="card-body text-dark" style="display:flex">
-                                    <div class="w-100">
-                                        <div class="text-center">
-                                            <blockquote class="blockquote">
-                                                <p>
-                                                    <span id="m_serviceName" style="text-transform: capitalize;">@item?.Service?.Name</span>
-                                                </p>
-                                                <p>
-                                                    <span id="m_barberName" style="text-transform: capitalize;">@item?.AppUser?.FirstLastName</span>
-                                                </p>
-                                                <p>
-                                                    <span>$@item?.Service?.Price</span>
-                                                </p>
-                                                <p>
-                                                    <span id="m_bookTime">@item?.StartTime</span>
-                                                </p>
-                                            </blockquote>
-                                            <hr />
-                                            <blockquote>
-                                                <p>
-                                                    <span id="m-firstName">@User.GetUserFirstName()</span>&nbsp;<span id="m-lastName">@User.GetUserLastName()</span>
-                                                </p>
-                                                <p>
-                                                    <span id="m-email">@User.GetUserEmail()</span>
-                                                </p>
-                                                <p>
-                                                    <span id="m-phone">@item?.Customer?.Phone</span>
-                                                </p>
-                                            </blockquote>
-                                        </div>
-                                    </div>
-
+                        <div class="card border mb-3">
+                            <div class="card-header bg-warning text-center">
+                                <span>Confirmed Time:</span>
+                                <br />
+                                <span id="m_bookTime">@item?.StartTime</span>
+                            </div>
+                            <div class="card-body text-dark px-5">
+                                <div class="w-100">
+                                    <blockquote class="blockquote">
+                                        <span>Service: </span>
+                                        <span id="m_serviceName" class="name-item">@item?.Service?.Name</span>
+                                        <br />
+                                        <span>Duration: </span>
+                                        <span id="m_duration" class="name-item">@item?.Service?.TimeSpan.TotalMinutes minutes</span>
+                                        <br />
+                                        <span>Staff: </span>
+                                        <span id="m_barberName" class="name-item">@item?.AppUser?.FirstLastName</span>
+                                        <br />
+                                        <span>Total: </span>
+                                        <span id="m_price">$@item?.Service?.Price</span>
+                                    </blockquote>
+                                    <hr />
+                                    <blockquote>
+                                        <span>Name: </span>
+                                        <span id="m_firstName" class="name-item">@item?.Customer?.FirstName</span>
+                                        <span id="m_lastName" class="name-item">@item?.Customer?.LastName</span>
+                                        <br />
+                                        <span>Phone: </span>
+                                        <span id="m_phone">@item?.Customer?.Phone</span>
+                                        <br />
+                                        <span>Email: </span>
+                                        <span id="m_email">@item?.Customer?.Email</span>
+                                    </blockquote>
                                 </div>
+
                             </div>
                         </div>
-
                     </div>
                     <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
-                        <button type="button" class="btn btn-success w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
-
-                        @if (User.IsInRole("admin"))
-                        {
-                            <button type="button" class="btn btn-danger w-50">Cancel Appointment</button>
-                        }
-
-
+                        <button type="button" class="btn btn-warning w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
                     </div>
                 </div>
             </div>

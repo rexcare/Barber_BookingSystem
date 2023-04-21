@@ -38,7 +38,9 @@ namespace App.DAL.EF.Migrations
                     Address = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     Email = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     Phone = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    WorkTimes = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    WorkTimeWeek = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    WorkTimeWeekEnd = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    WorkTimeHolidays = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     WorkTimeTemplateInfo = table.Column<int>(type: "integer", nullable: false),
                     GenerationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

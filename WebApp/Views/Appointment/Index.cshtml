@@ -38,7 +38,7 @@
                                 <h2 class="d-flex align-items-center mb-0">
                                      $@Html.DisplayFor(modelItem => item.Price)
                                 </h2>
-                                <span>@Html.DisplayFor(modelItem => item.TimeSpan) <i class="fa fa-arrow-up"></i></span>
+                                <span>@Html.DisplayFor(modelItem => item.TimeSpan.TotalMinutes) mins <i class="fa fa-arrow-up"></i></span>
                             </div>
                         </div>
                     </div>

@@ -11,6 +11,11 @@
     var uuid = ViewData["id"];
     ViewData["Title"] = "Details";
 }
+<style>
+    .modal-body {
+        padding: 0px;
+    }
+</style>
 
 <a asp-controller="Home" asp-action="MemberList" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
@@ -101,51 +106,46 @@
         <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-body">
-                    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                        <h5 class="text-warning">Appointment</h5>
-
-                        <div class="card border mb-3" style="min-width: 16rem; height: 100%; width: 100%">
-                            <div class="card-body text-dark" style="display:flex">
-                                <div class="w-100">
-                                    <div class="text-center">
-                                        <blockquote class="blockquote">
-                                            <p class="text-secondary">
-                                                Barber:
-                                            </p>
-                                            <span id="m_barberName" class="name-item">@item?.AppUser?.FirstLastName</span>
-                                            <br />
-                                            <div class="price-item">
-                                                <span id="m_serviceName" class="name-item">@item?.Service?.Name</span>
-                                                <div class="dots"></div>
-                                                <span>$@item?.Service?.Price</span>
-                                            </div>
-                                            <p>
-                                                <span id="m_bookTime">@item?.StartTime</span>
-                                            </p>
-                                        </blockquote>
-                                        <hr />
-                                        <blockquote>
-                                            <p class="text-secondary">
-                                                Client:
-                                            </p>
-                                            <span id="m-firstName" class="name-item">@item?.Customer?.FirstName</span>
-                                            &nbsp;
-                                            <span id="m-lastName" class="name-item">@item?.Customer?.LastName</span>
-                                            <br />
-                                            <span id="m-phone">@item?.Customer?.Phone</span>
-                                            <br />
-                                            <span id="m-email" class="blue">@item?.Customer?.Email</span>
-                                        </blockquote>
-                                    </div>
-                                </div>
-
+                    <div class="card border mb-3">
+                        <div class="card-header bg-warning text-center">
+                            <span>Confirmed Time:</span>
+                            <br />
+                            <span id="m_bookTime">@item?.StartTime</span>
+                        </div>
+                        <div class="card-body text-dark px-5">
+                            <div class="w-100">
+                                <blockquote class="blockquote">
+                                    <span>Service: </span>
+                                    <span id="m_serviceName" class="name-item">@item?.Service?.Name</span>
+                                    <br />
+                                    <span>Duration: </span>
+                                    <span id="m_duration" class="name-item">@item?.Service?.TimeSpan.TotalMinutes minutes</span>
+                                    <br />
+                                    <span>Staff: </span>
+                                    <span id="m_barberName" class="name-item">@item?.AppUser?.FirstLastName</span>
+                                    <br />
+                                    <span>Total: </span>
+                                    <span id="m_price">$@item?.Service?.Price</span>
+                                </blockquote>
+                                <hr />
+                                <blockquote>
+                                    <span>Name: </span>
+                                    <span id="m_firstName" class="name-item">@item?.Customer?.FirstName</span>
+                                    <span id="m_lastName" class="name-item">@item?.Customer?.LastName</span>
+                                    <br />
+                                    <span>Phone: </span>
+                                    <span id="m_phone">@item?.Customer?.Phone</span>
+                                    <br />
+                                    <span>Email: </span>
+                                    <span id="m_email">@item?.Customer?.Email</span>
+                                </blockquote>
                             </div>
+
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
-                    <button type="button" class="btn btn-primary w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
+                    <button type="button" class="btn btn-warning w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
                 </div>
             </div>
         </div>

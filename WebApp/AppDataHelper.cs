@@ -55,7 +55,9 @@ public static class AppDataHelper
                 Address = "Luise 3-3",
                 Email = "hsgf@gmail.com",
                 Phone = "+3725632589",
-                WorkTimes = "08:00 - 10:00",
+                WorkTimeWeek = "08:00 - 16:00",
+                WorkTimeWeekEnd = "08:00 - 15:00",
+                WorkTimeHolidays = "09:00 - 14:00",
                 WorkTimeTemplateInfo = 14,
                 GenerationDate =  DateTime.Today.Date
             };

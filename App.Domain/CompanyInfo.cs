@@ -20,9 +20,9 @@ public class CompanyInfo
     [MaxLength(128)]
     public string Phone { get; set; } = default!;
 
-    [MinLength(1)]
-    [MaxLength(128)]
-    public string WorkTimes { get; set; } = default!;
+    public string WorkTimeWeek { get; set; } = "8 - 16"!;
+    public string WorkTimeWeekEnd { get; set; } = "8 - 15"!;
+    public string WorkTimeHolidays { get; set; } = "9 - 14"!;
 
     [Range(1,9999)]
     public int WorkTimeTemplateInfo { get; set; } = default!;

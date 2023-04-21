@@ -57,7 +57,7 @@ namespace WebApp.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Address,Email,Phone,WorkTimes, WorkTimeTemplateInfo,GenerationDate")] CompanyInfo companyInfo)
+        public async Task<IActionResult> Create([Bind("Id,Address,Email,Phone,WorkTimeWeek,WorkTimeWeekEnd,WorkTimeHolidays,WorkTimeTemplateInfo,GenerationDate")] CompanyInfo companyInfo)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace WebApp.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Address,Email,Phone,WorkTimes,WorkTimeTemplateInfo,GenerationDate")] CompanyInfo companyInfo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Address,Email,Phone,WorkTimeWeek,WorkTimeWeekEnd,WorkTimeHolidays,WorkTimeTemplateInfo,GenerationDate")] CompanyInfo companyInfo)
         {
             if (id != companyInfo.Id)
             {
