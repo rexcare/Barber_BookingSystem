@@ -265,7 +265,34 @@ ul {
     }
 }
 
-.btn-action{
+.btn-action {
   min-width: max-content;
 }
 
+.body-card {
+  min-height: calc(100vh - 200px); 
+  height: calc(100% - 150px); 
+  top: 10px;
+}
+
+.name-item {
+  text-transform: capitalize;
+}
+
+.price-item {
+  display:flex;
+  justify-content:center;
+  flex-direction:row; 
+  align-items:center; 
+}
+
+.dots {
+  border-top: 2px dotted; 
+  width: 60%; 
+  min-width: 10px; 
+  color: #999999
+}
+
+.blue {
+  color: blue;
+}

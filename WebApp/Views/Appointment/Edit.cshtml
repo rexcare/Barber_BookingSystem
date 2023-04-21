@@ -22,127 +22,122 @@
 <link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
 <link rel="stylesheet" type="text/css" href="~/css/calendar.css" asp-append-version="true" />
 <link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css" asp-append-version="true">
-<link rel="stylesheet" href="~/css/bs-stepper.min.css" asp-append-version="true" />
 
 <script type="text/javascript" src="~/js/moment.js"></script>
 <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="~/js/jsCalendar.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
-<div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
+<div class="card shadow mb-4 p-4 body-card">
     <div class="row" style="justify-content:space-around; margin-top: 10px;">
         <div class="col col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12 my-3">
-            <div class="row mx-3">
-                <h1>@Appointment?.Service?.Name</h1>
-                <p>@Appointment?.Service?.Description</p>
-            </div>
-            <div id="stepper1" class="bs-stepper">
-                <div class="bs-stepper-header">
-                    <div class="step" data-target="#test-l-1">
-                        <button type="button" class="btn step-trigger">
-                            <span class="bs-stepper-circle"><i class="fas fa-user"></i></span>
-                            <span class="bs-stepper-label">Barber</span>
-                        </button>
+            <div class="row mx-3" style="display: flex; justify-content: space-between">
+                <div style="width: fit-content;">
+                    <h1>@Appointment?.Service?.Name</h1>
+                    <p>@Appointment?.Service?.Description</p>
+                </div>
+                <form class="requires-validation" novalidate id="barberForm" style="max-width: 300px">
+                    <select class="form-select mt-3" required id="barberId" value="@Appointment?.AppUserId" onchange="selectBarber(event)">
+                        <option selected disabled value="">please choose a barber</option>
+                        @foreach (var item in Barbers!)
+                        {
+                            @if (item?.WorkTimes?.Count != 0)
+                            {
+                                counts++;
+                                @if (item?.Id == Appointment?.AppUserId){
+                                    <option value="@item?.Id" selected> @item?.FirstLastName </option>
+                                }
+                                else
+                                {
+                                    <option value="@item?.Id"> @item?.FirstLastName </option>
+                                }
+                            }
+                        }
+                    </select>
+                    <div class="valid-feedback">You selected a position!</div>
+                    <div class="invalid-feedback">Please select a position!</div>
+                    <div class="text-dark">
+                        @if (counts == 0)
+                        {
+                            <p>There is no available barber</p>
+                        }
+                        @if (counts == 1)
+                        {
+                            <p>There is an available barber</p>
+                        }
+                        @if (counts > 1)
+                        {
+                            <p>There are @counts available barbers</p>
+                        }
                     </div>
-                    <div class="line"></div>
-                    <div class="step" data-target="#test-l-2">
-                        <button type="button" class="btn step-trigger">
-                            <span class="bs-stepper-circle"><i class="fas fa-clock"></i></span>
-                            <span class="bs-stepper-label">Time</span>
-                        </button>
+                </form>
+
+            </div>
+
+            <div id="test-l-2" class="content">
+                <!-- Wrapper -->
+                <div id="wrapper">
+                    <!-- Calendar element -->
+                    <div id="events-calendar" data-month-format="month YYYY"></div>
+
+                    <div class="row">
+
+                        <!-- Events -->
+                        <div id="events"></div>
                     </div>
                 </div>
-                <div class="bs-stepper-content">
-                    <div id="test-l-1" class="content">
-                        <div class="row">
-
-                            <form class="requires-validation" novalidate id="barberForm">
-                                <select class="form-select mt-3" required id="barberId" value="@Appointment?.AppUserId" onchange="selectBarber(event)">
-                                    <option selected disabled>Please select a Barber to book</option>
-                                    @foreach (var item in Barbers!)
-                                    {
-                                        @if (item?.WorkTimes?.Count != 0)
-                                        {
-                                            counts++;
-                                            @if (item?.Id == Appointment?.AppUserId){
-                                                <option value="@item?.Id" selected> @item?.FirstLastName </option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@item?.Id"> @item?.FirstLastName </option>
-                                            }
-                                        }
-                                    }
-                                </select>
-                                <div class="valid-feedback">You selected a position!</div>
-                                <div class="invalid-feedback">Please select a position!</div>
-                                <div class="text-primary">
-                                    @if (counts == 0)
-                                    {
-                                        <p>There is no available barber</p>
-                                    }
-                                    @if (counts == 1)
-                                    {
-                                        <p>There is an available barber</p>
-                                    }
-                                    @if (counts > 1)
-                                    {
-                                        <p>There are @counts available barbers</p>
-                                    }
-                                </div>
-                            </form>
-
-
-
-                            <div style="display: flex; justify-content: center">
-                                <button class="btn btn-primary w-100 mx-2" id="reserveBtn" onclick="validateBarber()">Next</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="test-l-2" class="content">
-                        <!-- Wrapper -->
-                        <div id="wrapper">
-                            <!-- Calendar element -->
-                            <div id="events-calendar" data-month-format="month YYYY"></div>
-
-                            <div class="row">
-
-                                <!-- Events -->
-                                <div id="events"></div>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: center">
-                            <button class="btn btn-primary w-100 mx-2" id="reserveBtn" onclick="toggleModal()">Save</button>
-                            <button class="btn btn-warning w-100 mx-2" onclick="backStep()">Back</button>
-                        </div>
-                    </div>
+                <div style="display: flex; justify-content: center">
+                    <button class="btn btn-primary w-50 mx-2" id="reserveBtn" onclick="toggleModal()">
+                        <i class="fas fa-save"></i> &nbsp; Save
+                    </button>
                 </div>
             </div>
         </div>
+        
         <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-4">
             <div class="card border mb-3" style="min-width: 16rem;">
                 <div class="card-header" style="text-align: center">Service Detail</div>
                 <div class="card-body text-dark">
                     <figure>
                         <blockquote class="blockquote">
-                            <span id="serviceName" style="text-transform: capitalize;">@Appointment?.Service?.Name</span>
-                            <span id="barberName" style="text-transform: capitalize;"> / @Appointment?.AppUser?.FirstLastName</span>
-                            <p id="bookTime">@Appointment?.StartTime</p>
-                            <p>@Appointment?.Service?.TimeSpan</p>
-                            <span>$@Appointment?.Service?.Price</span>
+                            <p>
+                                <span>Service: </span>
+                                <span id="serviceName" style="text-transform: capitalize;">@Appointment?.Service?.Name</span>
+                            </p>
+                            <p>
+                                <span>Barber: </span>
+                                <span id="barberName" style="text-transform: capitalize;">@Appointment?.AppUser?.FirstLastName</span>
+                            </p>
+                            <p>
+                                <span>BookTime: </span>
+                                <span id="bookTime">@Appointment?.StartTime</span>
+                            </p>
+                            <p>
+                                <span>Price: </span>
+                                <span>$@Appointment?.Service?.Price</span>
+                            </p>
                         </blockquote>
                         <figcaption class="blockquote-footer">
-                            <p><span id="firstName">@Appointment?.Customer?.FirstName</span>&nbsp;<span id="lastName">@Appointment?.Customer?.LastName</span></p>
-                            <p id="email">@Appointment?.Customer?.Email</p>
-                            <p id="phone">@Appointment?.Customer?.Phone</p>
+
+                            <p>
+                                <span>Name: </span>
+                                <span id="firstName">@Appointment?.Customer?.FirstName</span>&nbsp;<span id="lastName">@Appointment?.Customer?.LastName</span>
+                            </p>
+                            <p>
+                                <span>Email: </span>
+                                <span id="email">@Appointment?.Customer?.Email</span>
+                            </p>
+                            <p>
+                                <span>Phone: </span>
+                                <span id="phone">@Appointment?.Customer?.Phone</span>
+                            </p>
                         </figcaption>
                     </figure>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -183,15 +178,6 @@
     </div>
 </div>
 
-
-<script src="~/js/moment.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
-<link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
-<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="~/js/jsCalendar.js"></script>
-
 <script>
 
     var stepper1Node = document.querySelector('#stepper1')
@@ -210,8 +196,12 @@
     }
 
     function selectBarber(event) {
-        document.getElementById("barberName").innerText =" / " + event.target.selectedOptions[0].innerText;
-        document.getElementById("m_barberName").innerText =" / " + event.target.selectedOptions[0].innerText;
+        document.getElementById("barberName").innerText = event.target.selectedOptions[0].innerText;
+        document.getElementById("m_barberName").innerText = event.target.selectedOptions[0].innerText;
+        generatecalendar();
+        hel = "";
+        document.getElementById("m_bookTime").innerText = "";
+        document.getElementById("bookTime").innerText = "";
     }
 
     function validateBarber() {
@@ -234,36 +224,43 @@
     }
 
     function update() {
-        let appointmentData = {
-            Id: '@Appointment?.Id',
-            CustomerId: '@Appointment?.CustomerId',
-            ServiceId: '@Appointment?.Service?.Id',
-            AppUserId: document.getElementById("barberId").value,
-            StartTime: moment(hel).format("YYYY-MM-DD HH:mm:ss"),
-        }
-        $.ajax({
-            type: 'POST',
-            url: '/Appointment/UpdateAppointment',
-            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
-            data: appointmentData,
-            success: function (result) {
-                if (result == "error") {
-                    alert('Failed to reserve the Data');
-                    console.log('Failed ');
-                }
-                else {
-                    console.log(result);
-                    alert('Successfully reserve Data ');
-                    location.href = "/Appointment";
-                    
-                }
-            },
-            error: function () {
-                alert('Error occures to reserve the Data');
-                console.log('Error occures ');
-            }
-        })
+        if (document.getElementById("barberId").value === "" || document.getElementById("barberId").value === null)
+            alert("Please select a barber")
+        else if (hel === "" || hel === null)
+            alert("Please choose time to reserve")
+        else{
 
+            let appointmentData = {
+                Id: '@Appointment?.Id',
+                CustomerId: '@Appointment?.CustomerId',
+                ServiceId: '@Appointment?.Service?.Id',
+                AppUserId: document.getElementById("barberId").value,
+                StartTime: moment(hel).format("YYYY-MM-DD HH:mm:ss"),
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/Appointment/UpdateAppointment',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+                data: appointmentData,
+                success: function (result) {
+                    if (result == "error") {
+                        alert('Failed to reserve the Data');
+                        console.log('Failed ');
+                    }
+                    else {
+                        console.log(result);
+                        alert('Successfully reserve Data ');
+                        location.href = "/Appointment";
+                    
+                    }
+                },
+                error: function () {
+                    alert('Error occures to reserve the Data');
+                    console.log('Error occures ');
+                }
+            })
+        
+        }
     }
 
 </script>
@@ -367,7 +364,9 @@
 </script>
 
 <script type="text/javascript">
+    generatecalendar();
     async function generatecalendar() {
+        document.getElementById("empty")?.remove();
         // Get elements
         document.getElementById("events-calendar").innerHTML = "";
         document.getElementById("events").innerHTML = "";
@@ -519,7 +518,7 @@
             // Add events on list
             if (events.hasOwnProperty(id) && events[id].length) {
                 // Number of events
-                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "times are" : "time is") + " available.";
+                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "Times are" : "Time is") + " booked.";
 
                 var div;
                 var close;
@@ -545,7 +544,7 @@
                     })(date, i), false);
                 }
             } else {
-                elements.subtitle.textContent = "No times";
+                elements.subtitle.textContent = "No Time";
             }
         };
 

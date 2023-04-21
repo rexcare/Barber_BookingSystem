@@ -286,7 +286,6 @@ public class HomeController : Controller
         return View("AppUser/index", users);
     }
     
-    
     public async Task<IActionResult> Edit(Guid? id)
     {
         if (id == null)
@@ -313,6 +312,7 @@ public class HomeController : Controller
         ViewBag.WTT = wtt;
         return View("AppUser/Edit",user);
     }
+    
     public async Task<IActionResult> Delete(Guid? id)
     {
         if (id == null)
@@ -363,8 +363,6 @@ public class HomeController : Controller
         return View("AppUser/Edit",user);
     }
     
-    
-    
     // POST: Admin/WorkTimes/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
@@ -382,8 +380,6 @@ public class HomeController : Controller
     
     public async Task<IActionResult> DeleteWW(Guid? id)
     {
-
-        
         var workTime = await _context.WorkTimes.FindAsync(id);
         if (workTime != null)
         {
@@ -394,7 +390,4 @@ public class HomeController : Controller
 
         return Redirect("../Edit/" + workTime!.AppUserId);
     }
-    
-    
-    
 }

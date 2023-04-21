@@ -19,6 +19,7 @@
     CompanyInfo wtt = ViewBag.Wtt;
     var services = (IEnumerable<Service>?)ViewBag.Services;
     int index = 0;
+    int sIndex = -1;
 }
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -38,7 +39,7 @@
 
 @if (User.IsInRole("admin"))
 {
-    <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
+    <div class="card shadow mb-4 p-4 body-card">
         <!-- Member table-->
         <div class="row main-box">
             <h1>Our Members</h1>
@@ -53,7 +54,10 @@
                         <div class="col-sm-9">
                             @if (User.IsInRole("admin"))
                             {
-                            <a asp-action="GenerateWTT" class="btn btn-success"><i class="material-icons">&#xE147;</i> <span>Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()</span></a>
+                                <a asp-action="GenerateWTT" class="btn btn-success">
+                                    <i class="material-icons">&#xE147;</i> 
+                                    <span>Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()</span>
+                                </a>
                             }
                         </div>
                     </div>
@@ -127,7 +131,7 @@
 
 @if (User.IsInRole("user"))
 {
-    <div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
+    <div class="card shadow mb-4 p-4 body-card">
         <div class="row main-box">
             <h1>My Schedule</h1>
         </div>
@@ -144,7 +148,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach (var item in @userInfo!.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
+                        @foreach (var item in userInfo!.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
                         {
                             <tr>
                                 <td>
@@ -252,15 +256,24 @@
                 <div>
                     @foreach (var item in services!)
                     {
+                        sIndex++;
                         <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
                             <h4 style="white-space: nowrap">@item.Name</h4>
                             <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
                             <div style="font-size: 30px">$@item.Price</div>
                         </div>
                     }
+                    @if (sIndex < 0)
+                    {
+                        <div class="text-center">
+                            <span style="font-size: 24px;">
+                                there is no service
+                            </span>
+                        </div>
+                    }
                 </div>
             </div>
-            <div class="row" style="display: flex; align-items:center; justify-content: center;">
+            <div class="row mt-3" style="display: flex; align-items:center; justify-content: center;">
                 <a class="btn btn-warning" asp-controller="appointment" asp-action="index" style="width: 200px; font-size:25px">Book Now</a>
             </div>
         </div>
@@ -298,7 +311,7 @@
                     </div>
                     <div>
                         <h4>Working Time</h4>
-                        <p>08:00 - 10:00</p>
+                        <p>@wtt.WorkTimes</p>
                     </div>
                 </div>
             </div>
@@ -428,208 +441,211 @@
 
     async function generatecalendar() {
         // Get elements
-        document.getElementById("events-calendar").innerHTML = "";
-        document.getElementById("events").innerHTML = "";
-        var elements = {
-            // Calendar element
-            calendar: document.getElementById("events-calendar"),
-            // Input element
-            events: document.getElementById("events")
-        }
+        let events_calendar_el = document.getElementById("events-calendar")
+        let events_el = document.getElementById("events")
+        if (events_el && events_calendar_el) {
+            events_calendar_el.innerHTML = "";
+            events_el.innerHTML = "";
+            var elements = {
+                // Calendar element
+                calendar: document.getElementById("events-calendar"),
+                // Input element
+                events: document.getElementById("events")
+            }
 
-        // Create the calendar
-        elements.calendar.className = "material-theme custom-green";
-        var calendar = jsCalendar.new(elements.calendar);
-        let data = {
-            Id: document.getElementById("uuid").value,
-        }
-        var mindate = moment();
-        var workTimes = [];
-        var events = {
-        };
-        var times = {}
+            // Create the calendar
+            elements.calendar.className = "material-theme custom-green";
+            var calendar = jsCalendar.new(elements.calendar);
+            let data = {
+                Id: document.getElementById("uuid").value,
+            }
+            var mindate = moment();
+            var workTimes = [];
+            var events = {
+            };
+            var times = {}
 
-        await $.ajax({
-            type: 'POST',
-            url: '/Appointment/getWorkingTimes',
-            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-            data: data,
-            success: function (result) {
-                workTimes = result;
-                if (result == "error") {
-                    alert('Failed to receive the Data');
-                    console.log('Failed ');
-                }
-                else {
-                    console.log(result);
-                    if (result.length != 0) {
-                        workTimes = result;
-                        //set min max month
-                        if (moment().diff(result[0].date, 'days') > 0) {
-                            mindate = moment().format("MM/DD/YYYY");
-                            tmp_mindate = moment().format("DD/MM/YYYY");
-                        }
-                        else {
-                            mindate = moment(result[0].date).format("MM/DD/YYYY");
-                            tmp_mindate = moment(result[0].date).format("DD/MM/YYYY");
-                        }
-                        calendar.min(tmp_mindate);
-                        calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
-                        calendar.set(tmp_mindate);
+            await $.ajax({
+                type: 'POST',
+                url: '/Appointment/getWorkingTimes',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: data,
+                success: function (result) {
+                    workTimes = result;
+                    if (result == "error") {
+                        alert('Failed to receive the Data');
+                        console.log('Failed ');
                     }
-                }
-            },
-            error: function () {
-                alert('Error occures to receive the Data');
-                console.log('Error occures ');
-            }
-        })
-        // get booking times
-        await $.ajax({
-            type: 'POST',
-            url: '/Appointment/readAppointmentsById',
-            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-            data: data,
-            success: function (result) {
-                if (result == "error") {
-                    alert('Failed to receive the Data');
-                    console.log('Failed ');
-                }
-                else {
-                    var mainData = JSON.parse(result);
-                    var colors = [
-                        "#198754",
-                        "#0D6EFD",
-                        "#FFC107",
-                        "#8540F5",
-                        "#4DD4AC"
-                    ];
-                    console.log('11111111', mainData)
-                    for (i = 0; i < mainData.length; i++) {
-                        let tId = moment(mainData[i].StartTime).format("MM/DD/YYYY");
-                        console.log(tId)
-                        let val = parseInt(moment(mainData[i].StartTime).subtract(3, 'hours').format("H"));
-                        // If No times, create list
-                        if (!events.hasOwnProperty(tId)) {
-                            // Create list
-                            events[tId] = [];
+                    else {
+                        console.log(result);
+                        if (result.length != 0) {
+                            workTimes = result;
+                            //set min max month
+                            if (moment().diff(result[0].date, 'days') > 0) {
+                                mindate = moment().format("MM/DD/YYYY");
+                                tmp_mindate = moment().format("DD/MM/YYYY");
+                            }
+                            else {
+                                mindate = moment(result[0].date).format("MM/DD/YYYY");
+                                tmp_mindate = moment(result[0].date).format("DD/MM/YYYY");
+                            }
+                            calendar.min(tmp_mindate);
+                            calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
+                            calendar.set(tmp_mindate);
                         }
-                        events[tId].push({
-                            time: val,
-                            id: mainData[i].Id,
-                            name: mainData[i].Customer.FirstLastName,
-                            service: mainData[i].Service.Name
-                        });
                     }
-                    console.log('222222222', events)
-
+                },
+                error: function () {
+                    alert('Error occures to receive the Data');
+                    console.log('Error occures ');
                 }
-            },
-            error: function () {
-                alert('Error occures to receive the Data');
-                console.log('Error occures ');
-            }
-        })
-
-        console.log('dddddddd', events)
-        //
-        // Make changes on the date elements that disbled
-        calendar.onDateRender(function (date, element, info) {
-            if (!isContainDate(workTimes, date)) {
-                element.style.color = '#CACACA'
-            }
-        });
-        //
-        // Create events elements
-        elements.title = document.createElement("div");
-        elements.title.className = "title";
-        elements.events.appendChild(elements.title);
-        elements.subtitle = document.createElement("div");
-        elements.subtitle.className = "subtitle";
-        elements.events.appendChild(elements.subtitle);
-        elements.list = document.createElement("div");
-        elements.list.className = "list";
-        elements.events.appendChild(elements.list);
-
-        // Refresh layout
-        calendar.refresh();
-
-
-        var date_format = "MM/DD/YYYY";
-
-        var showEvents = function (date) {
-            console.log("datedate", date)
-            // getDatetimes(date)
-            // Date string
-            var id = moment(date).format("MM/DD/YYYY");
-            // Set title
-            elements.title.textContent = id;
-            // Clear old events
-            elements.list.innerHTML = "";
-            // Add events on list
-            if (events.hasOwnProperty(id) && events[id].length) {
-                // Number of events
-                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "times are" : "time is") + " available.";
-
-                var div;
-                var close;
-                for (var i = 0; i < events[id].length; i++) {
-                    div = document.createElement("div");
-                    div.className = "event-item-i";
-                    elements.list.appendChild(div);
-
-                    sText = document.createElement("div");
-                    sText.className = "";
-                    div.appendChild(sText);
-
-                    let time = ''
-                    if (events[id][i].time < 10)
-                        time = `0${events[id][i].time} : 00`;
-                    else
-                        time = `${events[id][i].time} : 00`;
-
-                    sTime = document.createElement("span");
-                    sTime.className = "px-2 item-tag-time";
-                    sTime.textContent = " " + time + " ";
-                    sText.appendChild(sTime);
-
-                    sName = document.createElement("span");
-                    sName.className = "px-2 item-tag-name";
-                    sName.textContent = " " + events[id][i].name + " ";
-                    sText.appendChild(sName);
-
-                    sType = document.createElement("span");
-                    sType.className = "px-2 item-tag-type";
-                    sType.textContent = " " + events[id][i].service + " ";
-                    sText.appendChild(sType);
-
-
-                    div.addEventListener("click", (function (date, index) {
-                        return function () {
-                            toggleModal(events[id][index]?.id, "info")
+            })
+            // get booking times
+            await $.ajax({
+                type: 'POST',
+                url: '/Appointment/readAppointmentsById',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: data,
+                success: function (result) {
+                    if (result == "error") {
+                        alert('Failed to receive the Data');
+                        console.log('Failed ');
+                    }
+                    else {
+                        var mainData = JSON.parse(result);
+                        var colors = [
+                            "#198754",
+                            "#0D6EFD",
+                            "#FFC107",
+                            "#8540F5",
+                            "#4DD4AC"
+                        ];
+                        console.log('11111111', mainData)
+                        for (i = 0; i < mainData.length; i++) {
+                            let tId = moment(mainData[i].StartTime).format("MM/DD/YYYY");
+                            console.log(tId)
+                            let val = parseInt(moment(mainData[i].StartTime).subtract(3, 'hours').format("H"));
+                            // If No times, create list
+                            if (!events.hasOwnProperty(tId)) {
+                                // Create list
+                                events[tId] = [];
+                            }
+                            events[tId].push({
+                                time: val,
+                                id: mainData[i].Id,
+                                name: mainData[i].Customer.FirstLastName,
+                                service: mainData[i].Service.Name
+                            });
                         }
-                    })(date, i), false);
+                        console.log('222222222', events)
 
+                    }
+                },
+                error: function () {
+                    alert('Error occures to receive the Data');
+                    console.log('Error occures ');
                 }
-            } else {
-                elements.subtitle.textContent = "No times";
-            }
-        };
+            })
 
-        // Show current date events
-        console.log(mindate)
-        // showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
-        showEvents(moment(mindate).format("MM/DD/YYYY"))
+            console.log('dddddddd', events)
+            //
+            // Make changes on the date elements that disbled
+            calendar.onDateRender(function (date, element, info) {
+                if (!isContainDate(workTimes, date)) {
+                    element.style.color = '#CACACA'
+                }
+            });
+            //
+            // Create events elements
+            elements.title = document.createElement("div");
+            elements.title.className = "title";
+            elements.events.appendChild(elements.title);
+            elements.subtitle = document.createElement("div");
+            elements.subtitle.className = "subtitle";
+            elements.events.appendChild(elements.subtitle);
+            elements.list = document.createElement("div");
+            elements.list.className = "list";
+            elements.events.appendChild(elements.list);
 
-        // Add events
-        calendar.onDateClick(function (event, date) {
-            // Update calendar date
-            if (isContainDate(workTimes, date)) {
-                calendar.set(date);
-                // Show events
-                showEvents(date);
-            }
-        });
+            // Refresh layout
+            calendar.refresh();
 
+
+            var date_format = "MM/DD/YYYY";
+
+            var showEvents = function (date) {
+                console.log("datedate", date)
+                // getDatetimes(date)
+                // Date string
+                var id = moment(date).format("MM/DD/YYYY");
+                // Set title
+                elements.title.textContent = id;
+                // Clear old events
+                elements.list.innerHTML = "";
+                // Add events on list
+                if (events.hasOwnProperty(id) && events[id].length) {
+                    // Number of events
+                    elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "Appointments are" : "Appointment is") + " booked.";
+
+                    var div;
+                    var close;
+                    for (var i = 0; i < events[id].length; i++) {
+                        div = document.createElement("div");
+                        div.className = "event-item-i";
+                        elements.list.appendChild(div);
+
+                        sText = document.createElement("div");
+                        sText.className = "";
+                        div.appendChild(sText);
+
+                        let time = ''
+                        if (events[id][i].time < 10)
+                            time = `0${events[id][i].time} : 00`;
+                        else
+                            time = `${events[id][i].time} : 00`;
+
+                        sTime = document.createElement("span");
+                        sTime.className = "px-2 item-tag-time";
+                        sTime.textContent = " " + time + " ";
+                        sText.appendChild(sTime);
+
+                        sName = document.createElement("span");
+                        sName.className = "px-2 item-tag-name";
+                        sName.textContent = " " + events[id][i].name + " ";
+                        sText.appendChild(sName);
+
+                        sType = document.createElement("span");
+                        sType.className = "px-2 item-tag-type";
+                        sType.textContent = " " + events[id][i].service + " ";
+                        sText.appendChild(sType);
+
+
+                        div.addEventListener("click", (function (date, index) {
+                            return function () {
+                                toggleModal(events[id][index]?.id, "info")
+                            }
+                        })(date, i), false);
+
+                    }
+                } else {
+                    elements.subtitle.textContent = "No Appointments";
+                }
+            };
+
+            // Show current date events
+            console.log(mindate)
+            // showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
+            showEvents(moment(mindate).format("MM/DD/YYYY"))
+
+            // Add events
+            calendar.onDateClick(function (event, date) {
+                // Update calendar date
+                if (isContainDate(workTimes, date)) {
+                    calendar.set(date);
+                    // Show events
+                    showEvents(date);
+                }
+            });
+        }
     }
 </script>

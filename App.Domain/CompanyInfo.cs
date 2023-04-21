@@ -19,7 +19,11 @@ public class CompanyInfo
     [MinLength(1)]
     [MaxLength(128)]
     public string Phone { get; set; } = default!;
-    
+
+    [MinLength(1)]
+    [MaxLength(128)]
+    public string WorkTimes { get; set; } = default!;
+
     [Range(1,9999)]
     public int WorkTimeTemplateInfo { get; set; } = default!;
 

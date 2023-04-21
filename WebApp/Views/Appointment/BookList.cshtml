@@ -27,7 +27,7 @@
     });
 </script>
 
-<div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
+    <div class="card shadow mb-4 p-4 body-card">
     <h1>Your Schedule</h1>
     <!-- Upcoming -->
     <div class="table-responsive">
@@ -57,7 +57,7 @@
                 <tbody>
                     @foreach (Appointment item in Model.OrderBy(o => o.StartTime)!)
                     {
-                        DateTime now = new DateTime();
+                        DateTime now = DateTime.Today;
                         int result = DateTime.Compare(now, item.StartTime);
                         if (result > 0)
                             continue;
@@ -95,7 +95,7 @@
                         <h2><i>Passed</i> <b>Appointments</b></h2>
                     </div>
                     <div class="col-sm-6">
-                        <a asp-action="index" class="btn btn-success mx-3" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Book Now</span></a>
+                        <a asp-action="index" style="display: none;" class="btn btn-success mx-3" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Book Now</span></a>
                     </div>
                 </div>
 
@@ -113,7 +113,7 @@
                 <tbody>
                     @foreach (Appointment item in Model.OrderBy(o=>o.StartTime)!)
                     {
-                        DateTime now = new DateTime();
+                        DateTime now = DateTime.Today;
                         int result = DateTime.Compare(now, item.StartTime);
                         if (result <= 0)
                             continue;
@@ -452,7 +452,7 @@
             // Add events on list
             if (events.hasOwnProperty(id) && events[id].length) {
                 // Number of events
-                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "times are" : "time is") + " available.";
+                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "Appointments are" : "Appointment is") + " booked.";
 
                 var div;
                 var close;
@@ -477,7 +477,7 @@
                     div.appendChild(sType);
                 }
             } else {
-                elements.subtitle.textContent = "No times";
+                elements.subtitle.textContent = "No Appointments";
             }
         };
 

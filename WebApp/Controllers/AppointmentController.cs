@@ -111,7 +111,7 @@ public class AppointmentController : Controller
 
         var user = _userManager.Users.First(u => u.Id == id);
         if (user== null) return NotFound();
-        var customer = _context.Customers.First(f => f.Email == user.Email);
+        var customer = _context.Customers.First(f => f.Email == user.Email && f.Phone == user.PhoneNumber);
         if (customer == null) return NotFound();
         var appointments = _context.Appointments.Where(c => c.CustomerId.Equals(customer.Id)).Include(w => w.Service).Include(w => w.AppUser);
         return View(await appointments.ToListAsync());

@@ -11,11 +11,13 @@
     var Service = (Service?)ViewData["service"];
     var Barbers = (IEnumerable<AppUser>?)ViewData["barber"];
     var phonenumber = "";
+
     if (User.IsInRole("customer"))
     {
         var uid = User.GetUserId();
         phonenumber = _userManager.Users.Where(w => w.Id == uid).Select(s => s.PhoneNumber).First();
     }
+
     int counts = 0;
 }
 
@@ -31,7 +33,7 @@
 
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
-<div class="card shadow mb-4 p-4" style="height: max(calc(100vh - 200px)), 100px; top: 10px">
+<div class="card shadow mb-4 p-4 body-card">
     <div class="row" style="justify-content:space-around; margin-top: 10px;">
         <div class="col col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12 my-3">
             <div class="row mx-3" style="display: flex; justify-content: space-between">
@@ -108,7 +110,7 @@
                             }
                             else
                             {
-                                <button class="btn btn-primary w-100 mx-2" onclick="hel ? stepper1.next() : alert('click date')">Next</button>
+                                <button class="btn btn-primary w-100 mx-2" onclick="hel ? stepper1.next() : alert('Please choose a time to reserve.')">Next</button>
                             }
                         </div>
                     </div>
@@ -236,30 +238,32 @@
                         <div class="w-100">
                             <div class="text-center">
                                 <blockquote class="blockquote">
-                                    <p>
-                                        <span id="m_serviceName" style="text-transform: capitalize;">@Service?.Name</span>
+                                    <p class="text-secondary">
+                                        Barber:
                                     </p>
-                                    <p>
-                                        <span id="m_barberName" style="text-transform: capitalize;"></span>
-                                    </p>
-                                    <p>
+                                        <span id="m_barberName" class="name-item"></span>
+                                    <br/>
+                                    <div class="price-item">
+                                        <span id="m_serviceName" class="name-item">@Service?.Name</span>
+                                        <div class="dots"></div>
                                         <span>$@Service?.Price</span>
-                                    </p>
+                                    </div>
                                     <p>
                                         <span id="m_bookTime"></span>
                                     </p>
                                 </blockquote>
-                                <hr/>
+                                <hr />
                                 <blockquote>
-                                    <p>
-                                        <span id="m-firstName">@User.GetUserFirstName()</span>&nbsp;<span id="m-lastName">@User.GetUserLastName()</span>
+                                    <p class="text-secondary">
+                                        Client:
                                     </p>
-                                    <p>
-                                        <span id="m-email">@User.GetUserEmail()</span>
-                                    </p>
-                                    <p>
-                                        <span id="m-phone">@phonenumber</span>
-                                    </p>
+                                    <span id="m-firstName" class="name-item">@User.GetUserFirstName()</span>
+                                    &nbsp;
+                                    <span id="m-lastName" class="name-item">@User.GetUserLastName()</span>
+                                    <br />
+                                    <span id="m-phone">@phonenumber</span>
+                                    <br />
+                                    <span id="m-email" class="blue">@User.GetUserEmail()</span>
                                 </blockquote>
                             </div>
                         </div>
@@ -278,7 +282,7 @@
     // generatecalendar()
     async function generatecalendar() {
         // Get elements
-        document.getElementById("empty").innerHTML = "";
+        document.getElementById("empty")?.remove();
         document.getElementById("events-calendar").innerHTML = "";
         document.getElementById("events").innerHTML = "";
         var elements = {
@@ -493,6 +497,9 @@
         document.getElementById("barberName").innerText = event.target.selectedOptions[0].innerText;
         document.getElementById("m_barberName").innerText =event.target.selectedOptions[0].innerText;
         generatecalendar()
+        hel = "";
+        document.getElementById("m_bookTime").innerText = "";
+        document.getElementById("bookTime").innerText = "";
         // console.log('ddddddddddddddd', event.target.selectedOptions[0].innerText);
 
     }

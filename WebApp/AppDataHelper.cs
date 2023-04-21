@@ -55,6 +55,7 @@ public static class AppDataHelper
                 Address = "Luise 3-3",
                 Email = "hsgf@gmail.com",
                 Phone = "+3725632589",
+                WorkTimes = "08:00 - 10:00",
                 WorkTimeTemplateInfo = 14,
                 GenerationDate =  DateTime.Today.Date
             };
@@ -63,9 +64,6 @@ public static class AppDataHelper
                 context.CompanyInfos.Add(companyInf);
                 context.SaveChanges();
             }
-
-
-
 
 
             if (userManager == null || roleManager == null)
@@ -130,7 +128,6 @@ public static class AppDataHelper
                     var identityResult = userManager.CreateAsync(user, userInfo.password).Result;
                     identityResult =  userManager.AddClaimAsync(user, new Claim("aspnet.firstname",user.FirstName)).Result;
                     identityResult =  userManager.AddClaimAsync(user, new Claim("aspnet.lastname",user.LastName)).Result;
-                    identityResult = userManager.AddClaimAsync(user, new Claim("aspnet.phonenumber", user.PhoneNumber)).Result;
 
                     if (!identityResult.Succeeded)
                     {

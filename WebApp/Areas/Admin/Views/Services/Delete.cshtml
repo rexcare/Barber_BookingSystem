@@ -6,7 +6,7 @@
 
 
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
-<div class="card shadow mb-4 p-4" style="height: calc(100vh - 150px); top: 10px">
+<div class="card shadow mb-4 p-4 body-card">
     <div style="display: flex; align-items: center; flex-direction: column;">
         <div class="delete-confirm-card card p-3 border-0">
             @*<div class="row">
@@ -25,7 +25,7 @@
                                 @Html.DisplayFor(model => model.Name)
                             </dd>
                             <dt class = "col-sm-2">
-                                @Html.DisplayNameFor(model => model.Price)
+                                $@Html.DisplayNameFor(model => model.Price)
                             </dt>
                             <dd class = "col-sm-10">
                                 @Html.DisplayFor(model => model.Price)

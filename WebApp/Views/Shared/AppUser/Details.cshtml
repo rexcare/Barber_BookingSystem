@@ -10,12 +10,11 @@
     var appointments = (IEnumerable<Appointment>?)ViewData["appointments"];
     var uuid = ViewData["id"];
     ViewData["Title"] = "Details";
-    var index = 0;
 }
 
 <a asp-controller="Home" asp-action="MemberList" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
-<div class="card shadow mb-4 p-4" style="height: calc(100% - 150px); top: 10px">
+<div class="card shadow mb-4 p-4 body-card">
     <div class="row">
         <div class="col-lg-4 col-md-5 col-sm-12">
             @if (User.IsInRole("user"))
@@ -375,7 +374,7 @@
             // Add events on list
             if (events.hasOwnProperty(id) && events[id].length) {
                 // Number of events
-                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "times are" : "time is") + " available.";
+                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "appointments are" : "appointment is") + " booked.";
 
                 var div;
                 var close;
@@ -418,7 +417,7 @@
 
                 }
             } else {
-                elements.subtitle.textContent = "No times";
+                elements.subtitle.textContent = "No appointments";
             }
         };
 
