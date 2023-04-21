@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @using App.Domain.Identity
 @using Base.Extensions
+
 @model IEnumerable<App.Domain.Appointment>
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
@@ -21,6 +22,23 @@
     int counts = 0;
 }
 
+<!-- Assets --> 
+<style>
+    #valid-datepicker {
+        color: #2acc80;
+        display: none;
+    }
+
+    #invalid-datepicker {
+        color: #ff606e;
+        display: none;
+    }
+
+    .modal-body {
+        padding: 0px;
+    }
+</style>
+
 <link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/jsCalendar.css" type="text/css">
@@ -31,8 +49,10 @@
 <script src="~/js/moment.js" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 
+<!-- Back Link -->
 <a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
 
+<!-- Booking Page -->
 <div class="card shadow mb-4 p-4 body-card">
     <div class="row" style="justify-content:space-around; margin-top: 10px;">
         <div class="col col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12 my-3">
@@ -43,7 +63,6 @@
                 </div>
                 <form class="requires-validation" novalidate id="barberForm" style="max-width: 300px">
                     <select class="form-select mt-3" required id="barberId" onchange="selectBarber(event)">
-                        <option selected disabled value="">please choose a barber</option>
                         @foreach (var item in Barbers!)
                         {
                             @if (item?.WorkTimes?.Count != 0)
@@ -89,30 +108,41 @@
                     </div>
                 </div>
                 <div class="bs-stepper-content">
-
                     <div id="test-l-2" class="content">
                         <!-- Wrapper -->
                         <div id="wrapper">
-                            <div id="empty" style="text-align-last: center; padding: 3rem 0px 2rem 0px; font-size:2rem;">Please select a barber</div>
                             <!-- Calendar element -->
                             <div id="events-calendar" data-month-format="month YYYY"></div>
-                        
                             <div class="row">
-                            
                             <!-- Events -->
                             <div id="events"></div>
                             </div>
                         </div>
+                        <div id="valid-datepicker">Selected time is valid!</div>
+                        <div id="invalid-datepicker">Date Time field cannot be blank!</div>
+
                         <div style="display: flex; justify-content: center">
                             @if (User.IsInRole("customer"))
                             {
-                                <button class="btn btn-primary w-100 mx-2" id="reserveBtn" onclick="validateContact()">Reserve</button>
+                                <button 
+                                    class="btn btn-primary w-100 mx-2" 
+                                    id="reserveBtn" 
+                                    onclick="preReserve()"
+                                >
+                                    Reserve
+                                </button>
                             }
                             else
                             {
-                                <button class="btn btn-primary w-100 mx-2" onclick="hel ? stepper1.next() : alert('Please choose a time to reserve.')">Next</button>
+                                <button 
+                                    class="btn btn-primary w-100 mx-2" 
+                                    onclick="next()"
+                                >
+                                    Next
+                                </button>
                             }
                         </div>
+                        
                     </div>
 
                     <div id="test-l-3" class="content">
@@ -230,58 +260,65 @@
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-body">
-                <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                    <h3 class="text-warning">Appointment</h3>
-                </div>
-                <div class="card border mb-3" style="min-width: 16rem; height: 100%;">
-                    <div class="card-body text-dark" style="display:flex">
+                <div class="card border mb-3">
+                    <div class="card-header bg-warning text-center">
+                        <span>Confirmed Time:</span>
+                        <br />
+                        <span id="m_bookTime"></span>
+                    </div>
+                    <div class="card-body text-dark">
                         <div class="w-100">
-                            <div class="text-center">
-                                <blockquote class="blockquote">
-                                    <p class="text-secondary">
-                                        Barber:
-                                    </p>
-                                        <span id="m_barberName" class="name-item"></span>
-                                    <br/>
-                                    <div class="price-item">
-                                        <span id="m_serviceName" class="name-item">@Service?.Name</span>
-                                        <div class="dots"></div>
-                                        <span>$@Service?.Price</span>
-                                    </div>
-                                    <p>
-                                        <span id="m_bookTime"></span>
-                                    </p>
-                                </blockquote>
-                                <hr />
-                                <blockquote>
-                                    <p class="text-secondary">
-                                        Client:
-                                    </p>
-                                    <span id="m-firstName" class="name-item">@User.GetUserFirstName()</span>
+                            <blockquote class="blockquote">
+                                <span>Service: </span>
+                                <span id="m_serviceName" class="name-item">@Service?.Name</span>
+                                <br />
+                                <span>Duration: </span>
+                                <span id="m_duration">@Service?.TimeSpan</span>
+                                <br />
+                                <span>Staff: </span>
+                                <span id="m_barberName" class="name-item"></span>
+                                <br />
+                                <span>Total: </span>
+                                <span id="m_price">$@Service?.Price</span>
+                            </blockquote>
+                            <hr />
+                            <blockquote>
+                                    <span>Name: </span>
+                                    <span id="m_firstName" class="name-item">@User.GetUserFirstName()</span>
                                     &nbsp;
-                                    <span id="m-lastName" class="name-item">@User.GetUserLastName()</span>
+                                    <span id="m_lastName" class="name-item">@User.GetUserLastName()</span>
                                     <br />
-                                    <span id="m-phone">@phonenumber</span>
+                                    <span>Phone: </span>
+                                    <span id="m_phone">@phonenumber</span>
                                     <br />
-                                    <span id="m-email" class="blue">@User.GetUserEmail()</span>
+                                    <span>Email: </span>
+                                    <span id="m_email">@User.GetUserEmail()</span>
                                 </blockquote>
-                            </div>
                         </div>
 
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" style="display: flex; justify-content: center;">
+            <div class="modal-footer" style="justify-content: center;">
                 <button type="button" class="btn btn-primary w-50" onclick="Reserve()">OK</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Generate Calendar -->
 <script type="text/javascript">
-    // generatecalendar()
+    
+    generatecalendar()
+    
     async function generatecalendar() {
         // Get elements
+        document.getElementById("barberName").innerText = document.getElementById("barberId").selectedOptions[0].innerText;
+        document.getElementById("m_barberName").innerText = document.getElementById("barberId").selectedOptions[0].innerText;
+        
+        document.getElementById("valid-datepicker").style.display = "none";
+        document.getElementById("invalid-datepicker").style.display = "none";
+        
         document.getElementById("empty")?.remove();
         document.getElementById("events-calendar").innerHTML = "";
         document.getElementById("events").innerHTML = "";
@@ -385,20 +422,20 @@
                 console.log('Error occures ');
             }
         })
-        console.log('cccccc', times);
+        // console.log('tiems', times);
         await Object.keys(times).forEach(function (key, index) {
             events[key] = times[key];
         });
 
-        console.log(events)
-        //
+        // console.log('events', events)
+        
         // Make changes on the date elements that disbled
         calendar.onDateRender(function (date, element, info) {
             if (!isContainDate(workTimes, date)) {
                 element.style.color = '#CACACA'
             }
         });
-        //
+        
         // Create events elements
         elements.title = document.createElement("div");
         elements.title.className = "title";
@@ -448,13 +485,15 @@
                     elements.list.appendChild(div);
                     div.addEventListener("click", (function (date, index) {
                         return function () {
-                            console.log('date', date, 'events', events, 'index', index);
+                            // console.log('date', date, 'events', events, 'index', index);
                             let tId = moment(date).format("MM/DD/YYYY");
-                            console.log('tid', tId);
+                            // console.log('tid', tId);
                             hel = moment(date).set({ h: events[tId][index] });
                             document.getElementById("bookTime").innerText = moment(hel).format("ddd MMM DD YYYY HH:mm")
                             document.getElementById("m_bookTime").innerText = moment(hel).format("ddd MMM DD YYYY HH:mm")
-                            console.log(hel)
+                            document.getElementById("valid-datepicker").style.display = "block";
+                            document.getElementById("invalid-datepicker").style.display = "none";
+                            // console.log(hel)
                         }
                     })(date, i), false);
                 }
@@ -481,12 +520,27 @@
 
 </script>
 
+<!-- Actions -->
 <script>
 
     var barberId = document.getElementById("barberId").value;
     var stepper1Node = document.querySelector('#stepper1')
     var stepper1 = new Stepper(document.querySelector('#stepper1'))
     
+    function next() {
+        if(hel)
+            stepper1.next()
+        else
+            document.getElementById("invalid-datepicker").style.display = "block";
+    }
+
+    function preReserve() {
+        if(hel)
+            toggleModal()
+        else
+            document.getElementById("invalid-datepicker").style.display = "block";
+    }
+
     function backStep() {
         event.preventDefault();
         event.stopPropagation();
@@ -618,6 +672,7 @@
 
 </script>
 
+<!-- Utilities -->
 <script>
 
     var workTimes = [];
@@ -715,5 +770,3 @@
     }
 
 </script>
-
-

@@ -109,16 +109,32 @@
                                 <div class="w-100">
                                     <div class="text-center">
                                         <blockquote class="blockquote">
-                                            <span id="m_serviceName" style="text-transform: capitalize;">@item?.Service?.Name</span>
-                                            <span id="m_barberName" style="text-transform: capitalize;">/ @item?.AppUser?.FirstLastName</span>
-                                            <p id="m_bookTime">@item?.StartTime</p>
-                                            <span>@item?.Service?.Price</span>
+                                            <p class="text-secondary">
+                                                Barber:
+                                            </p>
+                                            <span id="m_barberName" class="name-item">@item?.AppUser?.FirstLastName</span>
+                                            <br />
+                                            <div class="price-item">
+                                                <span id="m_serviceName" class="name-item">@item?.Service?.Name</span>
+                                                <div class="dots"></div>
+                                                <span>$@item?.Service?.Price</span>
+                                            </div>
+                                            <p>
+                                                <span id="m_bookTime">@item?.StartTime</span>
+                                            </p>
                                         </blockquote>
                                         <hr />
                                         <blockquote>
-                                            <p><span id="m-firstName">@item?.Customer?.FirstName</span>&nbsp;<span id="m-lastName">@item?.Customer?.LastName</span></p>
-                                            <p id="m-email">@item?.Customer?.Email</p>
-                                            <p id="m-phone">@item?.Customer?.Phone</p>
+                                            <p class="text-secondary">
+                                                Client:
+                                            </p>
+                                            <span id="m-firstName" class="name-item">@item?.Customer?.FirstName</span>
+                                            &nbsp;
+                                            <span id="m-lastName" class="name-item">@item?.Customer?.LastName</span>
+                                            <br />
+                                            <span id="m-phone">@item?.Customer?.Phone</span>
+                                            <br />
+                                            <span id="m-email" class="blue">@item?.Customer?.Email</span>
                                         </blockquote>
                                     </div>
                                 </div>
