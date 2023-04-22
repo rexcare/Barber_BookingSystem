@@ -34,7 +34,7 @@
     });
 </script>
 
-    <div class="card shadow mb-4 p-4 body-card">
+<div class="card shadow mb-4 p-4 body-card">
     <h1>Your Schedule</h1>
     <!-- Upcoming -->
     <div class="table-responsive">
@@ -62,7 +62,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Appointment item in Model.OrderBy(o => o.StartTime)!)
+                    @foreach (Appointment item in Model.OrderBy(o => o.StartTime).Where(c=>c.Customer.Email == User.GetUserEmail())!)
                     {
                         DateTime now = DateTime.Today;
                         int result = DateTime.Compare(now, item.StartTime);
@@ -118,7 +118,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Appointment item in Model.OrderBy(o=>o.StartTime)!)
+                    @foreach (Appointment item in Model.OrderBy(o => o.StartTime).Where(c => c.Customer.Email == User.GetUserEmail())!)
                     {
                         DateTime now = DateTime.Today;
                         int result = DateTime.Compare(now, item.StartTime);

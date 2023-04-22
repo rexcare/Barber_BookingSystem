@@ -113,7 +113,8 @@ public class AppointmentController : Controller
         if (user== null) return NotFound();
         var customer = _context.Customers.Where(f => f.Email == user.Email && f.Phone == user.PhoneNumber).FirstOrDefault();
         if (customer == null) return NotFound();
-        var appointments = _context.Appointments.Where(c => c.CustomerId.Equals(customer.Id)).Include(w => w.Service).Include(w => w.AppUser);
+        var appointments = _context.Appointments.Include(c => c.Customer).Include(w => w.Service).Include(w => w.AppUser);
+        // var xxx = _context.Appointments.Join(customer.Id).Where(customer.Email == )
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
         ViewBag.WTT = wtt;
         return View(await appointments.ToListAsync());

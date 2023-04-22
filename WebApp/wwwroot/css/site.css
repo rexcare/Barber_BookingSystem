@@ -270,7 +270,7 @@ ul {
 }
 
 .body-card {
-  min-height: calc(100vh - 200px); 
+  min-height: calc(100vh - 143px); 
   height: calc(100% - 150px); 
   top: 10px;
 }
