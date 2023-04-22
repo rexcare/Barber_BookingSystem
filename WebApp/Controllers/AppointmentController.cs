@@ -209,6 +209,21 @@ public class AppointmentController : Controller
         return Json("error");
     }
 
+    public async Task<IActionResult> ReBook(Guid? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var appointment = _context.Appointments.Include(a => a.Customer).Include(a => a.Service).FirstOrDefault();
+        ViewData["appointment"] = appointment;
+        var barbers = _userManager.Users.Where(x => x.Role == "user").Include(w => w.WorkTimes);
+        ViewData["barber"] = barbers;
+
+        return View();
+    }
+
     private bool AppointmentExists(Guid id)
     {
         return (_context.Appointments?.Any(e => e.Id == id)).GetValueOrDefault();

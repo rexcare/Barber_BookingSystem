@@ -138,7 +138,12 @@
                                 @item?.AppUser?.FirstLastName
                             </td>
                             <td>
-                                <a href="javascript:;" class="edit" onclick="toggleModal('@item?.Id', 'info')"><i class="material-icons" data-toggle="tooltip" title="view">&#xe417;</i></a>
+                                <a href="javascript:;" class="edit" onclick="toggleModal('@item?.Id', 'info')">
+                                    <i class="material-icons" data-toggle="tooltip" title="view">&#xe417;</i>
+                                </a>
+                                <a asp-action="ReBook" asp-route-id="@User.GetUserId()" class="delete">
+                                    <i class="material-icons" data-toggle="tooltip" title="Book Again">&#xe569;</i>
+                                </a>
                             </td>
                         </tr>
                     }
