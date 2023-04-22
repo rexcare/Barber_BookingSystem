@@ -36,6 +36,10 @@
     .modal-body {
         padding: 0px;
     }
+
+    table {
+        background-color: rgba(0, 0, 0, 0.22) !important;
+    }
 </style>
 
 <link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
@@ -78,7 +82,7 @@
                     </select>
                     <div class="valid-feedback">You selected a position!</div>
                     <div class="invalid-feedback">Please select a position!</div>
-                    <div class="text-dark">
+                    <div class="text-white">
                         @if (counts == 0)
                         {
                             <p>There is no available barber</p>
@@ -142,7 +146,8 @@
                                 <span>$@Appointment?.Service?.Price</span>
                             </p>
                         </blockquote>
-                        <figcaption class="blockquote-footer">
+                        <hr>
+                        <blockquote class="blockquote">
 
                             <p>
                                 <span>Name: </span>

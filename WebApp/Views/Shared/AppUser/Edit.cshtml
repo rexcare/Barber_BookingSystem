@@ -27,6 +27,10 @@
     .modal-body {
         padding: 0px !important;
     }
+
+    table {
+        background-color: rgba(0, 0, 0, 0.22) !important;
+    }
 </style>
 
 
@@ -43,7 +47,7 @@
     <div class="row">
         <div class="col-lg-8 col-md-7 col-sm-12">
             <div class="mb-2">
-                <div class="card border p-3">
+                <div class="card border p-3 bg-white3">
                 <form asp-action="Edit">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />

@@ -41,6 +41,11 @@
     .modal-body {
         padding: 0px;
     }
+
+    table {
+        background-color: rgba(0, 0, 0, 0.22) !important;
+    }
+
 </style>
 
 <link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
@@ -78,7 +83,7 @@
                     </select>
                     <div class="valid-feedback">You selected a position!</div>
                     <div class="invalid-feedback">Please select a position!</div>
-                    <div class="text-dark">
+                    <div class="text-white">
                         @if (counts == 0)
                         {
                             <p>There is no available barber</p>
@@ -100,14 +105,14 @@
                     <div class="step" data-target="#test-l-2">
                         <button type="button" class="btn step-trigger">
                             <span class="bs-stepper-circle"><i class="fas fa-clock"></i></span>
-                            <span class="bs-stepper-label">Time</span>
+                            <span class="bs-stepper-label text-white">Time</span>
                         </button>
                     </div>
                     <div class="line"></div>
                     <div class="step" data-target="#test-l-3">
                         <button type="button" class="btn step-trigger">
                             <span class="bs-stepper-circle"><i class="fas fa-address-card"></i></span>
-                            <span class="bs-stepper-label">Contact</span>
+                            <span class="bs-stepper-label text-white">Contact</span>
                         </button>
                     </div>
                 </div>
@@ -232,13 +237,15 @@
                             <p>
                                 <span>BookTime: </span>
                             <span id="bookTime"></span>
+                            <span id="bookTime"></span>
                             </p>
                             <p>
                                 <span>Price: </span>
                             <span>$@Service?.Price</span>
                             </p>
                         </blockquote>
-                        <figcaption class="blockquote">
+                        <hr />
+                        <blockquote class="blockquote">
                                     <p class="name-item text-black">customer</p>
                             <p>
                                 <span>Name: </span>
@@ -252,7 +259,7 @@
                                 <span>Phone: </span>
                                 <span id="phone">@phonenumber</span>
                             </p>
-                        </figcaption>
+                        </blockquote>
                     </figure>
                 </div>
             </div>
