@@ -136,11 +136,14 @@ namespace WebApp.Areas.Identity.Pages.Account.Manage
             await _userManager.UpdateAsync(user);
 
 
-            Customer customer = _context.Customers.Where(c=>c.FirstName.Equals(firstName) && c.LastName.Equals(lastName)).FirstOrDefault();
-            customer.FirstName = Input.FirstName; 
-            customer.LastName = Input.LastName;
-            _context.Update(customer);
-            await _context.SaveChangesAsync();
+            Customer customer = _context.Customers.Where(c=>c.Email==user.Email).FirstOrDefault();
+            if(customer != null)
+            {
+                customer.FirstName = Input.FirstName;
+                customer.LastName = Input.LastName;
+                _context.Update(customer);
+                await _context.SaveChangesAsync();
+            }
 
             if (Input.Phone != phoneNumber)
             {

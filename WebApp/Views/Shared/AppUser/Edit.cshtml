@@ -37,7 +37,7 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="~/js/jsCalendar.js"></script>
 
-<a asp-action="index" style="font-size:26px; text-decoration: none;"><i class="fa fa-angle-left"></i> &nbsp&nbspback</a>
+<a asp-action="index" style="font-size:26px; text-decoration: none;"><i class=" fas fa-arrow-circle-left"></i> &nbspback</a>
 
 <div class="card shadow mb-4 p-4 body-card">
     <div class="row">
@@ -102,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 col-md-5 col-sm-12 table-overflow">
+        <div class="col-lg-4 col-md-5 col-sm-12">
             @if (User.IsInRole("admin"))
             {
                 <a 
@@ -115,6 +115,7 @@
                 >
                     Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()
                 </a>
+                <div class="table-overflow">
                 <table class="table table-ww table-bordered table-striped table-hover">
                     <thead>
                         <tr>
@@ -143,7 +144,9 @@
                         }
                     </tbody>
                 </table>
-            }
+            
+                    </div>
+                    }
         </div>
     </div>
 </div>
