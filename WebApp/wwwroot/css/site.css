@@ -305,3 +305,19 @@ ul {
   overflow-y: auto;
   height: calc(100vh - 300px);
 }
+
+.container > .card {
+  background-color: rgba(0,0,0,0.3) !important;
+}
+
+.table-wrapper {
+  background-color: rgba(255,255,255,0.25) !important;
+}
+
+.bg-white3 {
+  background-color: rgba(255, 255, 255, 0.33) !important;
+}
+
+.bg-white5 {
+  background-color: rgba(255, 255,255, 0.55) !important;
+}

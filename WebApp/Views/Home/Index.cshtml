@@ -31,12 +31,10 @@
         border: 0px !important;
     }
 
-    main {
-        background-color: #ffffff;
-        background-image: none;
-    }
 
 </style>
+
+
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -155,11 +153,11 @@
             <div class="col-lg-4 col-md-5 col-sm-12 table-overflow">
                 @if (User.IsInRole("user"))
                 {
-                    <table class="table table-bordered table-striped table-hover">
+                    <table class="table table-bordered table-striped table-hover" style="background-color: rgba(225, 225, 225, 0.33)">
                         <thead>
                             <tr>
                                 <th>
-                                    Work Timess
+                                    Work Times
                                 </th>
                             </tr>
                         </thead>
@@ -168,7 +166,7 @@
                         {
                             <tr>
                                 <td>
-                                    <a style="text-decoration: none" class="nav-item text-dark">@item.DateTime</a>
+                                    <a style="text-decoration: none" class="nav-item text-black">@item.DateTime</a>
                                 </td>
                             </tr>
                         }
@@ -196,6 +194,14 @@
 
 @if (!User.IsInRole("admin") && !User.IsInRole("user"))
 {
+    <style>
+
+        main {
+            background-color: #ffffff;
+            background-image: none;
+        }
+
+    </style>
     <!-- Masthead-->
     <header class="masthead">
         <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -381,7 +387,7 @@
                             <div class="card-body text-dark px-5">
                                 <div class="w-100">
                                     <blockquote class="blockquote">
-                                        <p class="name-item text-secondary">Service</p>
+                                        <p class="name-item text-black">Service</p>
                                         <span>Service: </span>
                                         <span id="m_serviceName" class="name-item">@item?.Service?.Name</span>
                                         <br />

@@ -56,7 +56,7 @@
             <div class="row mx-3" style="display: flex; justify-content: space-between">
                 <div style="width: fit-content;">
                     <h1>@Appointment?.Service?.Name</h1>
-                    <p>@Appointment?.Service?.Description</p>
+                    <p class="text-white">@Appointment?.Service?.Description</p>
                 </div>
                 <form class="requires-validation" novalidate id="barberForm" style="max-width: 300px">
                     <select class="form-select mt-3" required id="barberId" value="@Appointment?.AppUserId" onchange="selectBarber(event)">
@@ -121,7 +121,7 @@
         </div>
 
         <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-4">
-            <div class="card border mb-3" style="min-width: 16rem;">
+            <div class="card border mb-3 bg-white3" style="min-width: 16rem;">
                 <div class="card-header" style="text-align: center">Service Detail</div>
                 <div class="card-body text-dark">
                     <figure>

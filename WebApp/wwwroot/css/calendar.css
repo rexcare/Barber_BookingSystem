@@ -4,6 +4,7 @@
 }
 
 #wrapper {
+    background-color: rgba(225, 225, 225, 0.33);
     border-radius: 5px;
     margin: 0 auto;
     width: 100%;

@@ -63,7 +63,7 @@
             <div class="row mx-3" style="display: flex; justify-content: space-between">
                 <div style="width: fit-content;">
                     <h1>@Service?.Name</h1>
-                    <p>@Service?.Description</p>
+                    <p class="text-white">@Service?.Description</p>
                 </div>
                 <form class="requires-validation" novalidate id="barberForm" style="max-width: 300px">
                     <select class="form-select mt-3" required id="barberId" onchange="selectBarber(event)">
@@ -215,12 +215,12 @@
             </div>
         </div>
         <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-4">
-            <div class="card border mb-3" style="min-width: 16rem;">
+            <div class="card border mb-3 bg-white3" style="min-width: 16rem;">
                 <div class="card-header" style="text-align: center">Service Detail</div>
                 <div class="card-body text-dark">
                     <figure>
                         <blockquote class="blockquote">
-                            <p class="name-item text-secondary">Service</p>
+                            <p class="name-item text-black">Service</p>
                             <p>
                                 <span>Service: </span>
                                 <span id="serviceName" style="text-transform: capitalize;">@Service?.Name</span>
@@ -238,8 +238,8 @@
                             <span>$@Service?.Price</span>
                             </p>
                         </blockquote>
-                        <figcaption class="blockquote-footer">
-                                    <p class="name-item text-secondary">customer</p>
+                        <figcaption class="blockquote">
+                                    <p class="name-item text-black">customer</p>
                             <p>
                                 <span>Name: </span>
                                 <span id="firstName">@User.GetUserFirstName()</span>&nbsp;<span id="lastName">@User.GetUserLastName()</span>
