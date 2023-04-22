@@ -301,3 +301,7 @@ ul {
   font-size: x-large;
 }
 
+.table-overflow{
+  overflow-y: auto;
+  height: calc(100vh - 300px);
+}
