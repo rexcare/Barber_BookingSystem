@@ -28,9 +28,12 @@
         <div class="col-lg-4 col-md-5 col-sm-12 table-overflow">
             @if (User.IsInRole("user"))
             {
-                <table class="table table-bordered table-striped table-hover" style="background-color: rgba(225, 225, 225, 0.22) !important">
+                <table 
+                    class="table table-bordered table-striped table-hover" 
+                    style="background-color: rgba(225, 225, 225, 0.52) !important; border-color: rgba(0, 0, 0, 0.175) !important;"
+                >
                     <thead>
-                    <tr>
+                    <tr style="background-color: rgba(0, 0, 0, 0.22) !important; border-bottom: 2px solid;">
                         <th>
                             Work Times
                         </th>

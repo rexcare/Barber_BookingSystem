@@ -29,7 +29,7 @@
     }
 
     .table-title .btn {
-        color: #fff;
+        color: white;
         float: right;
         font-size: 13px;
         border: none;
@@ -52,9 +52,10 @@
         }
 
 table.table tr th, table.table tr td {
-    border-color: #e9e9e9;
+    border-color: rgba(0,0,0,0.125);
     padding: 12px 15px;
     vertical-align: middle;
+    border-top: 0px;
 }
 
     table.table tr th:last-child {
