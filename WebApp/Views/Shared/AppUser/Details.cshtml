@@ -15,6 +15,10 @@
     .modal-body {
         padding: 0px;
     }
+
+    table {
+        background-color: rgba(0, 0, 0, 0.22) !important;
+    }
 </style>
 
 <a asp-controller="Home" asp-action="MemberList" style="font-size:26px; text-decoration: none;"><i class=" fas fa-arrow-circle-left"></i> &nbspback</a>
@@ -24,7 +28,7 @@
         <div class="col-lg-4 col-md-5 col-sm-12 table-overflow">
             @if (User.IsInRole("user"))
             {
-                <table class="table table-bordered table-striped table-hover" style="background-color: rgba(225, 225, 225, 0.33)">
+                <table class="table table-bordered table-striped table-hover" style="background-color: rgba(225, 225, 225, 0.22) !important">
                     <thead>
                     <tr>
                         <th>
@@ -47,7 +51,7 @@
         </div>
         <div class="col-lg-8 col-md-7 col-sm-12">
             <div class="mb-2" style="display: flex; justify-content: center;">
-                <div class="address-card card border p-3 bg-white3">
+                <div class="address-card card p-3 bg-white3">
                     <div style="display: flex;">
                         <h1>@Html.DisplayFor(model => model.FirstLastName)</h1>
                     </div>
@@ -348,6 +352,9 @@
         calendar.onDateRender(function (date, element, info) {
             if (!isContainDate(workTimes, date)) {
                 element.style.color = '#CACACA'
+            }
+            else{
+                element.style.color = '#FFFFFF'
             }
         });
         //

@@ -36,6 +36,10 @@
     .modal-body {
         padding: 0px;
     }
+
+    table {
+        background-color: rgba(0, 0, 0, 0.22) !important;
+    }
 </style>
 
 <link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
@@ -121,7 +125,7 @@
         </div>
 
         <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-4">
-            <div class="card border mb-3 bg-white3" style="min-width: 16rem;">
+            <div class="card mb-3 bg-white3" style="min-width: 16rem;">
                 <div class="card-header" style="text-align: center">Service Detail</div>
                 <div class="card-body text-dark">
                     <figure>
@@ -143,7 +147,8 @@
                                 <span>$@Appointment?.Service?.Price</span>
                             </p>
                         </blockquote>
-                        <figcaption class="blockquote-footer">
+                        <hr>
+                        <blockquote class="blockquote">
 
                             <p>
                                 <span>Name: </span>
@@ -537,6 +542,9 @@
         calendar.onDateRender(function (date, element, info) {
             if (!isContainDate(workTimes, date)) {
                 element.style.color = '#CACACA'
+            }
+            else{
+                element.style.color = '#FFFFFF'
             }
         });
         //

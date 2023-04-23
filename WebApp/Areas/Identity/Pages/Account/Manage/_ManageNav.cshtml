@@ -2,6 +2,16 @@
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
+
+<style>
+    .nav-link{
+        color: #FFFFFF
+    }
+    .nav-link:hover{
+        color: #AAAAAA
+    }
+</style>
+
 <ul class="nav nav-pills flex-column">
     <li class="nav-item">
         <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">

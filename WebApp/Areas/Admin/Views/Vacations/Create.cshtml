@@ -31,14 +31,14 @@ input {
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row form-group">
-                <label asp-for="DateStart" class="control-label col-sm-3 col-form-label"></label>
+                <label asp-for="DateStart" class="control-label col-sm-3 col-form-label text-white"></label>
                 <div class="col-sm-9">
                     <input type="Date" asp-for="DateStart" class="form-control" />
                     <span asp-validation-for="DateStart" class="text-danger"></span>
                 </div>
             </div>
             <div class="row form-group">
-                <label asp-for="DateStop" class="control-label col-sm-3 col-form-label"></label>
+                <label asp-for="DateStop" class="control-label col-sm-3 col-form-label text-white"></label>
                 <div class="col-sm-9">
                     <input type="Date" asp-for="DateStop" class="form-control" />
                     <span asp-validation-for="DateStop" class="text-danger"></span>
@@ -52,7 +52,7 @@ input {
         </form>
     </div>
     <div class="col-md-6 col-sm-12">
-        <table class="table table-ww table-bordered table-striped table-hover">
+        <table class="table table-ww table-striped table-hover">
             <thead>
             <tr>
                 <th>

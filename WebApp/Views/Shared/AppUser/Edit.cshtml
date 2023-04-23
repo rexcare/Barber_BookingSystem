@@ -47,7 +47,7 @@
     <div class="row">
         <div class="col-lg-8 col-md-7 col-sm-12">
             <div class="mb-2">
-                <div class="card border p-3 bg-white3">
+                <div class="card p-3 bg-white3">
                 <form asp-action="Edit">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
@@ -119,38 +119,36 @@
                 >
                     Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()
                 </a>
+
                 <div class="table-overflow">
-                    <table class="table table-ww table-bordered table-striped table-hover" style="background-color: rgba(225, 225, 225, 0.33)">
-                    <thead>
-                        <tr>
-                            <th>
-                                Work Time
-                            </th>
-                            <th>
-                                <a asp-area="Admin" asp-controller="WorkTimes" asp-route-id="@Model.Id" asp-action="Create" style="text-decoration: green" type="submit" value="Create"> + </a>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (WorkTime item in @Model.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
-                        {
+                    <table class="table table-ww table-striped table-hover bg-white3">
+                        <thead>
                             <tr>
-                                <td>
-                                    <a asp-area="Admin" asp-controller="WorkTimes" asp-action="Edit" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.DateTime)</a>
-                                </td>
-                                <td>
-                                    <a asp-area="" asp-controller="Home" asp-action="DeleteWW" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id"> - </a>
-                                </td>
-
+                                <th>
+                                    Work Time
+                                </th>
+                                <th>
+                                    <a asp-area="Admin" asp-controller="WorkTimes" asp-route-id="@Model.Id" asp-action="Create" style="text-decoration: green" type="submit" value="Create"> + </a>
+                                </th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (WorkTime item in @Model.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
+                            {
+                                <tr>
+                                    <td>
+                                        <a asp-area="Admin" asp-controller="WorkTimes" asp-action="Edit" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.DateTime)</a>
+                                    </td>
+                                    <td>
+                                        <a asp-area="" asp-controller="Home" asp-action="DeleteWW" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id"> - </a>
+                                    </td>
 
-
-                        }
-                    </tbody>
-                </table>
-            
-                    </div>
-                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -414,6 +412,9 @@
         calendar.onDateRender(function (date, element, info) {
             if (!isContainDate(workTimes, date)) {
                 element.style.color = '#CACACA'
+            }
+            else{
+                element.style.color = '#FFFFFF'
             }
         });
         //

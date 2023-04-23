@@ -270,7 +270,7 @@ ul {
 }
 
 .body-card {
-  min-height: calc(100vh - 143px); 
+  min-height: calc(100vh - 170px); 
   height: calc(100% - 150px); 
   top: 10px;
 }
@@ -303,7 +303,7 @@ ul {
 
 .table-overflow{
   overflow-y: auto;
-  height: calc(100vh - 300px);
+  height: calc(100vh - 230px);
 }
 
 .container > .card {
@@ -311,11 +311,11 @@ ul {
 }
 
 .table-wrapper {
-  background-color: rgba(255,255,255,0.25) !important;
+  background-color: rgba(255,255,255,0.22) !important;
 }
 
 .bg-white3 {
-  background-color: rgba(255, 255, 255, 0.33) !important;
+  background-color: rgba(255, 255, 255, 0.22) !important;
 }
 
 .bg-white5 {
