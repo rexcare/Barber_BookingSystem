@@ -31,7 +31,7 @@ input {
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row form-group">
-                <label asp-for="DateStart" class="control-label col-sm-3 col-form-label text-white"></label>
+                <label class="control-label col-sm-3 col-form-label text-white"></label>
                 <div class="col-sm-9">
                     <input type="Date" asp-for="DateStart" class="form-control" />
                     <span asp-validation-for="DateStart" class="text-danger"></span>
@@ -52,26 +52,28 @@ input {
         </form>
     </div>
     <div class="col-md-6 col-sm-12">
-        <table class="table table-ww table-striped table-hover">
-            <thead>
-            <tr>
-                <th>
-                    Date
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (Vacation item in @appUser.Vacations!) {
-                <tr>
-                    <td>
-                        <a asp-action="Edit" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Dates)</a>
-                        
-                    </td>
+            <table 
+                class="table table-bordered table-striped table-hover" 
+                style="background-color: rgba(225, 225, 225, 0.52) !important; border-color: rgba(0, 0, 0, 0.175) !important;"
+            >
+                <thead>
+                <tr style="background-color: rgba(0, 0, 0, 0.22) !important; border-bottom: 2px solid;">
+                    <th>
+                        Vacation Dates
+                    </th>
                 </tr>
-                
-            }
-            </tbody>
-        </table>
+                </thead>
+                    <tbody>
+                @foreach (Vacation item in @appUser.Vacations!) {
+                    <tr>
+                        <td>
+                            <a asp-action="Edit" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Dates)</a>
+                            
+                        </td>
+                    </tr>
+                }
+                    </tbody>
+                </table>
     </div>
 </div>
 

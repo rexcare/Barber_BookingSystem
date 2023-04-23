@@ -62,7 +62,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Appointment item in Model.OrderBy(o => o.StartTime).Where(c=>c.Customer.Email == User.GetUserEmail())!)
+                    @foreach (Appointment item in Model.OrderBy(o => o.StartTime).Where(c=>c.Customer?.Email == User.GetUserEmail())!)
                     {
                         DateTime now = DateTime.Today;
                         int result = DateTime.Compare(now, item.StartTime);
@@ -70,13 +70,13 @@
                             continue;
                         <tr>
                             <td>
-                                @item.StartTime
+                                @item.StartTime.ToString("dd/MM/yyyy HH:mm")
                             </td>
                             <td>
                                 @item?.Service?.Name
                             </td>
                             <td>
-                                $@item?.Service?.Price
+                                €@item?.Service?.Price
                             </td>
                             <td>
                                 @item?.AppUser?.FirstLastName
@@ -118,7 +118,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Appointment item in Model.OrderBy(o => o.StartTime).Where(c => c.Customer.Email == User.GetUserEmail())!)
+                    @foreach (Appointment item in Model.OrderBy(o => o.StartTime).Where(c => c.Customer?.Email == User.GetUserEmail())!)
                     {
                         DateTime now = DateTime.Today;
                         int result = DateTime.Compare(now, item.StartTime);
@@ -126,13 +126,13 @@
                             continue;
                         <tr>
                             <td>
-                                @item.StartTime
+                                @item.StartTime.ToString("dd/MM/yyyy HH:mm")
                             </td>
                             <td>
                                 @item?.Service?.Name
                             </td>
                             <td>
-                                $@item?.Service?.Price
+                                €@item?.Service?.Price
                             </td>
                             <td>
                                 @item?.AppUser?.FirstLastName
