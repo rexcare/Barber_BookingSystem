@@ -121,17 +121,20 @@
                 </a>
 
                 <div class="table-overflow">
-                    <table class="table table-ww table-striped table-hover bg-white3">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Work Time
-                                </th>
-                                <th>
-                                    <a asp-area="Admin" asp-controller="WorkTimes" asp-route-id="@Model.Id" asp-action="Create" style="text-decoration: green" type="submit" value="Create"> + </a>
-                                </th>
-                            </tr>
-                        </thead>
+                        <table 
+                    class="table table-bordered table-striped table-hover" 
+                    style="background-color: rgba(225, 225, 225, 0.52) !important; border-color: rgba(0, 0, 0, 0.175) !important;"
+                >
+                    <thead>
+                    <tr style="background-color: rgba(0, 0, 0, 0.22) !important; border-bottom: 2px solid;">
+                        <th>
+                            Work Times
+                                    </th>
+                                    <th>
+                                        <a asp-area="Admin" asp-controller="WorkTimes" asp-route-id="@Model.Id" asp-action="Create" style="text-decoration: green" type="submit" value="Create"> + </a>
+                                    </th>
+                    </tr>
+                    </thead>
                         <tbody>
                             @foreach (WorkTime item in @Model.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
                             {

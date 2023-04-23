@@ -30,9 +30,6 @@
     .card {
         border: 0px !important;
     }
-    table {
-        background-color: rgba(0, 0, 0, 0.22) !important;
-    }
 
 </style>
 
@@ -147,6 +144,11 @@
 
 @if (User.IsInRole("user"))
 {
+    <style>
+        table {
+        background-color: rgba(0, 0, 0, 0.22) !important;
+    }
+        </style>
     <div class="card shadow mb-4 p-4 body-card">
         <div class="row main-box">
             <h1>My Schedule</h1>
@@ -155,14 +157,18 @@
             <div class="col-lg-4 col-md-5 col-sm-12 table-overflow">
                 @if (User.IsInRole("user"))
                 {
-                    <table class="table table-striped table-hover bg-white3">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Work Times
-                                </th>
-                            </tr>
-                        </thead>
+                    
+                                <table 
+                    class="table table-bordered table-striped table-hover" 
+                    style="background-color: rgba(225, 225, 225, 0.52) !important; border-color: rgba(0, 0, 0, 0.175) !important;"
+                >
+                    <thead>
+                    <tr style="background-color: rgba(0, 0, 0, 0.22) !important; border-bottom: 2px solid;">
+                        <th>
+                            Work Times
+                        </th>
+                    </tr>
+                    </thead>
                         <tbody>
                         @foreach (var item in userInfo!.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
                         {
