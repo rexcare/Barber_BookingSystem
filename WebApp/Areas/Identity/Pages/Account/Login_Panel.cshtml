@@ -1,0 +1,48 @@
+﻿@page
+@model LoginModel
+
+
+@{
+    Layout = null;
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/site.css">
+<link rel="stylesheet" type="text/css" href="~/css/Form.css">
+
+<div class="col-md-4">
+    <section>
+        <div>
+            <div>
+                <h1>Sign In to our BarberShop</h1>
+            </div>
+            <div style="display: flex;flex-direction:row;">
+                <div>
+                    <img src="~/images/img-3.jpg" alt="login" />
+                    <a 
+                        class="nav-link btn btn-primary" 
+                        asp-area="Identity" 
+                        asp-page="/Account/Login" 
+                        asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})" 
+                        title="Login as a user"
+                    >
+                        Login as a user
+                    </a>
+                </div>
+                <div>
+                    <img src="~/images/img-4.jpg" alt="login" />
+                    <a 
+                        class="nav-link btn btn-primary" 
+                        asp-area="Identity" 
+                        asp-page="/Account/Login_Customer" 
+                        asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})" 
+                        title="Login as a customer"
+                    >
+                        Login as a customer
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </section>
+</div>

@@ -1,1 +1,785 @@
-﻿
+﻿@using App.Domain
+@using Microsoft.AspNetCore.Identity
+@using App.Domain.Identity
+@using Base.Extensions
+
+@model IEnumerable<App.Domain.Appointment>
+@inject SignInManager<AppUser> _signInManager
+@inject UserManager<AppUser> _userManager
+
+@{
+    ViewData["Title"] = "Booking ";
+    var Service = (Service?)ViewData["service"];
+    var Barbers = (IEnumerable<AppUser>?)ViewData["barber"];
+    var phonenumber = "";
+
+    if (User.IsInRole("customer"))
+    {
+        var uid = User.GetUserId();
+        phonenumber = _userManager.Users.Where(w => w.Id == uid).Select(s => s.PhoneNumber).First();
+    }
+
+    int counts = 0;
+}
+
+<!-- Assets --> 
+<style>
+    #valid-datepicker {
+        color: #2acc80;
+        display: none;
+    }
+
+    #invalid-datepicker {
+        color: #ff606e;
+        display: none;
+    }
+
+    #m_bookTime {
+        font-weight: bold;
+    }
+
+    .modal-body {
+        padding: 0px;
+    }
+
+    table {
+        background-color: rgba(0, 0, 0, 0.22) !important;
+    }
+
+</style>
+
+<link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/jsCalendar.css" type="text/css">
+<link rel="stylesheet" href="~/css/bs-stepper.min.css" asp-append-version="true" />
+
+<script src="~/lib/jquery/dist/jquery.min.js" type="text/javascript"></script>
+<script src="~/js/jsCalendar.js" type="text/javascript"></script>
+<script src="~/js/moment.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+
+<!-- Back Link -->
+<a asp-action="index" style="font-size:26px; text-decoration: none;"><i class=" fas fa-arrow-circle-left"></i> &nbspback</a>
+
+<!-- Booking Page -->
+<div class="card shadow mb-3 p-4 body-card">
+    <div class="row" style="justify-content:space-around; margin-top: 10px;">
+        <div class="col col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12 my-3">
+            <div class="row mx-3" style="display: flex; justify-content: space-between">
+                <div style="width: fit-content;">
+                    <h1>@Service?.Name</h1>
+                    <p class="text-white">@Service?.Description</p>
+                </div>
+                <form class="requires-validation" novalidate id="barberForm" style="max-width: 300px">
+                    <select class="form-select mt-3" required id="barberId" onchange="selectBarber(event)">
+                        @foreach (var item in Barbers!)
+                        {
+                            @if (item?.WorkTimes?.Count != 0)
+                            {
+                                counts++;
+                                <option value="@item?.Id">@item?.FirstLastName</option>
+                            }
+                        }
+                    </select>
+                    <div class="valid-feedback">You selected a position!</div>
+                    <div class="invalid-feedback">Please select a position!</div>
+                    <div class="text-white">
+                        @if (counts == 0)
+                        {
+                            <p>There is no available barber</p>
+                        }
+                        @if (counts == 1)
+                        {
+                            <p>There is an available barber</p>
+                        }
+                        @if (counts > 1)
+                        {
+                            <p>There are @counts available barbers</p>
+                        }
+                    </div>
+                </form>
+
+            </div>
+            <div id="stepper1" class="bs-stepper">
+                <div class="bs-stepper-header">
+                    <div class="step" data-target="#test-l-2">
+                        <button type="button" class="btn step-trigger">
+                            <span class="bs-stepper-circle"><i class="fas fa-clock"></i></span>
+                            <span class="bs-stepper-label text-white">Time</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#test-l-3">
+                        <button type="button" class="btn step-trigger">
+                            <span class="bs-stepper-circle"><i class="fas fa-address-card"></i></span>
+                            <span class="bs-stepper-label text-white">Contact</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="bs-stepper-content">
+                    <div id="test-l-2" class="content">
+                        <!-- Wrapper -->
+                        <div id="wrapper">
+                            <!-- Calendar element -->
+                            <div id="events-calendar" data-month-format="month YYYY"></div>
+                            <div class="row">
+                            <!-- Events -->
+                            <div id="events"></div>
+                            </div>
+                        </div>
+                        <div id="valid-datepicker">Selected time is valid!</div>
+                        <div id="invalid-datepicker">Date Time field cannot be blank!</div>
+
+                        <div style="display: flex; justify-content: center">
+                            @if (User.IsInRole("customer"))
+                            {
+                                <button 
+                                    class="btn btn-primary w-100 mx-2" 
+                                    id="reserveBtn" 
+                                    onclick="preReserve()"
+                                >
+                                    Reserve
+                                </button>
+                            }
+                            else
+                            {
+                                <button 
+                                    class="btn btn-primary w-100 mx-2" 
+                                    onclick="next()"
+                                >
+                                    Next
+                                </button>
+                            }
+                        </div>
+                        
+                    </div>
+
+                    <div id="test-l-3" class="content">
+                        <div class="row">
+                            <form class="requires-validation" novalidate id="contactForm">
+                                <div class="col-md-12 mb-3">
+                                    @if(User.IsInRole("customer"))
+                                    {
+                                    <input class="form-control" type="text" name="firstName" placeholder="Sander" value="@User.GetUserFirstName()" required readonly>
+                                    }
+                                    else
+                                    {
+                                        <input class="form-control" type="text" name="firstName" placeholder="Sander" required oninput="handleInput(event)">
+                                    }
+                                    <div class="valid-feedback">Fist name field is valid!</div>
+                                    <div class="invalid-feedback">First name field cannot be blank!</div>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    @if(User.IsInRole("customer"))
+                                    {
+                                        <input class="form-control" type="text" name="lastName" placeholder="Koppel" value="@User.GetUserLastName()" required readonly>
+                                    }
+                                    else
+                                    {
+                                        <input class="form-control" type="text" name="lastName" placeholder="Koppel" required oninput="handleInput(event)">
+                                    }
+                                    <div class="valid-feedback">Last name field is valid!</div>
+                                    <div class="invalid-feedback">Last name field cannot be blank!</div>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    @if(User.IsInRole("customer"))
+                                    {
+                                        <input class="form-control" type="email" name="email" placeholder="admin@example.com" value="@User.GetUserEmail()" required readonly>
+                                    }
+                                    else
+                                    {
+                                        <input class="form-control" type="email" name="email" placeholder="admin@example.com" required oninput="handleInput(event)">
+                                    }
+                                    <div class="valid-feedback">Email field is valid!</div>
+                                    <div class="invalid-feedback">Email field cannot be blank!</div>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    @if(User.IsInRole("customer"))
+                                    {
+                                        <input class="form-control" type="text" name="phone" placeholder="3726329598" value="@phonenumber" required readonly>
+                                    }
+                                    else
+                                    {
+                                        <input class="form-control" type="text" name="phone" placeholder="3726329598" required oninput="handleInput(event)">
+                                    }
+                                    <div class="valid-feedback">PhoneNumber field is valid!</div>
+                                    <div class="invalid-feedback">PhoneNumber field cannot be blank!</div>
+                                </div>
+
+                                <div style="display: flex; justify-content: center">
+                                    <button class="btn btn-primary w-100 mx-2" id="reserveBtn" onclick="validateContact()">Reserve</button>
+                                    <button class="btn btn-warning w-100 mx-2" onclick="backStep()">Back</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-4">
+            <div class="card mb-3 bg-white3" style="min-width: 16rem;">
+                <div class="card-header" style="text-align: center">Service Detail</div>
+                <div class="card-body text-dark">
+                    <figure>
+                        <blockquote class="blockquote">
+                            <p class="name-item text-black">Service</p>
+                            <p>
+                                <span>Service: </span>
+                                <span id="serviceName" style="text-transform: capitalize;">@Service?.Name</span>
+                            </p>
+                            <p>
+                                <span>Barber: </span>
+                                <span id="barberName" style="text-transform: capitalize;"></span>
+                            </p>
+                            <p>
+                                <span>BookTime: </span>
+                            <span id="bookTime"></span>
+                            <span id="bookTime"></span>
+                            </p>
+                            <p>
+                                <span>Price: </span>
+                            <span>€@Service?.Price</span>
+                            </p>
+                        </blockquote>
+                        <hr />
+                        <blockquote class="blockquote">
+                                    <p class="name-item text-black">customer</p>
+                            <p>
+                                <span>Name: </span>
+                                <span id="firstName">@User.GetUserFirstName()</span>&nbsp;<span id="lastName">@User.GetUserLastName()</span>
+                            </p>
+                            <p>
+                                <span>Email: </span>
+                                <span id="email">@User.GetUserEmail()</span>
+                            </p>
+                            <p>
+                                <span>Phone: </span>
+                                <span id="phone">@phonenumber</span>
+                            </p>
+                        </blockquote>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="card mb-3" style="border : 0px !important;">
+                    <div class="card-header bg-warning text-center">
+                        <span>Confirmed Time:</span>
+                        <br />
+                        <span id="m_bookTime"></span>
+                    </div>
+                    <div class="card-body text-dark px-5">
+                        <div class="w-100">
+                            <blockquote class="blockquote">
+                                <span>Service: </span>
+                                <span id="m_serviceName" class="name-item">@Service?.Name</span>
+                                <br />
+                                <span>Duration: </span>
+                                <span id="m_duration" class="name-item">@Service?.TimeSpan.TotalMinutes minutes</span>
+                                <br />
+                                <span>Staff: </span>
+                                <span id="m_barberName" class="name-item"></span>
+                                <br />
+                                <span>Total: </span>
+                                <span id="m_price">$@Service?.Price</span>
+                            </blockquote>
+                            <hr />
+                            <blockquote>
+                                    <span>Name: </span>
+                                    <span id="m_firstName" class="name-item">@User.GetUserFirstName()</span>
+                                    <span id="m_lastName" class="name-item">@User.GetUserLastName()</span>
+                                    <br />
+                                    <span>Phone: </span>
+                                    <span id="m_phone">@phonenumber</span>
+                                    <br />
+                                    <span>Email: </span>
+                                    <span id="m_email">@User.GetUserEmail()</span>
+                                </blockquote>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center;">
+                <button type="button" class="btn btn-warning w-50" onclick="Reserve()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Generate Calendar -->
+<script type="text/javascript">
+    
+    generatecalendar()
+    
+    async function generatecalendar() {
+        // Get elements
+        document.getElementById("barberName").innerText = document.getElementById("barberId").selectedOptions[0].innerText;
+        document.getElementById("m_barberName").innerText = document.getElementById("barberId").selectedOptions[0].innerText;
+        
+        document.getElementById("valid-datepicker").style.display = "none";
+        document.getElementById("invalid-datepicker").style.display = "none";
+        
+        document.getElementById("events-calendar").innerHTML = "";
+        document.getElementById("events").innerHTML = "";
+        var elements = {
+            // Calendar element
+            calendar: document.getElementById("events-calendar"),
+            // Input element
+            events: document.getElementById("events")
+        }
+
+        // Create the calendar
+        elements.calendar.className = "material-theme custom-green";
+        var calendar = jsCalendar.new(elements.calendar);
+
+        let data = {
+            Id: document.getElementById("barberId").value,
+        }
+        var mindate = moment();
+        var workTimes = [];
+        var events = {
+        };
+        var times = {}
+
+        await $.ajax({
+            type: 'POST',
+            url: '/Appointment/getWorkingTimes',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to receive the Data 1');
+                    console.log('Failed 1');
+                }
+                else {
+                    if (result.length != 0) {
+                        for (k=0;k<result.length;k++)
+                        {
+                            if (moment().diff(result[k].date, 'days') < 1) {
+                                workTimes = [...workTimes, result[k]]
+                            }
+                        }
+                        //set min max month
+                        if (moment().diff(result[0].date, 'days') > 0) {
+                            mindate = moment().format("MM/DD/YYYY");
+                            tmp_mindate = moment().format("DD/MM/YYYY");
+                        }
+                        else {
+                            mindate = moment(result[0].date).format("MM/DD/YYYY");
+                            tmp_mindate = moment(result[0].date).format("DD/MM/YYYY");
+                        }
+                        calendar.min(tmp_mindate);
+                        calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
+                        calendar.set(tmp_mindate);
+
+                        for (j = 0; j < result.length; j++) {
+                            let invalidDate = moment(result[j]?.date)
+                            start = parseInt(result[j]?.startTime.substr(0, 2));
+                            stop = parseInt(result[j]?.stopTime.substr(0, 2));
+                            start1 = parseInt(result[j]?.startTime1?.substr(0, 2));
+                            stop1 = parseInt(result[j]?.stopTime1?.substr(0, 2));
+                            start2 = parseInt(result[j]?.startTime2?.substr(0, 2));
+                            stop2 = parseInt(result[j]?.stopTime2?.substr(0, 2));
+                            let tId = moment(result[j]?.date).format("MM/DD/YYYY")
+                            times[tId] = [];
+                            for (i = 0; i < 24; i++) {
+                                if ((((start - 1) < i && i < (stop)) || ((start1 - 1) < i && i < (stop1)) || ((start2 - 1) < i && i < (stop2)))) {
+                                    times[tId] = [
+                                        ...times[tId], i
+                                    ]
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data 1');
+                console.log('Error occures 1');
+            }
+        })
+        // get booking times
+        await $.ajax({
+            type: 'POST',
+            url: '/Appointment/BookPlan',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                console.log('555', result);
+
+                if (result == "error") {
+                    alert('Failed to receive the Data 2');
+                    console.log('Failed 2');
+                }
+                else {
+                    for (let i = 0; i < result.length; i++) {
+                        let tId = moment(result[i]).format("MM/DD/YYYY");
+                        console.log('551', tId);
+                        let val = parseInt(moment(result[i]).subtract(3, 'hours').format("H"));
+                        console.log('552', val);
+                        for (let a = 0; a < times[tId]?.length; a++) {
+                            if (val == times[tId][a]) {
+                                times[tId].splice(a, 1);
+
+                            }
+                        }
+                    }
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data 2');
+                console.log('Error occures 2');
+            }
+        })
+        await Object.keys(times).forEach(function (key, index) {
+            events[key] = times[key];
+        });
+
+        // Make changes on the date elements that disbled
+        calendar.onDateRender(function (date, element, info) {
+            if (!isContainDate(workTimes, date)) {
+                element.style.color = '#CACACA'
+            }
+            else{
+                element.style.color = '#FFFFFF'
+            }
+        });
+        
+        // Create events elements
+        elements.title = document.createElement("div");
+        elements.title.className = "title";
+        elements.events.appendChild(elements.title);
+        elements.subtitle = document.createElement("div");
+        elements.subtitle.className = "subtitle";
+        elements.events.appendChild(elements.subtitle);
+        elements.list = document.createElement("div");
+        elements.list.className = "list";
+        elements.events.appendChild(elements.list);
+        elements.actions = document.createElement("div");
+        elements.actions.className = "action";
+        elements.events.appendChild(elements.actions);
+        elements.addButton = document.createElement("input");
+
+        // Refresh layout
+        calendar.refresh();
+
+
+        // var date_format = "DD/MM/YYYY";
+
+        var showEvents = function (date) {
+            console.log('999',events)
+            var id = moment(date).format("MM/DD/YYYY");
+            // Set title
+            elements.title.textContent = id;
+            // Clear old events
+            elements.list.innerHTML = "";
+            // Add events on list
+            if (events.hasOwnProperty(id) && events[id].length) {
+                // Number of events
+                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "times are" : "time is") + " available.";
+
+                var div;
+                var close;
+                // For each event
+                for (var i = 0; i < events[id].length; i++) {
+                    div = document.createElement("button");
+                    div.className = "btn btn-primary event-item";
+                    if (events[id][i] < 10)
+                        div.textContent = `0${events[id][i]} : 00`;
+                    else
+                        div.textContent = `${events[id][i]} : 00`;
+                    elements.list.appendChild(div);
+                    div.addEventListener("click", (function (date, index) {
+                        return function () {
+                            let tId = moment(date).format("MM/DD/YYYY");
+                            hel = moment(date).set({ h: events[tId][index] });
+                            document.getElementById("bookTime").innerText = moment(hel).format("DD/MM/YYYY HH:mm:ss")
+                            document.getElementById("m_bookTime").innerText = moment(hel).format("DD/MM/YYYY HH:mm:ss")
+                            document.getElementById("valid-datepicker").style.display = "block";
+                            document.getElementById("invalid-datepicker").style.display = "none";
+                        }
+                    })(date, i), false);
+                }
+            } else {
+                elements.subtitle.textContent = "No times";
+            }
+        };
+
+        // Show current date events
+        showEvents(moment(mindate).format("MM/DD/YYYY"))
+
+        // Add events
+        calendar.onDateClick(function (event, date) {
+            // Update calendar date
+            if (isContainDate(workTimes, date)) {
+                calendar.set(date);
+
+                // Show events
+                showEvents(date);
+            }
+        });
+
+    }
+
+</script>
+
+<!-- Actions -->
+<script>
+
+    var barberId = document.getElementById("barberId").value;
+    var stepper1Node = document.querySelector('#stepper1')
+    var stepper1 = new Stepper(document.querySelector('#stepper1'))
+    
+    function next() {
+        if(hel)
+            stepper1.next()
+        else
+            document.getElementById("invalid-datepicker").style.display = "block";
+    }
+
+    function preReserve() {
+        if (hel)
+            toggleModal()
+        else
+            document.getElementById("invalid-datepicker").style.display = "block";
+    }
+
+    function backStep() {
+        event.preventDefault();
+        event.stopPropagation();
+        stepper1.previous()
+    }
+
+    function selectBarber(event) {
+        document.getElementById("barberName").innerText = event.target.selectedOptions[0].innerText;
+        document.getElementById("m_barberName").innerText =event.target.selectedOptions[0].innerText;
+        generatecalendar()
+        hel = "";
+        document.getElementById("m_bookTime").innerText = "";
+        document.getElementById("bookTime").innerText = "";
+
+    }
+
+    function handleInput(event) {
+        document.getElementById(event.target.name).innerText = event.target.value;
+        document.getElementById('m_'+event.target.name).innerText = event.target.value;
+        console.log(document.getElementById(event.target.name), event.target.name, event.target.value)
+    }
+
+    function validateBarber() {
+        event.preventDefault();
+        event.stopPropagation();
+        const form = document.querySelector('#barberForm')
+        if (form.checkValidity()) {
+            stepper1.next();
+            generatecalendar();
+        }
+        form.classList.add('was-validated')
+    }
+
+    function validateContact() {
+        event.preventDefault();
+        event.stopPropagation();
+        const form = document.querySelector('#contactForm')
+        if (form.checkValidity()) {
+            toggleModal();
+        }
+        form.classList.add('was-validated')
+    }
+
+    function toggleModal() {
+        var myModal = new bootstrap.Modal(document.getElementById('modal'), {
+            keyboard: false
+        });
+
+        myModal.toggle();
+    }
+
+    function Reserve() {
+
+        if(document.getElementById("barberId").value === "" || document.getElementById("barberId").value === null)
+            alert("Please select a barber")
+        else if (hel === "" || hel === null)
+            alert("Please choose time to reserve")
+        else
+            CreateCustomer();
+    }
+
+    function CreateCustomer() {
+        let data = {
+            FirstName: document.getElementById('firstName').innerText,
+            LastName: document.getElementById('lastName').innerText,
+            Email: document.getElementById('email').innerText,
+            Phone: document.getElementById('phone').innerText,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/CreateCustomer',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to receive the Data 3');
+                    console.log('Failed ');
+                }
+                else {
+                    CreateAppointment(result);
+                }
+
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+    }
+
+    function CreateAppointment(result) {
+        if(hel)
+        {
+            let appointmentData = {
+                CustomerId: result,
+                ServiceId: '@Service?.Id',
+                AppUserId: document.getElementById("barberId").value,
+                StartTime: moment(hel).format("YYYY-MM-DD HH:mm:ss"),
+            }
+            $.ajax({
+            type: 'POST',
+            url: '/Appointment/CreateAppointment',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: appointmentData,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to reserve the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    location.href = "/Appointment"
+                }
+            },
+            error: function () {
+                alert('Error occures to reserve the Data');
+                console.log('Error occures ');
+            }
+        })
+        }
+        else
+        {
+            alert("select time")
+        }
+    }
+
+</script>
+
+<!-- Utilities -->
+<script>
+
+    var workTimes = [];
+
+    function getDatetimes(day) {
+        var invalid = [];
+        var labels = [];
+        var max = moment();
+        var min = moment();
+        var dates = [];
+
+        let data = {
+            Id: document.getElementById("barberId").value,
+        }
+        
+        if(data.Id){
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/getWorkingTimes',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                workTimes =result;
+                if (result == "error") {
+                    alert('Failed to receive the Data 4');
+                    console.log('Failed ');
+                }
+                else {
+                    console.log(result)
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+        // get booking times
+       
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/BookPlan',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to receive the Data 5');
+                    console.log('Failed ');
+                }
+                else {
+                    console.log(result)
+                }
+
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+        }
+    }
+
+    function getBusinessDays (startDate, endDate, excludeDays) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const current = new Date(startDate);
+        const dates = [];
+
+        while (current <= end) {
+            if (!isContainDate(excludeDays, current)) {
+                dates.push(new Date(current));
+            }
+
+            current.setDate(current.getDate() + 1);
+        }
+
+        return dates;
+    }
+
+    function isContainDate(Days, date) {
+        for(i=0;i<Days.length;i++){
+            if (moment(Days[i].date).format("YYYY-MM-DD") == moment(date).format("YYYY-MM-DD")){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function isContainTime(Times, Time) {
+        for (i = 0; i < Times.length; i++) {
+            if (moment(Times[i]).format("HH") == moment(Time).format("HH")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+</script>

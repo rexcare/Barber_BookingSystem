@@ -5,55 +5,56 @@
 @{
     Layout = null;
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" asp-append-version="true" />
 
-<link rel="stylesheet" href="~/css/LoginPage.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/login.css">
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
 
+<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
 
-<div class="col-md-4">
-    <section>
-        <form id="account" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-floating">
-                <label asp-for="Input.Email" class="form-label"></label>
-                
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true"/>
+<div class="d-lg-flex half">
+    <div class="bg order-1 order-md-2 bg-image"></div>
+    <div class="contents order-2 order-md-1">
 
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-7">
+                    
+                    <a asp-area="" asp-controller="Home" asp-action="index" style="text-decoration:none;" class="text-warning"><i class="fas fa-home text-warning" style="font-size: 2rem; margin-bottom: 1rem;"></i></a>
+                    <h3>Login to <a asp-area="" asp-controller="Home" asp-action="index" style="text-decoration:none;" class="text-warning">Uncle Ve</a></h3>
+                    <p class="mb-4">As a registered user you will have the best user experience.</p>
+
+                    <form id="account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Input.Email" class="form-label"></label>
+
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.Password" class="form-label"></label>
+
+                            <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                        <div class="mt-3" style="display: flex; justify-content:space-between; align-items: flex-end">
+                            <input type="submit" value="Log In" class="btn btn-block btn-warning" style="text-decoration: blink; margin: 10px; ">
+                            <a 
+                                asp-page="./Register_Customer" 
+                                asp-route-returnUrl="@Model.ReturnUrl" 
+                                class="forgot-pass text-dark"
+                                style="margin: 10px;"
+                            >
+                                Don't have an account? Register
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-floating">
-                <label asp-for="Input.Password" class="form-label"></label>
-                
-                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true"/>
-
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            @* <div> *@
-            @*     <div class="checkbox"> *@
-            @*         <label asp-for="Input.RememberMe" class="form-label"> *@
-            @*             <input class="form-check-input" asp-for="Input.RememberMe" /> *@
-            @*             @Html.DisplayNameFor(m => m.Input.RememberMe) *@
-            @*         </label> *@
-            @*     </div> *@
-            @* </div> *@
-            <div>
-                <button id="login-submit" type="submit">Log in</button>
-            </div>
-            <div>
-                <p>
-                    <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                </p>
-                
-                <p>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@App.Resources.WebApp.Views.Shared._Layout.GoBack</a>
-                </p>
-                
-                @* <p> *@
-                @*     <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a> *@
-                @* </p> *@
-                @* <p> *@
-                @*     <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a> *@
-                @* </p> *@
-            </div>
-        </form>
-    </section>
+        </div>
+    </div>
 </div>

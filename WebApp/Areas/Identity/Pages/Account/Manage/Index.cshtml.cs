@@ -7,11 +7,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using App.DAL.EF;
+using App.Domain;
 using App.Domain.Identity;
 using Base.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApp.Areas.Identity.Pages.Account.Manage
 {
@@ -19,13 +22,16 @@ namespace WebApp.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly AppDbContext _context;
 
         public IndexModel(
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager)
+            SignInManager<AppUser> signInManager,
+            AppDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         /// <summary>
@@ -121,13 +127,23 @@ namespace WebApp.Areas.Identity.Pages.Account.Manage
        
             await _userManager.RemoveClaimAsync(user, new Claim("aspnet.firstname",firstName));
             await _userManager.RemoveClaimAsync(user, new Claim("aspnet.lastname",lastName));
-            
+
             await _userManager.AddClaimAsync(user, new Claim("aspnet.firstname",Input.FirstName));
             await _userManager.AddClaimAsync(user, new Claim("aspnet.lastname",Input.LastName));
             // user.UserName = user.FirstName + " " + user.LastName;
             user.FirstName = Input.FirstName;
             user.LastName = Input.LastName;
             await _userManager.UpdateAsync(user);
+
+
+            Customer customer = _context.Customers.Where(c=>c.Email==user.Email).FirstOrDefault();
+            if(customer != null)
+            {
+                customer.FirstName = Input.FirstName;
+                customer.LastName = Input.LastName;
+                _context.Update(customer);
+                await _context.SaveChangesAsync();
+            }
 
             if (Input.Phone != phoneNumber)
             {

@@ -5,121 +5,680 @@
 @using Microsoft.AspNetCore.Razor.Language
 @using System.Linq
 
-@model IEnumerable<App.Domain.Identity.AppUser>
-@{
-    ViewData["Title"] = "Home Page";
-    CompanyInfo wtt = ViewBag.Wtt; 
-}
-
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
 
+@model IEnumerable<App.Domain.Identity.AppUser>
+@{
+    var appointments = (IEnumerable<Appointment>?)ViewData["appointments"];
+    var userInfo = (AppUser?)ViewData["user"];
 
+    var bal = appointments == null ? "isNull" : "notNull";
+    ViewData["Title"] = "Home Page";
 
-@if (!User.IsInRole("admin") || !User.IsInRole("user"))
-{
-    
+    CompanyInfo wtt = ViewBag.Wtt;
+    var services = (IEnumerable<Service>?)ViewBag.Services;
+    int index = 0;
+    int sIndex = -1;
 }
 
+<style>
+    .modal-body {
+        padding: 0px !important;
+    }
+
+    .card {
+        border: 0px !important;
+    }
+
+</style>
 
 
 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="~/css/table.css" />
 
-@if (User.IsInRole("admin") || User.IsInRole("user"))
-    {
-        
-        <table class="table table-bordered table-striped table-hover">
-            <thead>
-            <tr>
-                <th>
-                    Select
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FirstLastName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Email)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PhoneNumber)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Role)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.WorkTimeTemplate)
-                </th>
-                
-                <th>
-                    Actions
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model) {
-                if (item.Email != "admin@itcollege.ee")
-                {
-                    <tr>
-                        <td>
-                            @* <div class="form-group form-check"> *@
-                            @*     <label class="form-check-label"> *@
-                            @*         <input class="form-check-input" asp-for="@Html.DisplayFor(modelItem => item.IsSelected)"/> *@
-                            @*     </label> *@
-                            @* </div> *@
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Activate tooltip
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+@if (User.IsInRole("admin"))
+{
+    <div class="card shadow mb-4 p-4 body-card">
+        <!-- Member table-->
+        <div class="row main-box">
+            <h1>Our Members</h1>
+        </div>
+        <div class="table-responsive">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-3">
                             
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FirstLastName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.PhoneNumber)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Role)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.WorkTimeTemplate!.Times)
-                        </td>
-                        
-
-                        <td>
-
-                            @if (User.IsInRole("user"))
-                            {
-                                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                            }
+                        </div>
+                        <div class="col-sm-9">
                             @if (User.IsInRole("admin"))
                             {
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                <a asp-action="GenerateWTT" class="btn btn-success">
+                                    <i class="material-icons">&#xE147;</i> 
+                                    <span>Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()</span>
+                                </a>
                             }
-
-                            @if (User.IsInRole("admin") && item.Email != "admin@itcollege.ee")
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </th>
+                            <th>
+                                Phone
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Role)
+                            </th>
+                            <th>
+                                WorkTime
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            index++;
+                            if (item.Email != "admin@itcollege.ee")
                             {
-                                <span>
-                                    | <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                                </span>
-                                <span>
-                                    | <a asp-area="Admin" asp-controller="Vacations" asp-action="Create" asp-route-id="@item.Id">Vacations</a>
-                                </span>
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FirstLastName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Email)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Role)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.WorkTimeTemplate!.Times)
+                                    </td>
+                                    <td>
+                                        @if (User.IsInRole("admin"))
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="edit"><i class="material-icons" data-toggle="tooltip" title="edit">&#xE254;</i></a>
+                                        }
+                                        @if (User.IsInRole("admin") && item.Email != "admin@itcollege.ee")
+                                        {
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                            <a asp-area="Admin" asp-controller="Vacations" asp-action="Create" asp-route-id="@item.Id"><i class="material-icons" data-toggle="tooltip" title="Vacation">&#xe878;</i></a>
+                                        }
+                                    </td>
+                                </tr>
                             }
-                        </td>
-                    </tr>
-                }
-                
-            }
-            </tbody>
-        </table>
-        
-        
-        @if (User.IsInRole("admin"))
-        {
-            <span>
-                <a style="text-decoration: none black" asp-action="GenerateWTT">Generate Workplan for next @wtt.WorkTimeTemplateInfo days starts with @wtt.GenerationDate.Date.ToShortDateString()</a>
-            </span>
-        }
-        
-        
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("user"))
+{
+    <style>
+        table {
+        background-color: rgba(0, 0, 0, 0.22) !important;
     }
+        </style>
+    <div class="card shadow mb-4 p-4 body-card">
+        <div class="row main-box">
+            <h1>My Schedule</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-5 col-sm-12 table-overflow">
+                @if (User.IsInRole("user"))
+                {
+                    
+                                <table 
+                    class="table table-bordered table-striped table-hover" 
+                    style="background-color: rgba(225, 225, 225, 0.52) !important; border-color: rgba(0, 0, 0, 0.175) !important;"
+                >
+                    <thead>
+                    <tr style="background-color: rgba(0, 0, 0, 0.22) !important; border-bottom: 2px solid;">
+                        <th>
+                            Work Times
+                        </th>
+                    </tr>
+                    </thead>
+                        <tbody>
+                        @foreach (var item in userInfo!.WorkTimes!.OrderBy(c => c.Date).ThenBy(c => c.StartTime))
+                        {
+                            <tr>
+                                <td>
+                                    <a style="text-decoration: none" class="nav-item text-black">@item.DateTime</a>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+            </div>
+            <div class="col-lg-8 col-md-7 col-sm-12">
+
+                <!-- Schedule-->
+                <input type="hidden" id="uuid" value="@User.GetUserId()" />
+                
+                <div id="wrapper">
+                    <!-- Calendar element -->
+                    <div id="events-calendar" data-month-format="month YYYY"></div>
+                    <div class="row" style="height: 100%">
+                        <!-- Events -->
+                        <div id="events"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!User.IsInRole("admin") && !User.IsInRole("user"))
+{
+    <style>
+
+        main {
+            background-color: #ffffff;
+            background-image: none;
+        }
+
+    </style>
+    <!-- Masthead-->
+    <header class="masthead">
+        <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active" data-bs-interval="10000">
+                    <img src="~/images/scroll-1.jpg" class="d-block w-100" alt="this is first image">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>High Level Barbers</h5>
+                        <p>High level barbers are registered on out site.</p>
+                    </div>
+                </div>
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="~/images/scroll-2.jpg" class="d-block w-100" alt="this is second image">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Kind Service</h5>
+                        <p>You can get kind service from us.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="~/images/back3.jpg" class="d-block w-100" alt="this is third image">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Save Time</h5>
+                        <p>You can save time to book time.</p>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </header>
+    <!-- Services-->
+    <section class="page-section" id="services">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase text-warning">Services</h2>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <img class="rounded-circle img-fluid" src="~/images/img-1.jpg" alt="..." />
+                    <h4 class="my-3">Best Price</h4>
+                    <p class="text-muted">Our mission is to provide our clients with best service and best price in Tallinn.</p>
+                </div>
+                <div class="col-md-4">
+                    <img class="rounded-circle img-fluid" src="~/images/img-3.jpg" alt="..." />
+                    <h4 class="my-3">Professional Service</h4>
+                    <p class="text-muted">We have dedicated our salon to gentelmen who appreciate professional and personal service.</p>
+                </div>
+                <div class="col-md-4">
+                    <img class="rounded-circle img-fluid" src="~/images/img-2.jpg" alt="..." />
+                    <h4 class="my-3">Numerous Trend</h4>
+                    <p class="text-muted">Our hairdressers have upgraded their skills by attending numerous trend and skill courses.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- About-->
+    <section class="page-section" id="about">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase text-warning">Price</h2>
+            </div>
+            <div class="row" style="display: flex">
+                <div>
+                    @foreach (var item in services!)
+                    {
+                        sIndex++;
+                        <div style="display:flex;justify-content:space-between;flex-direction:row; align-items:center">
+                            <h4 style="white-space: nowrap">@item.Name</h4>
+                            <div style="border-top: 2px dotted; width: 100%; min-width: 10px;"></div>
+                            <div style="font-size: 30px">€@item.Price</div>
+                        </div>
+                    }
+                    @if (sIndex < 0)
+                    {
+                        <div class="text-center">
+                            <span style="font-size: 24px;">
+                                there is no service
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row mt-3" style="display: flex; align-items:center; justify-content: center;">
+                <a class="btn btn-warning" asp-controller="appointment" asp-action="index" style="width: 200px; font-size:25px">Book Now</a>
+            </div>
+        </div>
+    </section>
+    <!-- Contact-->
+    <section class="page-section" id="contact">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">Contact Us</h2>
+            </div>
+            <div class="row text-white" style="display: flex; justify-content: space-between;">
+                <div class="col-sm-4" style="display: flex;">
+                    <div>
+                        <i class="fas fa-phone" style="font-size: 30px; margin-right: 10px"></i>
+                    </div>
+                    <div>
+                        <h4>Phone</h4>
+                        <p>@wtt.Phone</p>
+                    </div>
+                </div>
+                <div class="col-sm-4" style="display: flex;">
+                    <div>
+                        <i class="far fa-address-card" style="font-size: 30px; margin-right: 10px;"></i>
+                    </div>
+                    <div>
+                        <h4>Email</h4>
+                        <p>@wtt.Email</p>
+                        <h4>Address</h4>
+                        <p>@wtt.Address</p>
+                    </div>
+                </div>
+                <div class="col-sm-4" style="display: flex;">
+                    <div>
+                        <i class="fas fa-clock" style="font-size: 30px; margin-right: 10px"></i>
+                    </div>
+                    <div>
+                        <h4>Working Time</h4>
+                        
+                        <p>
+                            <span>Mon-Sat:</span>
+                            <span>@wtt.WorkTimeWeek</span>
+                        </p>
+                        <p>
+                            <span>Weekend:</span>
+                            <span>@wtt.WorkTimeWeekEnd</span>
+                        </p>
+                        <p>
+                            <span>Holidays:</span>
+                            <span>@wtt.WorkTimeHolidays</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer-->
+    <footer class="footer py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4 text-lg-start">Copyright &copy; Your Website 2023</div>
+                <div class="col-lg-4 my-3 my-lg-0">
+                    <a class="btn btn-dark btn-social mx-2" href="https://www.facebook.com/" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a class="link-dark text-decoration-none me-3" href="javascript:;">Privacy Policy</a>
+                    <a class="link-dark text-decoration-none" href="javascript:;">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+}
+
+@if (bal == "notNull")
+{
+    @foreach (var item in appointments!)
+    {
+        var customer = (Customer?)item.Customer;
+        <!-- Modal -->
+        <div class="modal fade" id="a-@item.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="card mb-3">
+                            <div class="card-header bg-warning text-center">
+                                <span>Confirmed Time:</span>
+                                <br />
+                                <span id="m_bookTime">@item?.StartTime</span>
+                            </div>
+                            <div class="card-body text-dark px-5">
+                                <div class="w-100">
+                                    <blockquote class="blockquote">
+                                        <p class="name-item text-black">Service</p>
+                                        <span>Service: </span>
+                                        <span id="m_serviceName" class="name-item">@item?.Service?.Name</span>
+                                        <br />
+                                        <span>Duration: </span>
+                                        <span id="m_duration" class="name-item">@item?.Service?.TimeSpan.TotalMinutes minutes</span>
+                                        <br />
+                                        <span>Total: </span>
+                                        <span id="m_price">$@item?.Service?.Price</span>
+                                    </blockquote>
+                                    <hr />
+                                    <blockquote>
+                                        <span>Name: </span>
+                                        <span id="m_firstName" class="name-item">@item?.Customer?.FirstName</span>
+                                        <span id="m_lastName" class="name-item">@item?.Customer?.LastName</span>
+                                        <br />
+                                        <span>Phone: </span>
+                                        <span id="m_phone">@item?.Customer?.Phone</span>
+                                        <br />
+                                        <span>Email: </span>
+                                        <span id="m_email">@item?.Customer?.Email</span>
+                                    </blockquote>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
+                        <button type="button" class="btn btn-warning w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
+<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
+
+<script type="text/javascript" src="~/js/jsCalendar.js"></script>
+<script src="~/js/moment.js" asp-append-version="true"></script>
+<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+
+<script>
+    if('@User.IsInRole("admin")' == 'False' && '@User.IsInRole("user")' == 'False'){
+        let main = document.getElementById("main");
+        main.style.setProperty("max-width", "2000px", "important");
+        main.style.setProperty("--bs-gutter-x", "0px", "important");
+        main.style.setProperty("padding", "0px", "important");
+    }
+</script>
+
+<script type="text/javascript">
+    function toggleModal(id, type) {
+        console.log(id)
+        if (type === "info") {
+            var myModal = new bootstrap.Modal(document.getElementById('a-' + id), {
+                keyboard: false
+            });
+        }
+
+        myModal.toggle();
+    }
+
+    function isContainDate(Days, date) {
+        for (i = 0; i < Days.length; i++) {
+            if (moment(Days[i].date).format("YYYY-MM-DD") == moment(date).format("YYYY-MM-DD")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    generatecalendar()
+
+    async function generatecalendar() {
+        // Get elements
+        let events_calendar_el = document.getElementById("events-calendar")
+        let events_el = document.getElementById("events")
+        if (events_el && events_calendar_el) {
+            events_calendar_el.innerHTML = "";
+            events_el.innerHTML = "";
+            var elements = {
+                // Calendar element
+                calendar: document.getElementById("events-calendar"),
+                // Input element
+                events: document.getElementById("events")
+            }
+
+            // Create the calendar
+            elements.calendar.className = "material-theme custom-green";
+            var calendar = jsCalendar.new(elements.calendar);
+            let data = {
+                Id: document.getElementById("uuid").value,
+            }
+            var mindate = moment();
+            var workTimes = [];
+            var events = {
+            };
+            var times = {}
+
+            await $.ajax({
+                type: 'POST',
+                url: '/Appointment/getWorkingTimes',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: data,
+                success: function (result) {
+                    workTimes = result;
+                    if (result == "error") {
+                        alert('Failed to receive the Data');
+                        console.log('Failed ');
+                    }
+                    else {
+                        console.log(result);
+                        if (result.length != 0) {
+                            workTimes = result;
+                            //set min max month
+                            if (moment().diff(result[0].date, 'days') > 0) {
+                                mindate = moment().format("MM/DD/YYYY");
+                                tmp_mindate = moment().format("DD/MM/YYYY");
+                            }
+                            else {
+                                mindate = moment(result[0].date).format("MM/DD/YYYY");
+                                tmp_mindate = moment(result[0].date).format("DD/MM/YYYY");
+                            }
+                            calendar.min(tmp_mindate);
+                            calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
+                            calendar.set(tmp_mindate);
+                        }
+                    }
+                },
+                error: function () {
+                    alert('Error occures to receive the Data');
+                    console.log('Error occures ');
+                }
+            })
+            // get booking times
+            await $.ajax({
+                type: 'POST',
+                url: '/Appointment/readAppointmentsById',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: data,
+                success: function (result) {
+                    if (result == "error") {
+                        alert('Failed to receive the Data');
+                        console.log('Failed ');
+                    }
+                    else {
+                        var mainData = JSON.parse(result);
+                        var colors = [
+                            "#198754",
+                            "#0D6EFD",
+                            "#FFC107",
+                            "#8540F5",
+                            "#4DD4AC"
+                        ];
+                        console.log('11111111', mainData)
+                        for (i = 0; i < mainData.length; i++) {
+                            let tId = moment(mainData[i].StartTime).format("MM/DD/YYYY");
+                            console.log(tId)
+                            let val = parseInt(moment(mainData[i].StartTime).subtract(3, 'hours').format("H"));
+                            // If No times, create list
+                            if (!events.hasOwnProperty(tId)) {
+                                // Create list
+                                events[tId] = [];
+                            }
+                            events[tId].push({
+                                time: val,
+                                id: mainData[i].Id,
+                                name: mainData[i].Customer.FirstLastName,
+                                service: mainData[i].Service.Name
+                            });
+                        }
+                        console.log('222222222', events)
+
+                    }
+                },
+                error: function () {
+                    alert('Error occures to receive the Data');
+                    console.log('Error occures ');
+                }
+            })
+
+            // console.log('dddddddd', events)
+            //
+            // Make changes on the date elements that disbled
+            calendar.onDateRender(function (date, element, info) {
+                if (!isContainDate(workTimes, date)) {
+                    element.style.color = '#CACACA'
+                }
+                else{
+                    element.style.color = '#FFFFFF'
+                }
+            });
+            //
+            // Create events elements
+            elements.title = document.createElement("div");
+            elements.title.className = "title";
+            elements.events.appendChild(elements.title);
+            elements.subtitle = document.createElement("div");
+            elements.subtitle.className = "subtitle";
+            elements.events.appendChild(elements.subtitle);
+            elements.list = document.createElement("div");
+            elements.list.className = "list";
+            elements.events.appendChild(elements.list);
+
+            // Refresh layout
+            calendar.refresh();
+
+
+            var date_format = "MM/DD/YYYY";
+
+            var showEvents = function (date) {
+                console.log("datedate", date)
+                // getDatetimes(date)
+                // Date string
+                var id = moment(date).format("MM/DD/YYYY");
+                // Set title
+                elements.title.textContent = id;
+                // Clear old events
+                elements.list.innerHTML = "";
+                // Add events on list
+                if (events.hasOwnProperty(id) && events[id].length) {
+                    // Number of events
+                    elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "Appointments are" : "Appointment is") + " booked.";
+
+                    var div;
+                    var close;
+                    for (var i = 0; i < events[id].length; i++) {
+                        div = document.createElement("div");
+                        div.className = "event-item-i";
+                        elements.list.appendChild(div);
+
+                        sText = document.createElement("div");
+                        sText.className = "";
+                        div.appendChild(sText);
+
+                        let time = ''
+                        if (events[id][i].time < 10)
+                            time = `0${events[id][i].time} : 00`;
+                        else
+                            time = `${events[id][i].time} : 00`;
+
+                        sTime = document.createElement("span");
+                        sTime.className = "px-2 item-tag-time";
+                        sTime.textContent = " " + time + " ";
+                        sText.appendChild(sTime);
+
+                        sName = document.createElement("span");
+                        sName.className = "px-2 item-tag-name";
+                        sName.textContent = " " + events[id][i].name + " ";
+                        sText.appendChild(sName);
+
+                        sType = document.createElement("span");
+                        sType.className = "px-2 item-tag-type";
+                        sType.textContent = " " + events[id][i].service + " ";
+                        sText.appendChild(sType);
+
+
+                        div.addEventListener("click", (function (date, index) {
+                            return function () {
+                                toggleModal(events[id][index]?.id, "info")
+                            }
+                        })(date, i), false);
+
+                    }
+                } else {
+                    elements.subtitle.textContent = "No Appointments";
+                }
+            };
+
+            // Show current date events
+            console.log(mindate)
+            // showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
+            showEvents(moment(mindate).format("MM/DD/YYYY"))
+
+            // Add events
+            calendar.onDateClick(function (event, date) {
+                // Update calendar date
+                if (isContainDate(workTimes, date)) {
+                    calendar.set(date);
+                    // Show events
+                    showEvents(date);
+                }
+            });
+        }
+    }
+</script>

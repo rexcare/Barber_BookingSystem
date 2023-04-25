@@ -12,6 +12,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using WebApp.Models;
+using System.Text.Json;
+using System;
+using Newtonsoft.Json;
+using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 
 namespace WebApp.Controllers;
 
@@ -38,11 +43,23 @@ public class HomeController : Controller
     /// 
     /// </summary>
     /// <returns></returns>
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var users = _userManager.Users.Include(x => x.WorkTimeTemplate);
+        // var uuid = User.GetUserId();
+        var bal = User.IsInRole("user");
+        if (bal) {
+            var uuid = User.GetUserId();
+            var appointments = _context.Appointments.Where(a=>a.AppUserId.Equals(uuid)).Include(c => c.Customer).Include(s => s.Service);
+            ViewData["appointments"] = appointments;
+            var user = await _userManager.Users.Include(x => x.WorkTimes).Include(a => a.Appointments).FirstOrDefaultAsync(m => m.Id == uuid);
+            ViewData["user"] = user;
+        }
+
+        var users = _userManager.Users.Where(w=>w.Role=="user").Include(x => x.WorkTimeTemplate);
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
         ViewBag.WTT = wtt;
+        var services = _context.Services.ToList();
+        ViewBag.Services = services;
         return View("Index", users);
     }
 
@@ -89,24 +106,30 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Details(Guid? id)
     {
+
         if (id == null)
         {
             return NotFound();
         }
 
-        var user = await _userManager.Users.Include(x => x.WorkTimes)
+        var user = await _userManager.Users.Include(x => x.WorkTimes).Include(a=>a.Appointments)
             .FirstOrDefaultAsync(m => m.Id == id);
+        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(c => c.Customer).Include(s => s.Service);
+
         if (user == null)
         {
             return NotFound();
         }
+
+        ViewData["id"] = id;
+        ViewData["appointments"] = appointments;
 
         return View("AppUser/Details",user);
     }
     
     public async Task<IActionResult> GenerateWTT()
     {
-        var users =  _userManager.Users.Include(x => x.WorkTimeTemplate).Include(x => x.Vacations).Include(x => x.WorkTimes);
+        var users =  _userManager.Users.Where(w => w.Role == "user").Include(x => x.WorkTimeTemplate).Include(x => x.Vacations).Include(x => x.WorkTimes);
         var companyInfo = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1);
 
         foreach (var user in users)
@@ -254,7 +277,14 @@ public class HomeController : Controller
         return vacations;
     }
     
-    
+    public async Task<IActionResult> MemberList()
+    {
+
+        CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
+        ViewBag.WTT = wtt;
+        var users = _userManager.Users.Where(w=>w.Role == "user").Include(x => x.WorkTimeTemplate);
+        return View("AppUser/index", users);
+    }
     
     public async Task<IActionResult> Edit(Guid? id)
     {
@@ -263,20 +293,26 @@ public class HomeController : Controller
             return NotFound();
         }
 
-        var user = await _userManager.Users.Include(x => x.WorkTimeTemplate).Include(x => x.WorkTimes)
+        var user = await _userManager.Users.Include(x => x.WorkTimeTemplate).Include(x => x.WorkTimes).Include(a => a.Appointments)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (user == null)
         {
             return NotFound();
         }
+        var appointments = _context.Appointments.Where(c => c.AppUserId.Equals(id)).Include(c => c.Customer).Include(s => s.Service);
+
 
         ViewData["WorkTimeTemplateId"] = new SelectList(_context.WorkTimeTemplates, "Id", "Times", user.WorkTimeTemplateId);
+
+        ViewData["id"] = id;
+        ViewData["appointments"] = appointments;
 
         ViewBag.WorkTime = user.WorkTimes!;
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
         ViewBag.WTT = wtt;
         return View("AppUser/Edit",user);
     }
+    
     public async Task<IActionResult> Delete(Guid? id)
     {
         if (id == null)
@@ -327,10 +363,6 @@ public class HomeController : Controller
         return View("AppUser/Edit",user);
     }
     
-    
-    
-    
-    
     // POST: Admin/WorkTimes/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
@@ -348,8 +380,6 @@ public class HomeController : Controller
     
     public async Task<IActionResult> DeleteWW(Guid? id)
     {
-
-        
         var workTime = await _context.WorkTimes.FindAsync(id);
         if (workTime != null)
         {
@@ -360,7 +390,4 @@ public class HomeController : Controller
 
         return Redirect("../Edit/" + workTime!.AppUserId);
     }
-    
-    
-    
 }

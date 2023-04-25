@@ -1,100 +1,111 @@
 ﻿@using App.Domain.Identity
 @using Microsoft.AspNetCore.Identity
+@using Base.Extensions
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - HairFcker</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    @* <link rel="stylesheet" href="~/css/Footer.css" asp-append-version="true"/> *@
-    <link rel="stylesheet" href="~/WebApp.styles.css" asp-append-version="true"/>
-</head>
-<body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HairFcker</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@App.Resources.WebApp.Views.Shared._Layout.Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@App.Resources.WebApp.Views.Shared._Layout.Privacy</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="Index">Make an Appointment</a>
-                    </li>
-                    @if (User.IsInRole("admin"))
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                @App.Resources.WebApp.Views.Shared._Layout.Admin
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                @* <li class="nav-item"> *@
-                                @*     <a class="nav-link text-dark" asp-area="Admin" asp-controller="Meetings" asp-action="Index">Meetings</a> *@
-                                @* </li> *@
-                                @* <li class="nav-item"> *@
-                                @*     <a class="nav-link text-dark" asp-area="Admin" asp-controller="MeetingOptions" asp-action="Index">MeetingOptions</a> *@
-                                @* </li> *@
-                                @* <li class="nav-item"> *@
-                                @*     <a class="nav-link text-dark" asp-area="Admin" asp-controller="FooBars" asp-action="Index">FooBars</a> *@
-                                @* </li> *@
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="WorkTimeTemplates" asp-action="Index">WorkTimeTemplates</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="CompanyInfos" asp-action="Edit">CompanyInfos</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Services" asp-action="Index">Services</a>
-                                </li>
-                                
 
-                            </ul>
-                        </li>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>@ViewData["Title"] - HairFcker</title>
+
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"  asp-append-version="true"/>
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+        <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/Form.css" asp-append-version="true" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" asp-append-version="true"/>
+    </head>
+
+    <body id="page-top">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Uncle Ve</a>
+                <button 
+                    class="navbar-toggler" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#navbarResponsive" 
+                    aria-controls="navbarResponsive" 
+                    aria-expanded="false" 
+                    aria-label="Toggle navigation"
+                >
+                    Menu
+                    <i class="fas fa-bars ms-1"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0" style="margin-right: 20px">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register new Barber</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">@App.Resources.WebApp.Views.Shared._Layout.Home</a>
                         </li>
-                    }
-
-
-                    <partial name="_LanguageSelection"/>
-                    
-                </ul>
-                
-                @if (User.IsInRole("admin") || User.IsInRole("user"))
-                {
-                    <partial name="_LoginPartial"/>
-                }
-
+                        @if (User.IsInRole("user"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="MemberList">@App.Resources.WebApp.Views.Shared._Layout.Members</a>
+                            </li>
+                        }
+                        @if (!User.IsInRole("admin") && !User.IsInRole("user"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Appointment" asp-action="Index">Make an Appointment</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("customer"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Appointment" asp-route-id="@User.GetUserId()" asp-action="BookList">Appointments</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @App.Resources.WebApp.Views.Shared._Layout.Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="WorkTimeTemplates" asp-action="Index">WorkTimeTemplates</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="CompanyInfos" asp-action="Edit">CompanyInfos</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Services" asp-action="Index">Services</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register new Barber</a>
+                            </li>
+                        }
+                        <partial name="_LanguageSelection" />
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
             </div>
-        </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
+        </nav>
 
-<footer class="footer">
-    <p>&copy;2023 HairFcker | All Rights Reserved</p>
-</footer>
+        <!-- Pages -->
+        <main role="main" class="main-panel pb-3">
+            <div class="container" id="main">
+                @RenderBody()
+            </div>
+        </main>
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
-</body>
+        <script src="~/js/moment.js" asp-append-version="true"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/scripts.js" asp-append-version="true"></script>
+
+        <script>
+            var hel = '';
+        </script>
+
+        @await RenderSectionAsync("Scripts", required: false)
+
+    </body>
 </html>

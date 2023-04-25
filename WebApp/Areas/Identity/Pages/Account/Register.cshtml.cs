@@ -27,7 +27,7 @@ using Microsoft.Extensions.Logging;
 
 namespace WebApp.Areas.Identity.Pages.Account
 {
-    [Authorize(Roles ="admin")]
+    /*[Authorize(Roles ="admin")]*/
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<AppUser> _signInManager;
@@ -153,6 +153,7 @@ namespace WebApp.Areas.Identity.Pages.Account
                 user.LastName = Input.LastName;
                 user.PhoneNumber = Input.Phone;
                 user.WorkTimeTemplateId = Input.WorkTimeTemplateId;
+
                 user.WorkTimeTemplate =
                     _context.WorkTimeTemplates.FirstOrDefault(x => x.Id == Input.WorkTimeTemplateId);
 
@@ -173,6 +174,7 @@ namespace WebApp.Areas.Identity.Pages.Account
 
                 result = await _userManager.AddClaimAsync(user, new Claim("aspnet.firstname",user.FirstName));
                 result = await _userManager.AddClaimAsync(user, new Claim("aspnet.lastname",user.LastName));
+                result = await _userManager.AddClaimAsync(user, new Claim("aspnet.phonenumber", user.LastName));
                 if (Input.Roles)
                 {
                     result = await _userManager.AddToRoleAsync(user, "admin");

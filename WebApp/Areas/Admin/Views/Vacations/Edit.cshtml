@@ -13,12 +13,12 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="DateStart" class="control-label"></label>
+                <label asp-for="DateStart" class="control-label text-white"></label>
                 <input type="Date" asp-for="DateStart" class="form-control" />
                 <span asp-validation-for="DateStart" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DateStop" class="control-label"></label>
+                <label asp-for="DateStop" class="control-label text-white"></label>
                 <input type="date" asp-for="DateStop" class="form-control" />
                 <span asp-validation-for="DateStop" class="text-danger"></span>
             </div>

@@ -1,28 +1,11 @@
-html {
-  font-size: 14px;
+.main-panel {
+  margin-top: 94px;
 }
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 .div-space {
   position: relative;
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
-  justify-content: center;
-  align-items: center;
-}
 label, input {
   display: block;
 }
@@ -37,6 +20,11 @@ label {
 .btn-primary{
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.btn-warning {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .form-floating{
@@ -90,14 +78,14 @@ for details on configuring this project to bundle and minify static web assets. 
 a.navbar-brand {
   white-space: normal;
   font-family: 'Yellowtail', cursive;
-  font-size: xx-large;
+  font-size: 30px;
   text-align: center;
   word-break: break-all;
 }
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+  color: #ffc800;
 }
 
 .btn-primary {
@@ -159,10 +147,181 @@ h1 {
 ul {
   font-family: 'Nunito', sans-serif;
 }
-/*Backgrounds*/
+/*Backgrounds*/ 
 .bg-navbar {
   background: -webkit-linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
   background: -o-linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
   background: -moz-linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
   background: linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
+}
+
+.main-box {
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.md-calendar-booking .mbsc-calendar-text {
+    text-align: center;
+}
+
+.md-calendar-booking .booking-datetime .mbsc-datepicker-tab-calendar {
+    flex: 1 1 0;
+    min-width: 300px;
+}
+
+.md-calendar-booking .mbsc-timegrid-item {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.md-calendar-booking .mbsc-timegrid-container {
+    top: 30px;
+}
+
+.mbsc-form-group-title {
+    display: flex;
+    justify-content: space-between;
+    padding: unset !important;
+    font-size:unset !important;
+}
+
+
+
+.intl-tel-input {
+    display: table-cell;
+}
+
+.intl-tel-input .selected-flag {
+    z-index: 4;
+}
+
+.intl-tel-input .country-list {
+    z-index: 5;
+}
+
+.input-group .intl-tel-input .form-control {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 0;
+}
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.space-around {
+    display: flex;
+    justify-content: space-around;
+}
+
+.calendar-icon {
+    margin-right: 20px;
+    margin-left: 10px;
+}
+
+.card-body {
+    padding: 3rem 3rem;
+}
+
+.barber-list {
+    width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+    .calendar-icon {
+        display: none;
+    }
+    .barber-list {
+        width: 100%
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .barber-list {
+        width: 100%
+    }
+}
+
+.address-card {
+    width: 100%;
+}
+
+.delete-confirm-card {
+    width: 60%;
+    min-width: 550px;
+}
+
+.workTimeTemplate-panel {
+    width: 50%;
+    min-width: 500px;
+}
+
+@media only screen and (max-width: 700px) {
+    .delete-confirm-card, .workTimeTemplate-panel {
+        width: 100%;
+        min-width: none;
+    }
+}
+
+.btn-action {
+  min-width: max-content;
+}
+
+.body-card {
+  min-height: calc(100vh - 170px); 
+  height: calc(100% - 150px); 
+  top: 10px;
+}
+
+.name-item {
+  text-transform: capitalize;
+}
+
+.price-item {
+  display:flex;
+  justify-content:center;
+  flex-direction:row; 
+  align-items:center; 
+}
+
+.dots {
+  border-top: 2px dotted; 
+  width: 60%; 
+  min-width: 10px; 
+  color: #999999
+}
+
+.blue {
+  color: blue;
+}
+
+#m_bookTime {
+  font-size: x-large;
+}
+
+.table-overflow{
+  overflow-y: auto;
+  height: calc(100vh - 230px);
+}
+
+.container > .card {
+  background-color: rgba(0,0,0,0.22) !important;
+}
+
+.table-wrapper {
+  background-color: rgba(255,255,255,0.22) !important;
+}
+
+.bg-white3 {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+.bg-white5 {
+  background-color: rgba(255, 255,255, 0.55) !important;
+}
+
+.bg-black2 {
+  background-color: rgba(0, 0, 0, 0.22) !important;
 }

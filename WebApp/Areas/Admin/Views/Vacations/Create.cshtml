@@ -7,63 +7,79 @@
     AppUser appUser = ViewBag.AppUser;
     var vacation = ViewBag!.Vacations;
 }
+<style>
+
+input {
+        padding: 5px 5px 5px 15px !important;
+        margin-top: 0px !important;
+    }
+    .form-group{
+        margin-bottom: 10px
+    }
+</style>
+
+<a asp-area="" asp-controller="Home" asp-action="index" style="font-size:26px; text-decoration: none;"><i class=" fas fa-arrow-circle-left"></i> &nbsp; back</a>
+
+<div class="card shadow mb-4 p-4 body-card">
 
 <h1>Manage Vacation for @appUser.FirstLastName</h1>
 
 <hr />
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6 col-sm-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
-                <label asp-for="DateStart" class="control-label"></label>
-                <input type="Date" asp-for="DateStart" class="form-control" />
-                <span asp-validation-for="DateStart" class="text-danger"></span>
+            <div class="row form-group">
+                <label class="control-label col-sm-3 col-form-label text-white"></label>
+                <div class="col-sm-9">
+                    <input type="Date" asp-for="DateStart" class="form-control" />
+                    <span asp-validation-for="DateStart" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DateStop" class="control-label"></label>
-                <input type="Date" asp-for="DateStop" class="form-control" />
-                <span asp-validation-for="DateStop" class="text-danger"></span>
+            <div class="row form-group">
+                <label asp-for="DateStop" class="control-label col-sm-3 col-form-label text-white"></label>
+                <div class="col-sm-9">
+                    <input type="Date" asp-for="DateStop" class="form-control" />
+                    <span asp-validation-for="DateStop" class="text-danger"></span>
+                </div>
             </div>
             <input type="hidden" asp-for="AppUserId" value="@appUser.Id" />
             
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-calendar-plus"></i>&nbsp&nbspCreate</button>
             </div>
         </form>
     </div>
+    <div class="col-md-6 col-sm-12">
+            <table 
+                class="table table-bordered table-striped table-hover" 
+                style="background-color: rgba(225, 225, 225, 0.52) !important; border-color: rgba(0, 0, 0, 0.175) !important;"
+            >
+                <thead>
+                <tr style="background-color: rgba(0, 0, 0, 0.22) !important; border-bottom: 2px solid;">
+                    <th>
+                        Vacation Dates
+                    </th>
+                </tr>
+                </thead>
+                    <tbody>
+                @foreach (Vacation item in @appUser.Vacations!) {
+                    <tr>
+                        <td>
+                            <a asp-action="Edit" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Dates)</a>
+                            
+                        </td>
+                    </tr>
+                }
+                    </tbody>
+                </table>
+    </div>
 </div>
 
-        <table class="table table-ww table-bordered table-striped table-hover">
-            <thead>
-            <tr>
-                <th>
-                    Date
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (Vacation item in @appUser.Vacations!) {
-                <tr>
-                    <td>
-                        <a asp-action="Edit" style="text-decoration: none" class="nav-item text-dark" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Dates)</a>
-                        
-                    </td>
-                </tr>
-                
-            }
-            </tbody>
-        </table>
+        
 
 
-
-
-
-
-<div>
-    <a asp-area="" asp-controller="Home" asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

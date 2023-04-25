@@ -59,16 +59,13 @@ public static class IdentityExtensions
         return user.Claims.FirstOrDefault(c => c.Type == "aspnet.lastname")?.Value + "";
 
     }
-    
 
     public static string GetUserEmail(this ClaimsPrincipal user)
     {
         return user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value + "";
-
-
     }
-    
-    
+
+
     public static TKeyType GetUserRole<TKeyType>(this ClaimsPrincipal user)
     {
 

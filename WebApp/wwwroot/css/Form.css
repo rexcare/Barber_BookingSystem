@@ -1,0 +1,100 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700;900&display=swap');
+
+.form-content label, .was-validated .form-check-input:invalid ~ .form-check-label, .was-validated .form-check-input:valid ~ .form-check-label {
+    color: #fff;
+}
+
+input[type=text], input[type=tel], input[type=email] {
+    width: 100%;
+    padding: 9px 20px;
+    text-align: left;
+    outline: 0;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 15px;
+    font-weight: 300;
+    color: #000000;
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    margin-top: 3px;
+}
+
+
+.btn-primary {
+    background-color: #5cb85c;
+    outline: none;
+    border: 0px;
+    box-shadow: none;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: #2f942f;
+    outline: none !important;
+    border: none !important;
+    box-shadow: none;
+}
+/*
+.btn-warning {
+    background-color: #f0ad4e;
+    outline: none;
+    border: 0px;
+    box-shadow: none;
+}
+
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active {
+    background-color: #dd9d43;
+    outline: none !important;
+    border: none !important;
+    box-shadow: none;
+}
+*/
+
+.form-content textarea {
+    position: static !important;
+    width: 100%;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-align: left;
+    background-color: #fff;
+    border: 0;
+    font-size: 15px;
+    font-weight: 300;
+    color: #8D8D8D;
+    outline: none;
+    resize: none;
+    height: 120px;
+    -webkit-transition: none;
+    transition: none;
+    margin-bottom: 14px;
+}
+
+    .form-content textarea:hover, .form-content textarea:focus {
+        border: 0;
+        background-color: #ebeff8;
+        color: #8D8D8D;
+    }
+
+.mv-up {
+    margin-top: -9px !important;
+    margin-bottom: 8px !important;
+}
+
+.invalid-feedback {
+    color: #ff606e;
+}
+
+.valid-feedback {
+    color: #2acc80;
+}
+
+.register-panel {
+    width: 50%;
+    min-width: 500px;
+}
+
+@media only screen and (max-width: 700px) {
+    .register-panel {
+        width: 100%;
+        min-width: none;
+    }
+}

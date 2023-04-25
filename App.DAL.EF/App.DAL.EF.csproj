@@ -16,4 +16,13 @@
       <ProjectReference Include="..\App.Domain\App.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Migrations\AppDbContextModelSnapshot.cs" />
+      <Compile Remove="Migrations\20230404061101_InitialCreate.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Migrations\AppDbContextModelSnapshot.cs" />
+    </ItemGroup>
+
 </Project>

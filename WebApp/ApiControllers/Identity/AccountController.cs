@@ -168,6 +168,12 @@ public class AccountController : ControllerBase
             return BadRequest(result);
         }
 
+        result = await _userManager.AddClaimAsync(appUser, new Claim("aspnet.phonenumber", appUser.LastName));
+        if (!result.Succeeded)
+        {
+            return BadRequest(result);
+        }
+
 
         // get full user from system with fixed data
         appUser = await _userManager.FindByEmailAsync(appUser.Email);
@@ -307,4 +313,5 @@ public class AccountController : ControllerBase
 
         return Ok(res);
     }
+
 }

@@ -1,0 +1,508 @@
+﻿@model IEnumerable<App.Domain.Appointment>
+
+@using Microsoft.AspNetCore.Identity
+@using App.Domain.Identity
+@using App.Domain
+@using Base.Extensions
+
+@inject SignInManager<AppUser> _signInManager
+@inject UserManager<AppUser> _userManager
+
+@{
+    ViewData["Title"] = "Index";
+    CompanyInfo wtt = ViewBag.Wtt;
+    var index = 0;
+}
+<style>
+    .modal-body {
+        padding: 0px !important;
+    }
+
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="~/css/table.css" />
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Activate tooltip
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+<div class="card shadow mb-4 p-4 body-card">
+    <h1>Your Schedule</h1>
+    <!-- Upcoming -->
+    <div class="table-responsive">
+        <div class="table-wrapper">
+
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6 text-dark">
+                        <h2><i>Upcoming</i> <b>Appointments</b></h2>
+                    </div>
+                    <div class="col-sm-6">
+                        <a asp-action="index" class="btn btn-success mx-3" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Book Now</span></a>
+                    </div>
+                </div>
+
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Service</th>
+                        <th>Price</th>
+                        <th>Barber</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Appointment item in Model.OrderBy(o => o.StartTime).Where(c=>c.Customer?.Email == User.GetUserEmail())!)
+                    {
+                        DateTime now = DateTime.Today;
+                        int result = DateTime.Compare(now, item.StartTime);
+                        if (result > 0)
+                            continue;
+                        <tr>
+                            <td>
+                                @item.StartTime.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td>
+                                @item?.Service?.Name
+                            </td>
+                            <td>
+                                €@item?.Service?.Price
+                            </td>
+                            <td>
+                                @item?.AppUser?.FirstLastName
+                            </td>
+                            <td>
+                                <a href="javascript:;" class="edit" onclick="toggleModal('@item?.Id', 'info')"><i class="material-icons" data-toggle="tooltip" title="view">&#xe417;</i></a>
+                                <a href="javascript:;" class="delete" onclick="toggleModal('@item?.Id', 'delete')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Passed -->
+    <div class="table-responsive">
+        <div class="table-wrapper">
+
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6 text-dark">
+                        <h2><i>Passed</i> <b>Appointments</b></h2>
+                    </div>
+                    <div class="col-sm-6">
+                        <a asp-action="index" style="display: none;" class="btn btn-success mx-3" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Book Now</span></a>
+                    </div>
+                </div>
+
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Service</th>
+                        <th>Price</th>
+                        <th>Barber</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Appointment item in Model.OrderBy(o => o.StartTime).Where(c => c.Customer?.Email == User.GetUserEmail())!)
+                    {
+                        DateTime now = DateTime.Today;
+                        int result = DateTime.Compare(now, item.StartTime);
+                        if (result <= 0)
+                            continue;
+                        <tr>
+                            <td>
+                                @item.StartTime.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td>
+                                @item?.Service?.Name
+                            </td>
+                            <td>
+                                €@item?.Service?.Price
+                            </td>
+                            <td>
+                                @item?.AppUser?.FirstLastName
+                            </td>
+                            <td>
+                                <a href="javascript:;" class="edit" onclick="toggleModal('@item?.Id', 'info')">
+                                    <i class="material-icons" data-toggle="tooltip" title="view">&#xe417;</i>
+                                </a>
+                                <a asp-action="ReBook" asp-route-id="@User.GetUserId()" class="delete">
+                                    <i class="material-icons" data-toggle="tooltip" title="Book Again">&#xe569;</i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@foreach (var item in Model)
+{
+    var customer = (Customer?)item.Customer;
+    <!-- Modal -->
+    <div class="modal fade" id="a-@item.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="card mb-3" style="border : 0px !important;">
+                        <div class="card-header bg-warning text-center">
+                            <span>Confirmed Time:</span>
+                            <br />
+                            <span id="m_bookTime">@item?.StartTime</span>
+                        </div>
+                        <div class="card-body text-dark px-5">
+                            <div class="w-100">
+                                <blockquote class="blockquote">
+                                    <p class="name-item text-black">Service</p>
+                                    <span>Type: </span>
+                                    <span id="m_serviceName" class="name-item">@item?.Service?.Name</span>
+                                    <br />
+                                    <span>Description: </span>
+                                    <span id="m_serviceName" class="name-item">@item?.Service?.Description</span>
+                                    <br />
+                                    <span>Address: </span>
+                                    <span id="m_address" class="name-item">@wtt?.Address</span>
+                                    <br />
+                                    <span>Duration: </span>
+                                    <span id="m_duration" class="name-item">@item?.Service?.TimeSpan.TotalMinutes minutes</span>
+                                    <br />
+                                    <span>Total: </span>
+                                    <span id="m_price">$@item?.Service?.Price</span>
+                                </blockquote>
+                                <hr />
+                                <blockquote>
+                                    <p class="name-item text-black">barber</p>
+                                    <span>Staff: </span>
+                                    <span id="m_barberName" class="name-item">@item?.AppUser?.FirstLastName</span>
+                                    <br />
+                                    <span>Email: </span>
+                                    <span id="m_barberName" class="name-item">@item?.AppUser?.Email</span>
+                                    <br />
+                                    <span>Phone: </span>
+                                    <span id="m_barberName" class="name-item">@item?.AppUser?.PhoneNumber</span>
+                                    <br />
+                                </blockquote>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
+                    <button type="button" class="btn btn-warning w-50" data-bs-dismiss="modal" aria-label="Close">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="d-@item?.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Confirm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                        <h5 class="text-primary">Confirm delete</h5>
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: center; flex-wrap: nowrap">
+                    <button 
+                        class="btn btn-danger w-50"
+                        onclick="cancel('@item?.Id')">
+                        Cancel Appointment
+                    </button>
+                    <button type="button" class="btn btn-secondary w-50" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    #wrapper {
+        height: 100%;
+    }
+
+    #events {
+        width: 98%;
+    }
+
+    #events .list {
+        border-bottom: none;
+    }
+
+    #events .list .event-item-i {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+<link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
+<link rel="stylesheet" type="text/css" href="~/css/jsCalendar.css">
+
+<script type="text/javascript" src="~/js/jsCalendar.js"></script>
+
+<script>
+    
+    function cancel(id) {
+        let data = {
+            id: id,
+            uid: '@User?.GetUserId()'
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/Appointment/DeleteAppointment',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to cancel that appointment');
+                    console.log('Failed ');
+                }
+                else {
+                    location.reload()
+                }
+            },
+            error: function () {
+                alert('Error occures to reserve the Data');
+                console.log('Error occures ');
+            }
+        })
+    }
+
+    function toggleModal(id, type) {
+        console.log(id)
+        if (type === "info") {
+            var myModal = new bootstrap.Modal(document.getElementById('a-' + id), {
+                keyboard: false
+            });
+        }
+        if (type === "delete") {
+            var myModal = new bootstrap.Modal(document.getElementById('d-' + id), {
+                keyboard: false
+            });
+        }
+
+        myModal.toggle();
+    }
+
+</script>
+
+<script type="text/javascript">
+    function isContainDate(Days, date) {
+        for (i = 0; i < Days.length; i++) {
+            if (moment(Days[i].date).format("YYYY-MM-DD") == moment(date).format("YYYY-MM-DD")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    generatecalendar()
+   
+    async function generatecalendar() {
+        // Get elements
+        document.getElementById("events-calendar").innerHTML = "";
+        document.getElementById("events").innerHTML = "";
+        var elements = {
+            // Calendar element
+            calendar: document.getElementById("events-calendar"),
+            // Input element
+            events: document.getElementById("events")
+        }
+
+        // Create the calendar
+        elements.calendar.className = "material-theme custom-green";
+        var calendar = jsCalendar.new(elements.calendar);
+
+        //
+        let data = {
+            Id: '@User.GetUserId()',
+        }
+        var mindate = moment();
+        var workTimes = [];
+        var events = {
+        };
+        var times = {}
+
+        await $.ajax({
+            type: 'POST',
+            url: '/Appointment/getWorkingTimes',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                workTimes = result;
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    console.log(result);
+                    if(result.length != 0) 
+                    {
+                        workTimes = result;
+                        //set min max month
+                        if (moment().diff(result[0].date, 'days') > 0) {
+                            mindate = moment().format("MM/DD/YYYY");
+                            tmp_mindate = moment().format("DD/MM/YYYY");
+                        }
+                        else {
+                            mindate = moment(result[0].date).format("MM/DD/YYYY");
+                            tmp_mindate = moment(result[0].date).format("DD/MM/YYYY");
+                        }
+                        calendar.min(tmp_mindate);
+                        calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
+                        calendar.set(tmp_mindate);
+                    }
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+        // get booking times
+        await $.ajax({
+            type: 'POST',
+            url: '/Appointment/readAppointmentsById',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: data,
+            success: function (result) {
+                if (result == "error") {
+                    alert('Failed to receive the Data');
+                    console.log('Failed ');
+                }
+                else {
+                    var mainData = JSON.parse(result);
+                    var colors = [
+                        "#198754",
+                        "#0D6EFD",
+                        "#FFC107",
+                        "#8540F5",
+                        "#4DD4AC"
+                    ];
+                    for (i = 0; i < mainData.length; i++) {
+                        let tId = moment(mainData[i].StartTime).format("MM/DD/YYYY");
+                        let val = parseInt(moment(mainData[i].StartTime).subtract(3, 'hours').format("H"));
+                            // If No times, create list
+                        if (!events.hasOwnProperty(tId)) {
+                            // Create list
+                            events[tId] = [];
+                        }
+                        events[tId].push({
+                                time: val,
+                                id: mainData[i].Id,
+                                name: mainData[i].Customer.FirstLastName,
+                                service: mainData[i].Service.Name
+                        });
+                    }
+
+                }
+            },
+            error: function () {
+                alert('Error occures to receive the Data');
+                console.log('Error occures ');
+            }
+        })
+
+        // Make changes on the date elements that disbled
+        calendar.onDateRender(function (date, element, info) {
+            if (!isContainDate(workTimes, date)) {
+                element.style.color = '#CACACA'
+            }
+            else{
+                element.style.color = '#FFFFFF'
+            }
+        });
+        //
+        // Create events elements
+        elements.title = document.createElement("div");
+        elements.title.className = "title";
+        elements.events.appendChild(elements.title);
+        elements.subtitle = document.createElement("div");
+        elements.subtitle.className = "subtitle";
+        elements.events.appendChild(elements.subtitle);
+        elements.list = document.createElement("div");
+        elements.list.className = "list";
+        elements.events.appendChild(elements.list);
+
+        // Refresh layout
+        calendar.refresh();
+
+
+        var date_format = "MM/DD/YYYY";
+
+        var showEvents = function (date) {
+            console.log("datedate", date)
+            // getDatetimes(date)
+            // Date string
+            var id = moment(date).format("MM/DD/YYYY");
+            // Set title
+            elements.title.textContent = id;
+            // Clear old events
+            elements.list.innerHTML = "";
+            // Add events on list
+            if (events.hasOwnProperty(id) && events[id].length) {
+                // Number of events
+                elements.subtitle.textContent = events[id].length + " " + ((events[id].length > 1) ? "Appointments are" : "Appointment is") + " booked.";
+
+                var div;
+                var close;
+                for (var i = 0; i < events[id].length; i++) {
+                    div = document.createElement("div");
+                    div.className = "event-item-i";
+                    let time = ''
+                    if(events[id][i]<10)
+                        time = `0${events[id][i].time} : 00`;
+                    else
+                        time = `${events[id][i].time} : 00`;
+                    div.textContent = time + " " + events[id][i].name + ". ";
+                    elements.list.appendChild(div);
+                    div.addEventListener("click", (function (date, index) {
+                        return function () {
+                            toggleModal(events[id][index]?.id)
+                        }
+                    })(date, i), false);
+                    sType = document.createElement("span");
+                    sType.className = "bg-info rounded-pill mx-2";
+                    sType.textContent = " " + events[id][i].service + " ";
+                    div.appendChild(sType);
+                }
+            } else {
+                elements.subtitle.textContent = "No Appointments";
+            }
+        };
+
+        showEvents(moment(mindate).format("MM/DD/YYYY"))
+
+        // Add events
+        calendar.onDateClick(function (event, date) {
+            // Update calendar date
+            if (isContainDate(workTimes, date)) {
+                calendar.set(date);
+                // Show events
+                showEvents(date);
+            }
+        });
+
+    }
+
+</script>

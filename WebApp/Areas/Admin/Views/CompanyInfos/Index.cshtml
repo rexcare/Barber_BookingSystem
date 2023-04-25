@@ -22,6 +22,15 @@
                 @Html.DisplayNameFor(model => model.Phone)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.WorkTimeWeek)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkTimeWeekEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkTimeHolidays)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.WorkTimeTemplateInfo)
             </th>
             <th></th>
@@ -39,6 +48,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Phone)
             </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkTimeWeek)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkTimeWeekEnd)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkTimeHolidays)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.WorkTimeTemplateInfo)
             </td>

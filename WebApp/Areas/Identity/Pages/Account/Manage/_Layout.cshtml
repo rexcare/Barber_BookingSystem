@@ -8,19 +8,21 @@
         Layout = "/Views/Shared/_Layout.cshtml";
     }
 }
+<div class="card shadow mb-4 p-4 body-card">
+    <h1>Manage your account</h1>
 
-<h1>Manage your account settings</h1>
-
-<div>
-    <hr />
-    <div class="row">
-        <div class="col-md-3">
-            <partial name="_ManageNav" />
-        </div>
-        <div class="col-md-9">
-            @RenderBody()
+    <div>
+        <hr />
+        <div class="row">
+            <div class="col-md-3">
+                <partial name="_ManageNav" />
+            </div>
+            <div class="col-md-9">
+                @RenderBody()
+            </div>
         </div>
     </div>
+
 </div>
 
 @section Scripts {

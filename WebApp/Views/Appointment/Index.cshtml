@@ -1,54 +1,70 @@
 ﻿@model IEnumerable<App.Domain.Service>
 
+@using Microsoft.AspNetCore.Identity
+@using App.Domain.Identity
+@using Base.Extensions
+@inject SignInManager<AppUser> _signInManager
+@inject UserManager<AppUser> _userManager
+
 @{
     ViewData["Title"] = "Index";
+    string[,] cardStyle = {
+        {"fas fa-shopping-cut", "l-bg-cherry"},
+        {"fas fa-users", "l-bg-blue-dark"},
+        {"fas fa-signal", "l-bg-green-dark"},
+        {"fas fa-book-reader", "l-bg-orange-dark"},
+    };
+    var i = -1;
+
 }
 
-<h1>Our services</h1>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" asp-append-version="true" />
 
-<table class="table table-bordered table-striped table-hover">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TimeSpan)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-            </th>
-            
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeSpan)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                <div class="form-group">
-                    <a asp-area="" asp-controller="Appointment" asp-route-id="@item.Id" asp-action="Booking" style="text-decoration: none" type="submit" class="btn btn-primary" >Book time</a>
+    <div class="card shadow mb-4 p-4 body-card">
+    <h1>Our services</h1>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            i++;
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card @cardStyle[i%4, 1] bg-white5">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas @cardStyle[i%4, 0]"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">@Html.DisplayFor(modelItem => item.Name)</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+                                <h2 class="d-flex align-items-center mb-0">
+                                     $@Html.DisplayFor(modelItem => item.Price)
+                                </h2>
+                                <span>@Html.DisplayFor(modelItem => item.TimeSpan.TotalMinutes) mins <i class="fa fa-arrow-up"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <a 
+                        asp-area=""
+                        asp-controller="Appointment"
+                        asp-route-id="@item.Id"
+                        asp-action="Booking"
+                        style="text-decoration: none"
+                        type="submit"
+                    >
+                        <div class="card-footer text-dark" style="display:flex;justify-content:space-between;color:aliceblue">
+                            <h5>View Detail</h5>
+                            <i class="fas fa-sign-out-alt" style="font-size:25px"></i>
+                            </div>
+                    </a>
                 </div>
-            </td>
-            
-            
-        </tr>
-}
-    </tbody>
-</table>
+            </div>
+        }
+        @if(i < 0)
+        {
+            <span
+                style="margin-left: 50px; font-size: 24px;"    
+            >
+                there is no service
+            </span>
+        }
+    </div>
+</div>
