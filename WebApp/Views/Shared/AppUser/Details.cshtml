@@ -349,7 +349,6 @@
             }
         })
 
-        console.log('events', events)
         //
         // Make changes on the date elements that disbled
         calendar.onDateRender(function (date, element, info) {
@@ -447,8 +446,6 @@
         };
 
         // Show current date events
-        // showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
-        console.log('asdfasdfasdf',moment(mindate).format("MM/DD/YYYY"));
         showEvents(moment(mindate).format("MM/DD/YYYY"))
 
         // Add events

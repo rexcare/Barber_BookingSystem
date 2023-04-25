@@ -104,17 +104,16 @@ public class AppointmentController : Controller
 
     public async Task<IActionResult> BookList(Guid? id)
     {
-        if (id == null || _context.Appointments == null)
+        if (id == null)
         {
             return NotFound();
         }
 
         var user = _userManager.Users.First(u => u.Id == id);
         if (user== null) return NotFound();
-        var customer = _context.Customers.Where(f => f.Email == user.Email && f.Phone == user.PhoneNumber).FirstOrDefault();
-        if (customer == null) return NotFound();
+        /*var customer = _context.Customers.Where(f => f.Email == user.Email).FirstOrDefault();
+        if (customer == null) return NotFound();*/
         var appointments = _context.Appointments.Include(c => c.Customer).Include(w => w.Service).Include(w => w.AppUser);
-        // var xxx = _context.Appointments.Join(customer.Id).Where(customer.Email == )
         CompanyInfo wtt = _context.CompanyInfos.FirstOrDefault(x => x.Id == 1)!;
         ViewBag.WTT = wtt;
         return View(await appointments.ToListAsync());
@@ -147,7 +146,6 @@ public class AppointmentController : Controller
         {
             Appointment.Id = Guid.NewGuid();
             _context.Add(Appointment);
-            Console.WriteLine(Appointment.StartTime);
             await _context.SaveChangesAsync();
             return Json(Appointment.Id);
         }

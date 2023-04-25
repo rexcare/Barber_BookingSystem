@@ -153,9 +153,6 @@ namespace WebApp.Areas.Identity.Pages.Account
                 user.LastName = Input.LastName;
                 user.PhoneNumber = Input.Phone;
                 user.WorkTimeTemplateId = Input.WorkTimeTemplateId;
-                Console.WriteLine("======================================");
-                Console.WriteLine("======================================");
-                Console.WriteLine("======================================");
 
                 user.WorkTimeTemplate =
                     _context.WorkTimeTemplates.FirstOrDefault(x => x.Id == Input.WorkTimeTemplateId);

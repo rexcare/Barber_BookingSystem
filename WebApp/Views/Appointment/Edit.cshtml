@@ -458,10 +458,8 @@
                     console.log('Failed ');
                 }
                 else {
-                    console.log(result);
                     if (result.length != 0) {
                         for (k = 0; k < result.length; k++) {
-                            console.log(k, moment().diff(result[k].date, 'days'))
                             if (moment().diff(result[k].date, 'days') < 1) {
                                 workTimes = [...workTimes, result[k]]
                             }
@@ -471,7 +469,6 @@
                             mindate = moment()
                         else
                             mindate = moment(result[0].date)
-                        console.log('333', mindate)
                         calendar.min(moment(mindate).format("DD/MM/YYYY"));
                         calendar.max(moment(result[result.length - 1].date).format("DD/MM/YYYY"));
                         calendar.set(moment(mindate).format("DD/MM/YYYY"));
@@ -531,13 +528,10 @@
                 console.log('Error occures ');
             }
         })
-        console.log('cccccc', times);
         await Object.keys(times).forEach(function (key, index) {
             events[key] = times[key];
         });
 
-        console.log(events)
-        //
         // Make changes on the date elements that disbled
         calendar.onDateRender(function (date, element, info) {
             if (!isContainDate(workTimes, date)) {
@@ -547,7 +541,6 @@
                 element.style.color = '#FFFFFF'
             }
         });
-        //
         // Create events elements
         elements.title = document.createElement("div");
         elements.title.className = "title";
@@ -597,15 +590,12 @@
                     elements.list.appendChild(div);
                     div.addEventListener("click", (function (date, index) {
                         return function () {
-                            // console.log('date', date, 'events', events, 'index', index);
                             let tId = moment(date).format("MM/DD/YYYY");
-                            // console.log('tid', tId);
                             hel = moment(date).set({ h: events[tId][index] });
                             document.getElementById("bookTime").innerText = moment(hel).format("ddd MMM DD YYYY HH:mm")
                             document.getElementById("m_bookTime").innerText = moment(hel).format("ddd MMM DD YYYY HH:mm")
                             document.getElementById("valid-datepicker").style.display = "block";
                             document.getElementById("invalid-datepicker").style.display = "none";
-                            // console.log(hel)
                         }
                     })(date, i), false);
                 }

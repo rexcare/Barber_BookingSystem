@@ -399,10 +399,8 @@
                         "#8540F5",
                         "#4DD4AC"
                     ];
-                    console.log('11111111',mainData)
                     for (i = 0; i < mainData.length; i++) {
                         let tId = moment(mainData[i].StartTime).format("MM/DD/YYYY");
-                        console.log(tId)
                         let val = parseInt(moment(mainData[i].StartTime).subtract(3, 'hours').format("H"));
                             // If No times, create list
                         if (!events.hasOwnProperty(tId)) {
@@ -416,7 +414,6 @@
                                 service: mainData[i].Service.Name
                         });
                     }
-                    console.log('222222222',events)
 
                 }
             },
@@ -426,8 +423,6 @@
             }
         })
 
-        console.log('dddddddd',events)
-        //
         // Make changes on the date elements that disbled
         calendar.onDateRender(function (date, element, info) {
             if (!isContainDate(workTimes, date)) {
@@ -496,9 +491,6 @@
             }
         };
 
-        // Show current date events
-        console.log(mindate)
-        // showEvents(new Date(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM")));
         showEvents(moment(mindate).format("MM/DD/YYYY"))
 
         // Add events

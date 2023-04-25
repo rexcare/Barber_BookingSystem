@@ -270,7 +270,6 @@
     }
 
     function toggleModal(id, type) {
-        console.log(id)
         if(type === "info"){
             var myModal = new bootstrap.Modal(document.getElementById('a-' + id), {
                 keyboard: false
@@ -336,7 +335,6 @@
                     console.log('Failed ');
                 }
                 else {
-                    // console.log(result);
                     if(result.length != 0)
                     {
                         workTimes = result;
@@ -448,7 +446,6 @@
             // Date string
             //var id = jsCalendar.tools.dateToString(date, date_format, "en");
             var id = moment(date).format("MM/DD/YYYY");
-            // console.log('ididididid',id)
             // Set title
             elements.title.textContent = id;
             // Clear old events
@@ -529,7 +526,6 @@
         };
 
         // Show current date events
-        // console.log(moment(mindate).format("YYYY"), moment(mindate).subtract(1, "days").format("DD"), moment(mindate).format("MM"))
         showEvents(moment(mindate).format("MM/DD/YYYY"));
 
 

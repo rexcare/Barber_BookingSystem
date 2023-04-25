@@ -358,24 +358,18 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
             data: data,
             success: function (result) {
-                // workTimes = result;
                 if (result == "error") {
                     alert('Failed to receive the Data 1');
                     console.log('Failed 1');
                 }
                 else {
-                    // console.log(result);
                     if (result.length != 0) {
-                        // console.log('aaaaaa',moment())
                         for (k=0;k<result.length;k++)
                         {
-                            console.log(k, moment().diff(result[k].date, 'days'))
                             if (moment().diff(result[k].date, 'days') < 1) {
                                 workTimes = [...workTimes, result[k]]
                             }
                         }
-                        // console.log('bbbbb', workTimes)
-
                         //set min max month
                         if (moment().diff(result[0].date, 'days') > 0) {
                             mindate = moment().format("MM/DD/YYYY");
@@ -397,7 +391,6 @@
                             stop1 = parseInt(result[j]?.stopTime1?.substr(0, 2));
                             start2 = parseInt(result[j]?.startTime2?.substr(0, 2));
                             stop2 = parseInt(result[j]?.stopTime2?.substr(0, 2));
-                            let tmp = [];
                             let tId = moment(result[j]?.date).format("MM/DD/YYYY")
                             times[tId] = [];
                             for (i = 0; i < 24; i++) {
@@ -408,6 +401,7 @@
                                 }
 
                             }
+
                         }
                     }
                 }
@@ -424,17 +418,23 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
             data: data,
             success: function (result) {
+                console.log('555', result);
+
                 if (result == "error") {
                     alert('Failed to receive the Data 2');
                     console.log('Failed 2');
                 }
                 else {
-                    for (i = 0; i < result.length; i++) {
+                    for (let i = 0; i < result.length; i++) {
                         let tId = moment(result[i]).format("MM/DD/YYYY");
+                        console.log('551', tId);
                         let val = parseInt(moment(result[i]).subtract(3, 'hours').format("H"));
-                        for (a = 0; a < times[tId]?.length; a++) {
-                            if (val == times[tId][a])
+                        console.log('552', val);
+                        for (let a = 0; a < times[tId]?.length; a++) {
+                            if (val == times[tId][a]) {
                                 times[tId].splice(a, 1);
+
+                            }
                         }
                     }
                 }
@@ -444,13 +444,10 @@
                 console.log('Error occures 2');
             }
         })
-        // console.log('tiems', times);
         await Object.keys(times).forEach(function (key, index) {
             events[key] = times[key];
         });
 
-        // console.log('events', events)
-        
         // Make changes on the date elements that disbled
         calendar.onDateRender(function (date, element, info) {
             if (!isContainDate(workTimes, date)) {
@@ -483,10 +480,7 @@
         // var date_format = "DD/MM/YYYY";
 
         var showEvents = function (date) {
-            // console.log("datedate", date)
-            // getDatetimes(date)
-            // Date string
-            // var id = jsCalendar.tools.dateToString(date, date_format, "en");
+            console.log('999',events)
             var id = moment(date).format("MM/DD/YYYY");
             // Set title
             elements.title.textContent = id;
@@ -510,15 +504,12 @@
                     elements.list.appendChild(div);
                     div.addEventListener("click", (function (date, index) {
                         return function () {
-                            // console.log('date', date, 'events', events, 'index', index);
                             let tId = moment(date).format("MM/DD/YYYY");
-                            // console.log('tid', tId);
                             hel = moment(date).set({ h: events[tId][index] });
                             document.getElementById("bookTime").innerText = moment(hel).format("DD/MM/YYYY HH:mm:ss")
                             document.getElementById("m_bookTime").innerText = moment(hel).format("DD/MM/YYYY HH:mm:ss")
                             document.getElementById("valid-datepicker").style.display = "block";
                             document.getElementById("invalid-datepicker").style.display = "none";
-                            // console.log(hel)
                         }
                     })(date, i), false);
                 }
@@ -579,7 +570,6 @@
         hel = "";
         document.getElementById("m_bookTime").innerText = "";
         document.getElementById("bookTime").innerText = "";
-        // console.log('ddddddddddddddd', event.target.selectedOptions[0].innerText);
 
     }
 
@@ -667,7 +657,6 @@
                 AppUserId: document.getElementById("barberId").value,
                 StartTime: moment(hel).format("YYYY-MM-DD HH:mm:ss"),
             }
-            console.log('appointments',appointmentData);
             $.ajax({
             type: 'POST',
             url: '/Appointment/CreateAppointment',
@@ -679,7 +668,6 @@
                     console.log('Failed ');
                 }
                 else {
-                    // alert('Successfully reserve Data ');
                     location.href = "/Appointment"
                 }
             },
