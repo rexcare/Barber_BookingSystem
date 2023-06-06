@@ -239,7 +239,7 @@
                             </p>
                         </blockquote>
                         <figcaption class="blockquote-footer">
-                                    <p class="name-item text-secondary">barber</p>
+                                    <p class="name-item text-secondary">customer</p>
                             <p>
                                 <span>Name: </span>
                                 <span id="firstName">@User.GetUserFirstName()</span>&nbsp;<span id="lastName">@User.GetUserLastName()</span>
@@ -351,15 +351,24 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
             data: data,
             success: function (result) {
-                workTimes = result;
+                // workTimes = result;
                 if (result == "error") {
                     alert('Failed to receive the Data 1');
-                    console.log('Failed ');
+                    console.log('Failed 1');
                 }
                 else {
-                    console.log(result);
+                    // console.log(result);
                     if (result.length != 0) {
-                        workTimes = result;
+                        // console.log('aaaaaa',moment())
+                        for (k=0;k<result.length;k++)
+                        {
+                            console.log(k, moment().diff(result[k].date, 'days'))
+                            if (moment().diff(result[k].date, 'days') < 1) {
+                                workTimes = [...workTimes, result[k]]
+                            }
+                        }
+                        // console.log('bbbbb', workTimes)
+
                         //set min max month
                         if (moment().diff(result[0].date, 'days') > 0) {
                             mindate = moment().format("MM/DD/YYYY");
@@ -397,8 +406,8 @@
                 }
             },
             error: function () {
-                alert('Error occures to receive the Data');
-                console.log('Error occures ');
+                alert('Error occures to receive the Data 1');
+                console.log('Error occures 1');
             }
         })
         // get booking times
@@ -410,7 +419,7 @@
             success: function (result) {
                 if (result == "error") {
                     alert('Failed to receive the Data 2');
-                    console.log('Failed ');
+                    console.log('Failed 2');
                 }
                 else {
                     for (i = 0; i < result.length; i++) {
@@ -424,8 +433,8 @@
                 }
             },
             error: function () {
-                alert('Error occures to receive the Data');
-                console.log('Error occures ');
+                alert('Error occures to receive the Data 2');
+                console.log('Error occures 2');
             }
         })
         // console.log('tiems', times);
@@ -461,10 +470,10 @@
         calendar.refresh();
 
 
-        var date_format = "DD/MM/YYYY";
+        // var date_format = "DD/MM/YYYY";
 
         var showEvents = function (date) {
-            console.log("datedate", date)
+            // console.log("datedate", date)
             // getDatetimes(date)
             // Date string
             // var id = jsCalendar.tools.dateToString(date, date_format, "en");

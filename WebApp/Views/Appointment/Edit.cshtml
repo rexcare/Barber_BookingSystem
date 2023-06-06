@@ -294,7 +294,7 @@
                     else {
                         console.log(result);
                         // alert('Successfully reserve Data ');
-                        location.href = "/Appointment";
+                        history.go(-1);
                     
                     }
                 },
@@ -446,7 +446,7 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
             data: data,
             success: function (result) {
-                workTimes = result;
+                // workTimes = result;
                 if (result == "error") {
                     alert('Failed to receive the Data');
                     console.log('Failed ');
@@ -454,7 +454,12 @@
                 else {
                     console.log(result);
                     if (result.length != 0) {
-                        workTimes = result;
+                        for (k = 0; k < result.length; k++) {
+                            console.log(k, moment().diff(result[k].date, 'days'))
+                            if (moment().diff(result[k].date, 'days') < 1) {
+                                workTimes = [...workTimes, result[k]]
+                            }
+                        }
                         //set min max month
                         if (moment().diff(result[0].date, 'days') > 0)
                             mindate = moment()
